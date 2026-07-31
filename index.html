@@ -353,10 +353,13 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <h2 id="cr-name">—</h2>
     <div class="cred-stats">
       <div class="stat"><div class="n" id="cr-total">0</div><div class="l">Points</div></div>
-      <div class="stat sky"><div class="n" id="cr-ahd">0/0</div><div class="l">AHD ½ Days</div></div>
+      <div class="stat sky"><div class="n" id="cr-ahd">0/0</div><div class="l">AHD Half-Days</div></div>
       <div class="stat adobe"><div class="n" id="cr-amb">0</div><div class="l">Ambulatory</div></div>
     </div>
     <p class="hint" style="text-align:left;margin:0 0 6px" id="cr-pct">—</p>
+    <div class="msg warn" id="cr-ahd-inc" style="line-height:1.6">—</div>
+    <div class="eyebrow" style="margin-top:12px">Conferences by type</div>
+    <div id="cr-bytype"></div>
     <div class="eyebrow" style="margin-top:12px">Recent credits</div>
     <ul class="cred-recent" id="cr-recent"></ul>
     <button class="btn btn-ghost" style="margin-top:14px" onclick="creditsBack()">Back</button>
@@ -576,11 +579,11 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     </div>
     <div class="eyebrow" style="justify-content:center">Chiefs · Program staff</div>
     <h2 style="text-align:center">Sign in</h2>
-    <p class="sub" style="text-align:center">The Presenter and Admin areas are restricted. Residents never need an account — check-in stays open to everyone.</p>
+    <p class="sub" style="text-align:center">The Presenter and Admin areas are restricted to chiefs and faculty. Residents never need an account — check-in stays open to everyone.</p>
     <label class="fld">Email</label>
-    <input type="email" id="lg-email" placeholder="uaztucsonchiefs@gmail.com" autocomplete="username">
+    <input type="email" id="lg-email" placeholder="you@arizona.edu" autocomplete="off" autocorrect="off" autocapitalize="none">
     <label class="fld">Password</label>
-    <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="current-password">
+    <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="new-password">
     <div class="msg err" id="lg-err">Incorrect email or password.</div>
     <div style="margin-top:13px">
       <button class="btn btn-primary" onclick="doLogin()">Sign in</button>
@@ -637,6 +640,28 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div class="card">
+    <div class="eyebrow">Bulk credit award</div>
+    <p class="sub">Award credit directly — for bonus events, speaker panels, or attendance collected on paper.</p>
+    <label class="fld">Conference</label>
+    <select id="bulk-conf"></select>
+    <label class="fld">Paste recipients (optional)</label>
+    <textarea id="bulk-paste" rows="3" placeholder="One per line — email, Last, First — or First Last"></textarea>
+    <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="bulkMatch()">Match pasted list</button>
+    <div class="msg warn" id="bulk-unmatched"></div>
+    <label class="fld">Residents</label>
+    <div class="roster-list" id="bulk-roster"></div>
+    <label class="fld">Action</label>
+    <select id="bulk-action">
+      <option value="Manual Credit">Award credit</option>
+      <option value="Excused">Mark excused (nights, vacation, away)</option>
+    </select>
+    <div style="margin-top:12px">
+      <button class="btn btn-primary" onclick="bulkAward()">Apply to selected (<span id="bulk-n">0</span>)</button>
+    </div>
+    <div class="msg ok" id="bulk-ok">—</div>
+  </div>
+
+  <div class="card">
     <div class="eyebrow">Schedule</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <button class="mini-btn" onclick="weekNav(-1)">‹ Prev</button>
@@ -652,7 +677,9 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="eyebrow">Clean up duplicate listings</div>
     <p class="sub">Finds listings that repeat the same date, type, title, and site. Removing them only ever deletes <strong>empty</strong> copies — any copy with recorded check-ins is kept, and at least one copy of every offering survives. Resident sign-ins are never touched.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="scanDuplicates()">Scan for duplicates</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="scanCheckinDupes()">Scan for duplicate check-ins</button>
     <div id="dup-out"></div>
+    <div id="ci-dup-out"></div>
   </div>
 
   <div class="card">
@@ -716,28 +743,6 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div class="card">
-    <div class="eyebrow">Bulk credit award</div>
-    <p class="sub">Award credit directly — for bonus events, speaker panels, or attendance collected on paper.</p>
-    <label class="fld">Conference</label>
-    <select id="bulk-conf"></select>
-    <label class="fld">Paste recipients (optional)</label>
-    <textarea id="bulk-paste" rows="3" placeholder="One per line — email, Last, First — or First Last"></textarea>
-    <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="bulkMatch()">Match pasted list</button>
-    <div class="msg warn" id="bulk-unmatched"></div>
-    <label class="fld">Residents</label>
-    <div class="roster-list" id="bulk-roster"></div>
-    <label class="fld">Action</label>
-    <select id="bulk-action">
-      <option value="Manual Credit">Award credit</option>
-      <option value="Excused">Mark excused (nights, vacation, away)</option>
-    </select>
-    <div style="margin-top:12px">
-      <button class="btn btn-primary" onclick="bulkAward()">Apply to selected (<span id="bulk-n">0</span>)</button>
-    </div>
-    <div class="msg ok" id="bulk-ok">—</div>
-  </div>
-
-  <div class="card">
     <div class="eyebrow" style="color:var(--adobe)">Review queue</div>
     <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it.</p>
     <div id="a-flags"></div>
@@ -753,9 +758,13 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
 
   <div class="card">
     <div class="eyebrow" style="color:var(--adobe)">AHD attendance check</div>
-    <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate.</p>
+    <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate. Cancelled and deleted AHDs never count toward the total, and neither do 7/2/2026 or the last two weeks of the year.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadAhdCheck()">Scan for partial AHD attendance</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdDupes()">Scan for duplicate AHD hours</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdDoubleCount()">Scan for double-counted AHD points</button>
     <div id="ahd-out"></div>
+    <div id="ahd-dup-out"></div>
+    <div id="ahd-dc-out"></div>
   </div>
 
   <div class="card">
@@ -800,6 +809,10 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
         <div class="t">NI Data Exchange</div>
         <div class="s">CONFIG-DRIVEN CSV<br>SFTP NIGHTLY BATCH</div>
       </button>
+      <button class="exp-btn" onclick="complianceDownload()">
+        <div class="t">Compliance CSV</div>
+        <div class="s">POINTS · AHD % · PEAC<br>PER RESIDENT · FOR PD/GME</div>
+      </button>
     </div>
     <div id="a-export-out"></div>
   </div>
@@ -811,7 +824,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
 
 <footer>
   CONFERENCE TRACKER v1.0 · UA-TUCSON INTERNAL MEDICINE<br>
-  QUESTIONS OR ISSUES: NATE WALTON · <a href="mailto:nathantwalton@gmail.com" style="color:#2A6F50;text-decoration:none">nathantwalton@gmail.com</a><br>
+  QUESTIONS OR ISSUES: <span id="ft-support">—</span><br>
   <span class="mono" id="build-stamp">—</span>
 </footer>
 
@@ -884,11 +897,16 @@ function notify(msg){ toast(msg, false); }
 /* Program-wide conferences carry the pseudo-site "All Sites" — a marker, not a
  * real location — so hide it in the UI. Real sites (BUMCT/VA/South) still show. */
 function siteTag(s){ return (s && s !== 'All Sites') ? s : ''; }
-/* AHD hours display as just "AHD" — the time disambiguates the hour, so the
- * "Hour 1/2/3" (or legacy "AHD Hour N") title is redundant on screen. */
+/* AHD hours stay visible ("AHD — Hour 2") so residents know which hour they're
+ * signing into; legacy titles like "AHD Hour 2" are normalized so it never
+ * renders as "AHD — AHD Hour 2". */
 function confLabel(type, title){
-  if (type === 'AHD' && /^(AHD\s*)?Hour\s*\d$/i.test(String(title||''))) return type;
-  return type + (title && title !== type ? " — " + title : "");
+  var t = String(title||'');
+  if (type === 'AHD'){
+    var m = t.match(/^(?:AHD\s*)?(Hour\s*\d)$/i);
+    if (m) return type + " — " + m[1].replace(/hour\s*/i, "Hour ");
+  }
+  return type + (t && t !== type ? " — " + t : "");
 }
 
 /* ============ STATE ============ */
@@ -984,7 +1002,11 @@ async function doLogin(){
       document.getElementById("lg-pass").value = "";
       go({dataset:{v:"admin"}});
     } else {
-      document.getElementById("lg-err").style.display = "block";
+      var err = document.getElementById("lg-err");
+      err.textContent = r.locked
+        ? "Too many attempts — this email is locked for 15 minutes."
+        : "Incorrect email or password.";
+      err.style.display = "block";
     }
   }catch(e){ document.getElementById("lg-err").style.display = "block"; }
 }
@@ -1015,7 +1037,24 @@ async function boot(){
   renderTabs("resident");
   try{ BOOT = await call('bootstrap'); }
   catch(e){ BOOT = {todayConfs:[], liveConf:null, qEligible:[], webAppUrl:''}; }
+  applyConfigDefaults();
   qOptions();
+}
+/* Pull year/contact settings from the backend so nothing is hardcoded in the
+ * frontend — a new chief edits only the YEAR block in Code.gs. */
+function applyConfigDefaults(){
+  var ft = document.getElementById("ft-support");
+  if (ft){
+    if (BOOT.supportEmail){
+      ft.innerHTML = (BOOT.supportName ? BOOT.supportName.toUpperCase() + " · " : "") +
+        '<a href="mailto:' + BOOT.supportEmail + '" style="color:#2A6F50;text-decoration:none">' + BOOT.supportEmail + '</a>';
+    } else ft.textContent = "YOUR CHIEF RESIDENTS";
+  }
+  var todayIso = new Date().toISOString().slice(0,10);
+  var ad = document.getElementById("add-date"); if (ad && !ad.value) ad.value = todayIso;
+  if (ad) ad.value = todayIso;                                  // always default to today, not a stale date
+  var gs = document.getElementById("gen-start"); if (gs && BOOT.academicStart) gs.value = BOOT.academicStart;
+  var ge = document.getElementById("gen-end");   if (ge && BOOT.academicEnd)   ge.value = BOOT.academicEnd;
 }
 
 /* ============ RESIDENT FLOW ============ */
@@ -1171,6 +1210,31 @@ async function creditsLookup(){
   document.getElementById("cr-pct").textContent = (r.ahdPct == null)
     ? "No academic half-days offered yet this year."
     : "Academic half-days: " + r.ahdPct + "% attended (all three hours required; goal ≥50%).";
+  var inc = document.getElementById("cr-ahd-inc");
+  if (r.ahdIncomplete && r.ahdIncomplete.length){
+    inc.innerHTML = r.ahdIncomplete.map(function(x){
+      return "<strong>" + x.date + "</strong>: checked into " + x.attended.join(" + ") + " but not " + x.missing.join(" + ") + " — this half-day isn't counting.";
+    }).join("<br>") + "<br>If you attended the missing hour" + (r.ahdIncomplete.some(function(x){return x.missing.length>1;}) ? "s" : "") + ", let a chief resident know and it can be credited.";
+    inc.style.display = "block";
+  } else inc.style.display = "none";
+  var bt = document.getElementById("cr-bytype");
+  var rows = (r.byType || []);
+  if (rows.length){
+    var h = '<table class="roster-tbl"><tr><th>Type</th><th style="text-align:right">Attended</th></tr>';
+    h += '<tr><td style="font-weight:700">All conferences</td><td class="mono" style="font-weight:700;text-align:right;color:var(--saguaro-d)">' + (r.totalCount || 0) + '</td></tr>';
+    rows.forEach(function(x){
+      var label = x.type, extra = "";
+      if (x.type === "AHD"){
+        label = "AHD (hours)";
+        extra = '<div style="font-size:10px;color:var(--muted);font-family:var(--mono)">' + r.ahdHalf + '/' + r.ahdOf + ' complete half-days' + (r.ahdPct==null ? '' : ' · ' + r.ahdPct + '%') + '</div>';
+      }
+      h += '<tr><td>' + label + extra + '</td><td class="mono" style="text-align:right">' + x.n + '</td></tr>';
+    });
+    h += '</table>';
+    bt.innerHTML = h;
+  } else {
+    bt.innerHTML = '<p class="sub">No conferences recorded yet.</p>';
+  }
   var ul = document.getElementById("cr-recent");
   ul.innerHTML = "";
   if (!r.recent.length) ul.innerHTML = '<li><span class="sub">No credits recorded yet.</span></li>';
@@ -2016,6 +2080,121 @@ async function ahdFixUI(email, confIds){
   notify("Credited " + r.credited + " hour(s) — half-day now complete.");
   loadAhdCheck();
 }
+async function scanAhdDupes(){
+  var out = document.getElementById("ahd-dup-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning AHD listings…</p>';
+  var r;
+  try{ r = await call('ahdCleanupReport', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't scan AHD listings."); return; }
+  if (!r.groups.length){
+    out.innerHTML = '<div class="msg ok" style="display:block">No duplicate AHD hours found — every half-day has one listing per hour.</div>';
+    return;
+  }
+  var rows = r.groups.map(function(g){
+    var badge = g.withSignins
+      ? '<span class="chip warn" style="font-size:9px;padding:2px 7px">' + g.withSignins + ' with sign-ins — kept</span>'
+      : '';
+    var exc = g.excluded ? '<span class="chip" style="font-size:9px;padding:2px 7px">EXCLUDED DATE</span>' : '';
+    return '<tr><td class="mono" style="font-size:10.5px">' + g.date + '</td><td>' + g.hour +
+      '<div style="font-size:9.5px;color:var(--faint);font-family:var(--mono)">' + g.titles.join(" · ") + '</div></td>' +
+      '<td class="mono" style="text-align:center">' + g.copies + '&times;</td><td>' + badge + exc + '</td></tr>';
+  }).join("");
+  out.innerHTML =
+    '<div class="eyebrow" style="margin-top:14px">' + r.groups.length + ' duplicated hour(s) · ' + r.removable + ' listing(s) removable</div>' +
+    '<table class="roster-tbl"><tr><th>Date</th><th>Hour</th><th>Copies</th><th></th></tr>' + rows + '</table>';
+  if (r.removable > 0){
+    var btn = document.createElement("button");
+    btn.className = "btn btn-primary"; btn.style.marginTop = "12px";
+    btn.textContent = "Remove " + r.removable + " duplicate AHD listing(s)";
+    btn.onclick = function(){
+      if (confirm("Remove " + r.removable + " duplicate AHD listing(s)? Any listing with recorded sign-ins is kept, and one listing per hour always remains. Resident sign-ins are not affected."))
+        ahdDupeRemoveUI();
+    };
+    out.appendChild(btn);
+  }
+}
+async function ahdDupeRemoveUI(){
+  var r;
+  try{ r = await call('ahdCleanupRemove', TOKEN); }
+  catch(e){ toast(e.message); return; }
+  document.getElementById("ahd-dup-out").innerHTML =
+    '<div class="msg ok" style="display:block">Removed ' + r.deleted + ' duplicate AHD listing(s). Sign-ins were not affected.</div>';
+  loadAdmin();
+}
+async function scanCheckinDupes(){
+  var out = document.getElementById("ci-dup-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning check-ins…</p>';
+  var r;
+  try{ r = await call('attendanceDupeReport', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't scan check-ins."); return; }
+  if (!r.cases.length){
+    out.innerHTML = '<div class="msg ok" style="display:block">No duplicate check-ins — nobody is credited twice for the same conference.</div>';
+    return;
+  }
+  var rows = r.cases.map(function(c){
+    return '<tr><td class="mono" style="font-size:10.5px">' + (c.date||'—') + '</td><td>' + c.name +
+      '<div style="font-size:9.5px;color:var(--faint)">PGY-' + c.pgy + ' · ' + c.conf + '</div></td>' +
+      '<td class="mono" style="text-align:center">' + c.count + '&times;</td></tr>';
+  }).join("");
+  out.innerHTML =
+    '<div class="eyebrow" style="margin-top:14px">' + r.cases.length + ' duplicated check-in(s) · ' + r.extra + ' redundant credit(s)</div>' +
+    '<table class="roster-tbl"><tr><th>Date</th><th>Resident · Conference</th><th>Credits</th></tr>' + rows + '</table>';
+  var btn = document.createElement("button");
+  btn.className = "btn btn-primary"; btn.style.marginTop = "12px";
+  btn.textContent = "Remove " + r.extra + " redundant credit(s)";
+  btn.onclick = function(){
+    if (confirm("Void " + r.extra + " redundant check-in credit(s)? Each resident keeps their earliest check-in for the conference."))
+      checkinDupeFixUI();
+  };
+  out.appendChild(btn);
+}
+async function checkinDupeFixUI(){
+  var r;
+  try{ r = await call('attendanceDupeFix', TOKEN); }
+  catch(e){ toast(e.message); return; }
+  document.getElementById("ci-dup-out").innerHTML =
+    '<div class="msg ok" style="display:block">Removed ' + r.voided + ' redundant check-in credit(s).</div>';
+  loadAdmin();
+}
+async function scanAhdDoubleCount(){
+  var out = document.getElementById("ahd-dc-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Checking for double-counted hours…</p>';
+  var r;
+  try{ r = await call('ahdDoubleCountReport', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't run the check."); return; }
+  if (!r.cases.length){
+    out.innerHTML = '<div class="msg ok" style="display:block">No double-counted AHD points — nobody was credited twice for the same hour.</div>';
+    return;
+  }
+  var rows = r.cases.map(function(c){
+    return '<tr><td class="mono" style="font-size:10.5px">' + c.date + '</td><td>' + c.name +
+      '<div style="font-size:9.5px;color:var(--faint)">PGY-' + c.pgy + ' · ' + c.hour + '</div></td>' +
+      '<td class="mono" style="text-align:center">' + c.credits + '&times;</td></tr>';
+  }).join("");
+  out.innerHTML =
+    '<div class="eyebrow" style="margin-top:14px">' + r.cases.length + ' double-counted hour(s) · ' + r.extraPoints + ' extra point(s)</div>' +
+    '<p class="sub" style="font-size:12px">These residents checked into two copies of the same AHD hour, so they received an extra conference point each. Half-day compliance is unaffected.</p>' +
+    '<table class="roster-tbl"><tr><th>Date</th><th>Resident</th><th>Credits</th></tr>' + rows + '</table>';
+  var btn = document.createElement("button");
+  btn.className = "btn btn-primary"; btn.style.marginTop = "12px";
+  btn.textContent = "Remove " + r.extraPoints + " redundant point(s)";
+  btn.onclick = function(){
+    if (confirm("Void " + r.extraPoints + " redundant AHD credit(s)? Each resident keeps their earliest check-in for the hour — attendance is preserved, only the duplicate point is removed."))
+      ahdDoubleCountFixUI();
+  };
+  out.appendChild(btn);
+}
+async function ahdDoubleCountFixUI(){
+  var r;
+  try{ r = await call('ahdDoubleCountFix', TOKEN); }
+  catch(e){ toast(e.message); return; }
+  document.getElementById("ahd-dc-out").innerHTML =
+    '<div class="msg ok" style="display:block">Removed ' + r.voided + ' redundant credit(s). Each resident kept their original check-in.</div>';
+  loadAdmin();
+}
 async function scanDuplicates(){
   var out = document.getElementById("dup-out");
   out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning…</p>';
@@ -2199,7 +2378,7 @@ async function bulkAward(){
 /* tally */
 function renderTally(){
   var rows = ADMIN_DATA.tally;
-  var html = '<table class="roster-tbl"><tr><th>Class</th><th>Resident</th><th>House</th><th>Points</th><th>AHD ½</th><th>AHD %</th></tr>';
+  var html = '<table class="roster-tbl"><tr><th>Class</th><th>Resident</th><th>House</th><th>Points</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = 0;
   rows.forEach(function(r){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
@@ -2224,6 +2403,10 @@ function downloadCsv(filename, csv){
 }
 async function tallyDownload(){
   try{ var r = await call('exportTally', TOKEN); downloadCsv(r.filename, r.csv); }
+  catch(e){ toast(e.message); }
+}
+async function complianceDownload(){
+  try{ var r = await call('exportCompliance', TOKEN); downloadCsv(r.filename, r.csv); }
   catch(e){ toast(e.message); }
 }
 function pointomaticPreview(){
