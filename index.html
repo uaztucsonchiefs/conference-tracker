@@ -222,9 +222,9 @@ label.fld{display:block;font-size:11px;font-weight:700;color:var(--muted);letter
 .flag-item .fr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .flag-item .who{font-weight:700;font-size:13px}
 .flag-item .why{font-family:var(--mono);font-size:10px;color:var(--adobe);margin-top:4px;letter-spacing:.02em;line-height:1.7}
-.review-shots{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0 2px}
-.review-shot{max-width:116px;max-height:150px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);transition:opacity .25s;display:block}
-.shot-link{display:inline-block;line-height:0}
+.review-shots{display:flex;flex-wrap:wrap;gap:10px;margin:9px 0 2px;max-height:520px;overflow-y:auto;padding:2px}
+.review-shot{max-width:340px;max-height:460px;width:100%;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);transition:opacity .25s;display:block;cursor:zoom-in}
+.shot-link{display:inline-block;line-height:0;flex:0 1 340px}
 .shot-link.shot-fallback{line-height:normal;font-family:var(--mono);font-size:10px;color:var(--saguaro-d);text-decoration:none;border-bottom:1px solid #CBE0D2}
 .qbtns{display:flex;gap:8px;margin-top:9px}
 .qbtn{flex:1;border-radius:7px;border:1px solid var(--line);background:var(--panel);color:var(--muted);
@@ -744,7 +744,8 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
 
   <div class="card">
     <div class="eyebrow" style="color:var(--adobe)">Review queue</div>
-    <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it.</p>
+    <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it. Submissions whose screenshot looks reused (dated well before submission) are flagged and held back from bulk approve.</p>
+    <button class="btn btn-ghost" style="margin-bottom:6px" onclick="bulkApproveUI()">Approve all Q-credit submissions</button>
     <div id="a-flags"></div>
     <p class="sub hide" id="a-noflags" style="text-align:center;padding:6px 0">No entries awaiting review.</p>
   </div>
@@ -762,9 +763,18 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadAhdCheck()">Scan for partial AHD attendance</button>
     <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdDupes()">Scan for duplicate AHD hours</button>
     <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdDoubleCount()">Scan for double-counted AHD points</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="ahdDiagnose()">Diagnose AHD dates (why some don't count)</button>
     <div id="ahd-out"></div>
     <div id="ahd-dup-out"></div>
     <div id="ahd-dc-out"></div>
+    <div id="ahd-diag-out"></div>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow" style="color:var(--adobe)">Check-in integrity · shared devices</div>
+    <p class="sub">One phone checking in several different residents for the same session is the signature of code-sharing. Live check-ins from a shared device are already flagged into the Review queue automatically; this scans the whole term (including anything the live check missed) and shows who turns up on a shared device repeatedly.</p>
+    <button class="btn btn-ghost" style="margin-top:10px" onclick="loadDeviceIntegrity()">Scan for shared-device check-ins</button>
+    <div id="dev-out"></div>
   </div>
 
   <div class="card">
@@ -839,7 +849,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-07-31";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-01";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -1379,7 +1389,7 @@ function qFilePicked(inp){
   inp.value = "";                       // reset so the same file can be re-picked and more can be added later
   files.forEach(function(f){
     if (f.size > 25*1024*1024){ toast("Skipped " + f.name + " — over 25 MB."); return; }
-    var im = { id: ++qImgSeq, name: f.name, pending: true, b64: null, mediaType: null, sizeLabel: "" };
+    var im = { id: ++qImgSeq, name: f.name, pending: true, b64: null, mediaType: null, sizeLabel: "", lastModified: f.lastModified || 0 };
     qImages.push(im);
     renderQFiles();
     compressImageFile(f).then(function(out){
@@ -1418,6 +1428,7 @@ async function qSubmit(){
   try{
     res = await call('qSubmit', {email:em, confId:confId,
       images: ready.map(function(im){ return {b64: im.b64, mediaType: im.mediaType}; }),
+      shotDates: ready.map(function(im){ return im.lastModified || 0; }),
       b64: ready[0].b64, mediaType: ready[0].mediaType,   // back-compat if an older cached backend is still live
       deviceId:deviceId()});
   }catch(e){
@@ -1825,18 +1836,29 @@ function renderAdmin(){
     wk.appendChild(g);
   });
 
-  /* bulk + export selectors */
-  ["bulk-conf","exp-conf"].forEach(function(id){
-    var sel = document.getElementById(id);
-    var keep = sel.value;
-    sel.innerHTML = "";
+  /* bulk-award selector — excludes Q-credit conferences (those earn credit via
+     question submission + review, never a blanket award) */
+  (function(){
+    var sel = document.getElementById("bulk-conf"); if (!sel) return;
+    var keep = sel.value; sel.innerHTML = "";
+    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28) && !c.qEligible; }).forEach(function(c){
+      var o = document.createElement("option");
+      o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
+      sel.appendChild(o);
+    });
+    if (keep) sel.value = keep;
+  })();
+  /* export selector — all conferences */
+  (function(){
+    var sel = document.getElementById("exp-conf"); if (!sel) return;
+    var keep = sel.value; sel.innerHTML = "";
     D.conferences.filter(function(c){ return inWindow(c.date, 56, 28); }).forEach(function(c){
       var o = document.createElement("option");
       o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
       sel.appendChild(o);
     });
     if (keep) sel.value = keep;
-  });
+  })();
 
   /* roster checkboxes */
   var br = document.getElementById("bulk-roster");
@@ -1980,6 +2002,18 @@ async function resolveFlagUI(logId, approve){
   try{ await call('resolveFlag', TOKEN, logId, approve); }catch(e){ toast(e.message); return; }
   loadAdmin();
 }
+async function bulkApproveUI(){
+  var n = (ADMIN_DATA && ADMIN_DATA.flags) ? ADMIN_DATA.flags.length : 0;
+  if (!n){ toast("Nothing pending to approve."); return; }
+  if (!confirm("Approve all pending Q-credit (questions-for-credit) submissions? Submissions flagged as a possible reused screenshot — and any flagged check-ins — are left for you to review individually.")) return;
+  var r;
+  try{ r = await call('bulkApproveFlags', TOKEN); }catch(e){ toast(e.message); return; }
+  var extra = "";
+  if (r.held) extra += " · " + r.held + " held (screenshot-date flag)";
+  if (r.otherLeft) extra += " · " + r.otherLeft + " flagged check-in(s) left for review";
+  notify("Approved " + r.approved + " Q-credit submission(s)" + extra + ".");
+  loadAdmin();
+}
 async function loadPeacReview(){
   var out = document.getElementById("peac-rev-out");
   out.innerHTML = '<p class="sub" style="margin-top:10px">Loading…</p>';
@@ -2120,6 +2154,102 @@ async function ahdDupeRemoveUI(){
   catch(e){ toast(e.message); return; }
   document.getElementById("ahd-dup-out").innerHTML =
     '<div class="msg ok" style="display:block">Removed ' + r.deleted + ' duplicate AHD listing(s). Sign-ins were not affected.</div>';
+  loadAdmin();
+}
+async function ahdDiagnose(){
+  var out = document.getElementById("ahd-diag-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Inspecting AHD dates…</p>';
+  var r;
+  try{ r = await call('ahdDiagnostic', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't run diagnostic."); return; }
+  if (!r.dates.length){
+    out.innerHTML = '<div class="msg warn" style="display:block">No AHD-related listings found at all. The early AHDs may be recorded with no "AHD" in the type or title — check the Conferences sheet for those dates.</div>';
+    return;
+  }
+  out.innerHTML = '<div class="eyebrow" style="margin-top:14px">' + r.totalCounting + ' date(s) counting as half-days: ' + (r.countingDates.join(", ") || "none") + '</div>';
+  r.dates.forEach(function(dd){
+    var d = document.createElement("div");
+    d.className = "flag-item";
+    d.style.borderLeftColor = dd.counts ? "var(--saguaro)" : (dd.excluded ? "var(--faint)" : "var(--brick)");
+    var rows = dd.listings.map(function(x){
+      return '<tr><td class="mono" style="font-size:10px">' + (x.time||'—') + '</td>' +
+        '<td>' + x.type + (x.title && x.title!==x.type ? ' — ' + x.title : '') +
+        (x.status==='Cancelled' ? ' <span style="color:var(--brick)">(cancelled)</span>' : '') + '</td>' +
+        '<td class="mono" style="text-align:center;font-size:10px">' + (x.isAhdType ? 'AHD' : x.type.slice(0,8)) + '</td>' +
+        '<td class="mono" style="text-align:center;font-size:10px">' + (x.hourDigit || '–') + '</td>' +
+        '<td class="mono" style="text-align:right;font-size:10px">' + x.signins + '</td></tr>';
+    }).join("");
+    d.innerHTML =
+      '<div class="fr"><span class="who">' + dd.date + '</span>' +
+      '<span class="chip ' + (dd.counts?'ok':(dd.excluded?'':'warn')) + '" style="font-size:9px;padding:3px 8px">' + (dd.counts?'COUNTS':(dd.excluded?'EXCLUDED':'NOT COUNTING')) + '</span>' +
+      '<span class="mono" style="margin-left:auto;font-size:9.5px;color:var(--faint)">slots: ' + (dd.slotsFound.join("/")||"none") + '</span></div>' +
+      '<div class="why" style="color:' + (dd.counts?'var(--saguaro-d)':'var(--adobe)') + '">' + dd.reason + '</div>' +
+      '<table class="roster-tbl" style="margin-top:6px"><tr><th>Time</th><th>Listing</th><th>Type</th><th>Hr</th><th>Ins</th></tr>' + rows + '</table>';
+    // Offer the one-click relabel only where it's safe (3 AHD-ish live listings, not already counting)
+    var liveAhdish = dd.listings.filter(function(x){ return x.status!=='Cancelled'; }).length;
+    if (!dd.counts && !dd.excluded && liveAhdish === 3){
+      var fix = document.createElement("button");
+      fix.className = "mini-btn"; fix.style.cssText = "margin-top:8px";
+      fix.textContent = "Relabel as AHD Hour 1/2/3 (by time) — keeps all check-ins";
+      fix.onclick = function(){
+        if (confirm("Relabel the 3 listings on " + dd.date + " as AHD — Hour 1/2/3 in time order? Check-ins are preserved; this just makes the date count."))
+          ahdNormalizeUI(dd.date);
+      };
+      d.appendChild(fix);
+    }
+    out.appendChild(d);
+  });
+}
+async function ahdNormalizeUI(dateStr){
+  var r;
+  try{ r = await call('ahdNormalizeDate', TOKEN, dateStr); }
+  catch(e){ toast(e.message); return; }
+  if (!r.ok){
+    toast(r.reason==='need-three' ? ("That date has " + r.found + " AHD listing(s), not 3 — add the missing hour(s) first.") : "Couldn't relabel that date.");
+    return;
+  }
+  notify("Relabeled " + dateStr + " — it should now count as a half-day.");
+  ahdDiagnose(); loadAdmin();
+}
+async function loadDeviceIntegrity(){
+  var out = document.getElementById("dev-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning check-ins…</p>';
+  var r;
+  try{ r = await call('deviceIntegrityReport', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't scan."); return; }
+  if (!r.events.length){
+    out.innerHTML = '<div class="msg ok" style="display:block">No shared-device check-ins found — every session\'s check-ins came from distinct devices.</div>';
+    return;
+  }
+  var html = '<div class="eyebrow" style="margin-top:14px">' + r.events.length + ' session(s) with a shared device</div>';
+  if (r.repeatOffenders.length){
+    html += '<p class="sub" style="font-size:12px;margin-bottom:6px"><strong>Repeat pattern</strong> (on a shared device 2+ times):</p>';
+    html += '<table class="roster-tbl"><tr><th>Resident</th><th style="text-align:right">Shared-device check-ins</th></tr>' +
+      r.repeatOffenders.map(function(x){ return '<tr><td>' + x.name + ' <span class="mono" style="font-size:9.5px;color:var(--faint)">PGY-' + x.pgy + '</span></td><td class="mono" style="text-align:right;color:var(--adobe)">' + x.shared + '</td></tr>'; }).join("") + '</table>';
+  }
+  html += '<div class="eyebrow" style="margin-top:12px">Sessions</div>';
+  html += '<table class="roster-tbl"><tr><th>Date</th><th>Conference · residents on one device</th><th>#</th></tr>' +
+    r.events.map(function(e){
+      return '<tr><td class="mono" style="font-size:10.5px">' + (e.date||'—') + '</td><td>' + e.conf +
+        '<div style="font-size:9.5px;color:var(--faint)">' + e.residents.join(", ") + '</div></td>' +
+        '<td class="mono" style="text-align:center">' + e.count + '</td></tr>';
+    }).join("") + '</table>';
+  out.innerHTML = html;
+  var btn = document.createElement("button");
+  btn.className = "btn btn-ghost"; btn.style.marginTop = "12px";
+  btn.textContent = "Flag these for review";
+  btn.onclick = function(){
+    if (confirm("Flag all shared-device check-ins into the Review queue? This includes the device owner (who was likely present) — you'll approve the legit one and deny the shared ones there. Nothing is auto-denied."))
+      deviceFanoutFlagUI();
+  };
+  out.appendChild(btn);
+}
+async function deviceFanoutFlagUI(){
+  var r;
+  try{ r = await call('deviceFanoutFlag', TOKEN); }catch(e){ toast(e.message); return; }
+  notify("Flagged " + r.flagged + " check-in(s) into the Review queue.");
   loadAdmin();
 }
 async function scanCheckinDupes(){
@@ -2368,6 +2498,7 @@ async function bulkAward(){
   if (!emails.length) return;
   var r;
   try{ r = await call('bulkAward', TOKEN, confId, emails, action); }catch(e){ toast(e.message); return; }
+  if (r && r.ok === false){ toast(r.message || "That conference can't be bulk-awarded."); return; }
   var ok = document.getElementById("bulk-ok");
   ok.textContent = (action==="Excused" ? "Marked " + r.n + " resident(s) excused." : "Credit awarded to " + r.n + " resident(s).");
   ok.style.display = "block"; setTimeout(function(){ ok.style.display="none"; }, 4000);
@@ -2376,17 +2507,28 @@ async function bulkAward(){
 }
 
 /* tally */
+function classLabelJS(pgy){
+  var raw = String(pgy==null?"":pgy).trim();
+  var s = raw.toUpperCase().replace(/^PGY[-\s]?/,"");
+  var map = {I:1, II:2, III:3, IV:4, V:5};
+  var n = map[s] != null ? map[s] : parseInt(s,10);
+  return (n>=1 && n<=8) ? "PGY-"+n : (raw || "Other");
+}
 function renderTally(){
   var rows = ADMIN_DATA.tally;
-  var html = '<table class="roster-tbl"><tr><th>Class</th><th>Resident</th><th>House</th><th>Points</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
-  var lastPgy = 0;
-  rows.forEach(function(r){
+  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Points</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
+  var lastPgy = null;
+  rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
       : '<span class="' + (r.ahdPct >= 50 ? 'st-ok' : 'st-m') + '">' + r.ahdPct + '%</span>';
-    html += '<tr><td class="pgy">' + (r.pgy!==lastPgy ? "PGY-"+r.pgy : "") + '</td><td>' + r.last + ', ' + r.first +
+    var showClass = (String(r.pgy) !== String(lastPgy));
+    html += '<tr class="tally-row" onclick="toggleResidentDetail(' + i + ')" style="cursor:pointer">' +
+      '<td class="mono" id="tr-caret-' + i + '" style="color:var(--faint);text-align:center">▸</td>' +
+      '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
       '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) +
       '</td><td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
+    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="6" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
   });
   html += '</table>';
@@ -2396,6 +2538,24 @@ function renderTally(){
     return '<span class="house-chip">' + h + ' <b>' + houseTotals[h].toFixed(0) + '</b></span>';
   }).join("") + '</div>';
   document.getElementById("tally-out").innerHTML = html;
+}
+async function toggleResidentDetail(i){
+  var row = document.getElementById("tr-detail-"+i), caret = document.getElementById("tr-caret-"+i);
+  if (!row.classList.contains("hide")){ row.classList.add("hide"); caret.textContent = "▸"; return; }
+  var body = document.getElementById("tr-detail-body-"+i);
+  body.innerHTML = '<span class="sub" style="padding:6px;display:block">Loading…</span>';
+  row.classList.remove("hide"); caret.textContent = "▾";
+  var email = ADMIN_DATA.tally[i].email, r;
+  try{ r = await call('residentDetail', TOKEN, email); }
+  catch(e){ body.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok || !r.conferences.length){
+    body.innerHTML = '<span class="sub" style="padding:6px;display:block">No conferences recorded yet.</span>'; return;
+  }
+  body.innerHTML = '<div style="padding:6px 6px 3px;font-weight:700;font-size:11px">' + r.total + ' conference' + (r.total===1?'':'s') + ' attended</div>' +
+    '<table class="roster-tbl" style="margin:0 0 4px">' + r.conferences.map(function(c){
+      return '<tr><td class="mono" style="font-size:10px;width:82px;color:var(--muted)">' + (c.date||"—") + '</td><td>' + c.label +
+        '</td><td class="mono" style="font-size:9.5px;text-align:right;color:var(--faint)">' + (c.status==="Present"?"":c.status) + '</td></tr>';
+    }).join("") + '</table>';
 }
 function downloadCsv(filename, csv){
   var url = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
