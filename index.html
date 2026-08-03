@@ -187,8 +187,8 @@ label.fld{display:block;font-size:11px;font-weight:700;color:var(--muted);letter
 .qr-holder{display:flex;justify-content:center;margin:12px 0 8px}
 #qrbox{background:#fff;padding:11px;border-radius:11px;border:1px solid var(--line)}
 .pres-meta{text-align:center;font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.06em;line-height:1.8}
-.feed{list-style:none;margin-top:8px}
-.feed li{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line-soft);font-size:13px;animation:vin .22s ease}
+.feed{list-style:none;margin-top:8px;max-height:46vh;overflow-y:auto;padding-right:4px}
+.feed li{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line-soft);font-size:13px}
 .feed li:last-child{border-bottom:none}
 .feed .dot{width:7px;height:7px;border-radius:50%;background:var(--saguaro);flex-shrink:0}
 .feed .dot.flag{background:var(--adobe)}
@@ -641,7 +641,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
 
   <div class="card">
     <div class="eyebrow">Bulk credit award</div>
-    <p class="sub">Award credit directly — for bonus events, speaker panels, or attendance collected on paper.</p>
+    <p class="sub">Award credit directly — for bonus events, speaker panels, or attendance collected on paper. For a Q-credit conference (Grand Rounds/AHD), pick it here and choose the <strong>Q-credit</strong> action to award residents who submitted questions by email.</p>
     <label class="fld">Conference</label>
     <select id="bulk-conf"></select>
     <label class="fld">Paste recipients (optional)</label>
@@ -653,6 +653,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <label class="fld">Action</label>
     <select id="bulk-action">
       <option value="Manual Credit">Award credit</option>
+      <option value="Q-Credit">Q-credit (questions submitted by email/paper)</option>
       <option value="Excused">Mark excused (nights, vacation, away)</option>
     </select>
     <div style="margin-top:12px">
@@ -849,7 +850,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-01";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-03";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -1732,12 +1733,14 @@ async function pollPresenter(){
     document.getElementById("p-secs").textContent = Math.ceil(msLeft/1000);
   }, 200);
   var ul = document.getElementById("p-feed");
+  var savedScroll = ul.scrollTop;                 // keep the presenter's place across polls
   ul.innerHTML = "";
   st.recent.forEach(function(l){
     var li = document.createElement("li");
-    li.innerHTML = '<span class="dot' + (l.flagged?' flag':'') + '"></span><span class="who">' + l.name + '</span><span class="cls">PGY-' + l.pgy + '</span><span class="tm">' + l.time + '</span>';
+    li.innerHTML = '<span class="dot' + (l.flagged?' flag':'') + '"></span><span class="who">' + l.name + '</span><span class="cls">' + classLabelJS(l.pgy) + '</span><span class="tm">' + l.time + '</span>';
     ul.appendChild(li);
   });
+  ul.scrollTop = savedScroll;
   document.getElementById("p-count").textContent = "· " + st.count + " recorded";
 }
 
@@ -1841,9 +1844,9 @@ function renderAdmin(){
   (function(){
     var sel = document.getElementById("bulk-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
-    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28) && !c.qEligible; }).forEach(function(c){
+    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28); }).forEach(function(c){
       var o = document.createElement("option");
-      o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
+      o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title + (c.qEligible ? "  · Q-credit" : "");
       sel.appendChild(o);
     });
     if (keep) sel.value = keep;
@@ -2500,7 +2503,9 @@ async function bulkAward(){
   try{ r = await call('bulkAward', TOKEN, confId, emails, action); }catch(e){ toast(e.message); return; }
   if (r && r.ok === false){ toast(r.message || "That conference can't be bulk-awarded."); return; }
   var ok = document.getElementById("bulk-ok");
-  ok.textContent = (action==="Excused" ? "Marked " + r.n + " resident(s) excused." : "Credit awarded to " + r.n + " resident(s).");
+  ok.textContent = (action==="Excused" ? "Marked " + r.n + " resident(s) excused."
+    : action==="Q-Credit" ? "Q-credit awarded to " + r.n + " resident(s)."
+    : "Credit awarded to " + r.n + " resident(s).");
   ok.style.display = "block"; setTimeout(function(){ ok.style.display="none"; }, 4000);
   document.getElementById("bulk-paste").value = "";
   loadAdmin();
