@@ -585,6 +585,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <label class="fld">Password</label>
     <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="new-password">
     <div class="msg err" id="lg-err">Incorrect email or password.</div>
+    <label class="attest" style="margin-top:12px"><input type="checkbox" id="lg-remember"><span>Keep me signed in on this device (30 days). Only use this on your own phone or computer, never a shared one.</span></label>
     <div style="margin-top:13px">
       <button class="btn btn-primary" onclick="doLogin()">Sign in</button>
     </div>
@@ -850,7 +851,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-03";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-04";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -923,7 +924,7 @@ function confLabel(type, title){
 /* ============ STATE ============ */
 var BOOT = null;              /* bootstrap payload */
 var currentResident = null;   /* {first,last,pgy,email} */
-var TOKEN = sessionStorage.getItem('trk_token') || null;
+var TOKEN = localStorage.getItem('trk_token') || sessionStorage.getItem('trk_token') || null;
 var presenterConf = null;
 var presenterTimer = null;
 var ADMIN_DATA = null;
@@ -1004,11 +1005,13 @@ function go(btn){
 async function doLogin(){
   var em = document.getElementById("lg-email").value.trim().toLowerCase();
   var pw = document.getElementById("lg-pass").value;
+  var remember = document.getElementById("lg-remember").checked;
   try{
-    var r = await call('adminLogin', em, pw);
+    var r = await call('adminLogin', em, pw, remember);
     if (r.ok){
-      TOKEN = r.token; sessionStorage.setItem('trk_token', TOKEN);
-      ADMIN = true;
+      TOKEN = r.token; ADMIN = true;
+      if (remember){ localStorage.setItem('trk_token', TOKEN); sessionStorage.removeItem('trk_token'); }
+      else { sessionStorage.setItem('trk_token', TOKEN); localStorage.removeItem('trk_token'); }
       document.getElementById("lg-err").style.display = "none";
       document.getElementById("lg-pass").value = "";
       go({dataset:{v:"admin"}});
@@ -1022,8 +1025,11 @@ async function doLogin(){
   }catch(e){ document.getElementById("lg-err").style.display = "block"; }
 }
 function doLogout(){
-  TOKEN = null; ADMIN = false; sessionStorage.removeItem('trk_token');
+  if (TOKEN){ try{ call('logout', TOKEN); }catch(e){} }   // revoke server-side too
+  TOKEN = null; ADMIN = false;
+  localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token');
   stopPresenterPolling();
+  renderTabs("resident");
   go({dataset:{v:"resident"}});
 }
 document.addEventListener("keydown", function(e){
@@ -1049,6 +1055,14 @@ async function boot(){
   try{ BOOT = await call('bootstrap'); }
   catch(e){ BOOT = {todayConfs:[], liveConf:null, qEligible:[], webAppUrl:''}; }
   applyConfigDefaults();
+  // Restore a remembered chief session on this device (opt-in "keep me signed in").
+  if (TOKEN){
+    try{
+      var v = await call('validateSession', TOKEN);
+      if (v && v.ok){ ADMIN = true; renderTabs("resident"); }
+      else { TOKEN = null; localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token'); }
+    }catch(e){}
+  }
   qOptions();
 }
 /* Pull year/contact settings from the backend so nothing is hardcoded in the
