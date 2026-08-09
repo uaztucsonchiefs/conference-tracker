@@ -585,7 +585,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <label class="fld">Password</label>
     <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="new-password">
     <div class="msg err" id="lg-err">Incorrect email or password.</div>
-    <label class="attest" style="margin-top:12px"><input type="checkbox" id="lg-remember"><span>Keep me signed in on this device (30 days). Only use this on your own phone or computer, never a shared one.</span></label>
+    <label class="attest" style="margin-top:12px"><input type="checkbox" id="lg-remember" checked><span>Keep me signed in on this device for 30 days (on by default). <strong>Uncheck this on a shared or public computer</strong> — like a podium PC — so the next person can't reach the chief tools.</span></label>
     <div style="margin-top:13px">
       <button class="btn btn-primary" onclick="doLogin()">Sign in</button>
     </div>
@@ -627,7 +627,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div class="card">
-    <div class="eyebrow">Check-ins this session <span style="color:var(--saguaro-d)" id="p-count"></span></div>
+    <div class="eyebrow">Check-ins this session <span style="color:var(--saguaro-d)" id="p-count"></span><span id="p-status" style="float:right;font-weight:600;display:none"></span></div>
     <ul class="feed" id="p-feed"></ul>
   </div>
 </section>
@@ -781,12 +781,16 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
 
   <div class="card">
     <div class="eyebrow">Credit totals · House Cup tally</div>
-    <p class="sub">One point per conference attended (each AHD hour is its own point). The AHD columns track the program requirement separately: a half-day counts only when all three hours are attended, with a goal of ≥50% of offered half-days.</p>
+    <p class="sub">One conference credit per conference attended. AHD is separate: attending all three hours of an AHD earns one half-day credit (the hours don't each count as a conference credit); attending only some hours counts each attended hour as one conference credit. Goal is ≥50% of offered half-days. Tap any resident to see their conferences, or print their report.</p>
     <div id="tally-out"></div>
     <div class="export-grid">
       <button class="exp-btn" onclick="tallyDownload()">
         <div class="t">Export totals CSV</div>
-        <div class="s">PER RESIDENT · CLASS · HOUSE<br>ONE POINT PER CONFERENCE</div>
+        <div class="s">PER RESIDENT · CLASS · HOUSE<br>CONFERENCE CREDITS + AHD</div>
+      </button>
+      <button class="exp-btn" onclick="printAllReports()">
+        <div class="t">Print attendance reports</div>
+        <div class="s">ONE PAGE PER RESIDENT<br>OPENS PRINT DIALOG</div>
       </button>
       <button class="exp-btn" onclick="pointomaticPreview()">
         <div class="t">Sync to Point-o-matic</div>
@@ -851,7 +855,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-04";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-09";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -972,6 +976,19 @@ function tickClock(){
 }
 setInterval(tickClock, 1000); tickClock();
 
+// Mobile browsers suspend timers when the screen sleeps or the tab is backgrounded,
+// which is exactly what freezes the presenter counter over a 3-hour AHD. When the
+// page becomes visible again, force a refresh, restart polling if it stalled, and
+// re-take the screen wake lock (locks auto-release while hidden).
+document.addEventListener("visibilitychange", function(){
+  if (document.hidden) return;
+  var onPresenter = document.getElementById("v-presenter") && document.getElementById("v-presenter").classList.contains("on");
+  if (!onPresenter || !presenterConf || presenterAuthLost) return;
+  acquireWakeLock();
+  if (!presenterTimer) startPresenterPolling();   // loop had stopped — bring it back
+  else pollPresenter();                            // loop alive — refresh immediately
+});
+
 /* ============ NAV + AUTH ============ */
 var ADMIN = !!TOKEN;
 function renderTabs(active){
@@ -1052,16 +1069,13 @@ async function boot(){
     var qe = document.getElementById("q-email"); if (qe && !qe.value) qe.value = savedEmail;
   }
   renderTabs("resident");
-  try{ BOOT = await call('bootstrap'); }
+  try{ BOOT = await call('bootstrap', TOKEN || null); }
   catch(e){ BOOT = {todayConfs:[], liveConf:null, qEligible:[], webAppUrl:''}; }
   applyConfigDefaults();
-  // Restore a remembered chief session on this device (opt-in "keep me signed in").
-  if (TOKEN){
-    try{
-      var v = await call('validateSession', TOKEN);
-      if (v && v.ok){ ADMIN = true; renderTabs("resident"); }
-      else { TOKEN = null; localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token'); }
-    }catch(e){}
+  // Session was validated inside bootstrap (one round-trip). Restore chief mode if valid.
+  if (TOKEN && BOOT.session){
+    if (BOOT.session.ok){ ADMIN = true; renderTabs("resident"); }
+    else { TOKEN = null; localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token'); }
   }
   qOptions();
 }
@@ -1702,20 +1716,56 @@ function pFullscreen(){
   if (document.fullscreenElement) document.exitFullscreen();
   else if (el.requestFullscreen) el.requestFullscreen();
 }
+var wakeLock = null;
+async function acquireWakeLock(){
+  try{ if ('wakeLock' in navigator){ wakeLock = await navigator.wakeLock.request('screen'); } }catch(e){}
+}
+function releaseWakeLock(){
+  try{ if (wakeLock){ wakeLock.release(); wakeLock = null; } }catch(e){}
+}
+function presenterStatus(state, msg){
+  var el = document.getElementById("p-status");
+  if (!el) return;
+  if (!state){ el.style.display = "none"; return; }
+  el.style.display = "";
+  el.textContent = msg;
+  el.style.color = state === "live" ? "var(--saguaro)" : state === "reconnect" ? "var(--adobe)" : "var(--brick)";
+}
 function startPresenterPolling(){
   stopPresenterPolling();
+  presenterAuthLost = false;
+  acquireWakeLock();                       // keep the screen awake while projecting
   pollPresenter();
   presenterTimer = setInterval(pollPresenter, 4000);
 }
 function stopPresenterPolling(){
   if (presenterTimer){ clearInterval(presenterTimer); presenterTimer = null; }
   if (ringAnim){ clearInterval(ringAnim); ringAnim = null; }
+  releaseWakeLock();
 }
+var presenterAuthLost = false;
+var pollMisses = 0;
 async function pollPresenter(){
   if (!presenterConf) return;
   var st;
-  try{ st = await call('presenterState', TOKEN, presenterConf); }
-  catch(e){ stopPresenterPolling(); toast(e.message); return; }
+  try{
+    st = await call('presenterState', TOKEN, presenterConf);
+  }catch(e){
+    // A genuine session loss can't be fixed by retrying — prompt re-login.
+    if (/sign in|session expired/i.test(e.message || "")){
+      presenterAuthLost = true;
+      stopPresenterPolling();
+      presenterStatus("expired", "Session expired — sign in again");
+      return;
+    }
+    // Transient blip / cold start / phone asleep: DON'T stop the loop. Show a
+    // quiet "reconnecting" note and let the next 4s tick recover on its own.
+    pollMisses++;
+    presenterStatus("reconnect", "Reconnecting…");
+    return;
+  }
+  if (pollMisses){ pollMisses = 0; }
+  presenterStatus("live", "● live");
   var c = (ADMIN_DATA ? ADMIN_DATA.conferences : []).filter(function(x){ return x.id===presenterConf; })[0];
   if (c){
     document.getElementById("p-title").textContent = c.type + " — " + c.title;
@@ -2570,11 +2620,106 @@ async function toggleResidentDetail(i){
   if (!r || !r.ok || !r.conferences.length){
     body.innerHTML = '<span class="sub" style="padding:6px;display:block">No conferences recorded yet.</span>'; return;
   }
-  body.innerHTML = '<div style="padding:6px 6px 3px;font-weight:700;font-size:11px">' + r.total + ' conference' + (r.total===1?'':'s') + ' attended</div>' +
+  body.innerHTML = '<div style="padding:6px 6px 3px;display:flex;align-items:center;gap:8px"><span style="font-weight:700;font-size:11px">' + r.total + ' conference' + (r.total===1?'':'s') + ' attended</span>' +
+    '<button class="mini-btn" style="margin-left:auto" onclick="printOneReport(\'' + email + '\')">Print report</button></div>' +
     '<table class="roster-tbl" style="margin:0 0 4px">' + r.conferences.map(function(c){
       return '<tr><td class="mono" style="font-size:10px;width:82px;color:var(--muted)">' + (c.date||"—") + '</td><td>' + c.label +
         '</td><td class="mono" style="font-size:9.5px;text-align:right;color:var(--faint)">' + (c.status==="Present"?"":c.status) + '</td></tr>';
     }).join("") + '</table>';
+}
+
+/* ---- printable attendance reports ---- */
+function reportHTML_(rp, meta){
+  var rows = (rp.conferences||[]).map(function(c){
+    var label = c.type + (c.title && c.title!==c.type ? " — " + c.title : "");
+    var basis = c.status==="Q-Credit" ? "questions" : c.status==="Manual Credit" ? "credited" : c.status==="PEAC-Credit" ? "PEAC" : c.source==="Email Q-credit" ? "questions" : "attended";
+    return '<tr><td>' + (c.date||"—") + '</td><td>' + label + '</td><td>' + basis + '</td></tr>';
+  }).join("");
+  var typeRows = (rp.confByType||[]).map(function(x){
+    return '<tr><td>' + x.type + '</td><td style="text-align:right">' + x.n + '</td></tr>';
+  }).join("");
+  var ex = rp.excused || {NF:0,ICU:0,Vacation:0};
+
+  // Conferences section
+  var confAdj = rp.hasRotations
+    ? '<tr><td><b>Adjusted for protected time</b></td><td><b>' + (rp.confAdjPct==null?"—":rp.confAdjPct+"%") + '</b> &nbsp;<span style="color:#777">(' + rp.confProtAttended + ' of ' + rp.confProtOffered + ' offered while protected)</span></td></tr>'
+    : '';
+  var confSection =
+    '<h2>Conferences</h2>' +
+    '<table class="meta"><tr><td><b>Total attended</b></td><td>' + rp.totalConf + '</td></tr>' + confAdj + '</table>' +
+    (typeRows ? '<table class="list" style="margin-top:6px"><thead><tr><th>By type</th><th style="text-align:right">Attended</th></tr></thead><tbody>' + typeRows + '</tbody></table>' : '');
+
+  // AHD section
+  var ahdRaw = rp.ahdOf ? (rp.ahdHalf + " / " + rp.ahdOf + " completed &nbsp;(" + (rp.ahdPct==null?"—":rp.ahdPct+"%") + ")") : "none offered yet";
+  var ahdAdj = rp.hasRotations && rp.ahdOf
+    ? '<tr><td><b>Adjusted for protected time</b></td><td><b>' + (rp.ahdAdjPct==null?"—":rp.ahdAdjPct+"%") + '</b> &nbsp;<span style="color:#777">(' + rp.ahdProtDone + ' of ' + rp.ahdProtOffered + ' offered while protected)</span></td></tr>'
+    : '';
+  var ahdSection =
+    '<h2>Academic Half-Days</h2>' +
+    '<table class="meta"><tr><td><b>Completed</b></td><td>' + ahdRaw + '</td></tr>' + ahdAdj + '</table>';
+
+  // Unprotected rotations note
+  var excusedSection = rp.hasRotations
+    ? '<p style="font-size:11px;color:#666;margin:12px 0 0"><b>Excused (unprotected rotations):</b> ' + rp.excusedTotal + ' sessions — Night Float ' + ex.NF + ' · ICU ' + ex.ICU + ' · Vacation ' + ex.Vacation + '. Adjusted rates exclude these, since conference and AHD are not protected on those rotations.</p>'
+    : '<p style="font-size:11px;color:#999;margin:12px 0 0;font-style:italic">Load the Rotations sheet to show attendance adjusted for night float, ICU, and vacation.</p>';
+
+  return '<section class="rpt">' +
+    '<div class="rpt-h"><div class="rpt-prog">University of Arizona &mdash; Tucson &middot; Internal Medicine Residency</div>' +
+    '<h1>Conference Attendance Report</h1></div>' +
+    '<table class="meta"><tr><td><b>Resident</b></td><td>' + rp.name + '</td><td><b>Class</b></td><td>' + rp.pgy + '</td></tr>' +
+    '<tr><td><b>House</b></td><td>' + (rp.house||"—") + '</td><td><b>Academic year</b></td><td>' + meta.year + '</td></tr></table>' +
+    confSection + ahdSection + excusedSection +
+    '<h2>Conference log (' + (rp.conferences?rp.conferences.length:0) + ')</h2>' +
+    (rows ? '<table class="list"><thead><tr><th>Date</th><th>Conference</th><th>Credit</th></tr></thead><tbody>' + rows + '</tbody></table>'
+          : '<p class="none">No conferences recorded yet.</p>') +
+    '<div class="rpt-f">Generated ' + meta.generated + ' from the Conference Tracker. AHD: all three hours = one completed half-day. Adjusted rates exclude conferences during night float, ICU, and vacation.</div>' +
+    '</section>';
+}
+function openPrint_(reports, meta){
+  var css = '<style>' +
+    '@media print{ .rpt{ page-break-after:always; } button{ display:none; } }' +
+    'body{ font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:#1a1a1a; margin:0; padding:0; }' +
+    '.bar{ position:sticky; top:0; background:#2A6F50; color:#fff; padding:10px 16px; display:flex; gap:10px; align-items:center; }' +
+    '.bar button{ font:inherit; padding:6px 14px; border:0; border-radius:6px; background:#fff; color:#2A6F50; font-weight:700; cursor:pointer; }' +
+    '.rpt{ max-width:720px; margin:0 auto; padding:26px 30px; }' +
+    '.rpt-prog{ font-size:11px; letter-spacing:.04em; text-transform:uppercase; color:#2A6F50; font-weight:700; }' +
+    'h1{ font-size:20px; margin:4px 0 16px; }' +
+    'h2{ font-size:13px; text-transform:uppercase; letter-spacing:.03em; color:#555; border-bottom:1px solid #ddd; padding-bottom:4px; margin:20px 0 8px; }' +
+    'table.meta{ width:100%; border-collapse:collapse; margin-bottom:8px; font-size:13px; }' +
+    'table.meta td{ padding:4px 6px; border:1px solid #e5e5e5; }' +
+    'table.meta td:nth-child(odd){ background:#f6f6f4; width:16%; }' +
+    'table.list{ width:100%; border-collapse:collapse; font-size:12.5px; }' +
+    'table.list th{ text-align:left; background:#f0f4f1; padding:5px 8px; border-bottom:2px solid #2A6F50; }' +
+    'table.list td{ padding:4px 8px; border-bottom:1px solid #eee; }' +
+    'table.list td:first-child{ font-variant-numeric:tabular-nums; color:#666; width:92px; }' +
+    'table.list td:last-child{ color:#666; width:80px; }' +
+    '.none{ color:#888; font-style:italic; }' +
+    '.rpt-f{ margin-top:20px; padding-top:10px; border-top:1px solid #ddd; font-size:10px; color:#999; }' +
+    '</style>';
+  var body = reports.map(function(rp){ return reportHTML_(rp, meta); }).join("");
+  var w = window.open("", "_blank");
+  if (!w){ toast("Allow pop-ups to print reports."); return; }
+  w.document.write('<html><head><title>Attendance Reports</title>' + css + '</head><body>' +
+    '<div class="bar"><button onclick="window.print()">Print</button><span>' + reports.length + ' report' + (reports.length===1?'':'s') + ' · ' + meta.year + '</span></div>' +
+    body + '</body></html>');
+  w.document.close(); w.focus();
+}
+async function printOneReport(email){
+  toast("Building report…");
+  var r;
+  try{ r = await call('residentReport', TOKEN, email); }
+  catch(e){ toast(e.message); return; }
+  if (!r || !r.ok){ toast("Couldn't build that report."); return; }
+  openPrint_([r.report], { year: r.year, generated: r.generated });
+}
+async function printAllReports(){
+  if (!confirm("Build a printable attendance report for every active resident? This opens one document with a page per resident.")) return;
+  toast("Building reports for all residents…");
+  var r;
+  try{ r = await call('allResidentReports', TOKEN); }
+  catch(e){ toast(e.message); return; }
+  if (!r || !r.ok || !r.reports.length){ toast("No reports to build."); return; }
+  openPrint_(r.reports, { year: r.year, generated: r.generated });
 }
 function downloadCsv(filename, csv){
   var url = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
