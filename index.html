@@ -637,7 +637,8 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   <div class="card" style="display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:13px">
     <span class="chip ok">SIGNED IN</span>
     <span class="mono" style="font-size:11px;color:var(--muted)">uaztucsonchiefs@gmail.com</span>
-    <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="doLogout()">Sign out</button>
+    <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="signOutEverywhere()">Sign out all devices</button>
+    <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button>
   </div>
 
   <div class="card">
@@ -649,7 +650,11 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <textarea id="bulk-paste" rows="3" placeholder="One per line — email, Last, First — or First Last"></textarea>
     <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="bulkMatch()">Match pasted list</button>
     <div class="msg warn" id="bulk-unmatched"></div>
-    <label class="fld">Residents</label>
+    <div class="fld" style="display:flex;align-items:center;gap:10px">
+      <span>Residents</span>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="bulkSelectAll(true)">Select all</button>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 10px" onclick="bulkSelectAll(false)">Clear</button>
+    </div>
     <div class="roster-list" id="bulk-roster"></div>
     <label class="fld">Action</label>
     <select id="bulk-action">
@@ -764,10 +769,12 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate. Cancelled and deleted AHDs never count toward the total, and neither do 7/2/2026 or the last two weeks of the year.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadAhdCheck()">Scan for partial AHD attendance</button>
     <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdDupes()">Scan for duplicate AHD hours</button>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdMerge()">Merge duplicate AHD hours → keep only Hour 1/2/3</button>
     <button class="btn btn-ghost" style="margin-top:8px" onclick="scanAhdDoubleCount()">Scan for double-counted AHD points</button>
     <button class="btn btn-ghost" style="margin-top:8px" onclick="ahdDiagnose()">Diagnose AHD dates (why some don't count)</button>
     <div id="ahd-out"></div>
     <div id="ahd-dup-out"></div>
+    <div id="ahd-merge-out"></div>
     <div id="ahd-dc-out"></div>
     <div id="ahd-diag-out"></div>
   </div>
@@ -1024,7 +1031,7 @@ async function doLogin(){
   var pw = document.getElementById("lg-pass").value;
   var remember = document.getElementById("lg-remember").checked;
   try{
-    var r = await call('adminLogin', em, pw, remember);
+    var r = await call('adminLogin', em, pw, remember, TOKEN || null);
     if (r.ok){
       TOKEN = r.token; ADMIN = true;
       if (remember){ localStorage.setItem('trk_token', TOKEN); sessionStorage.removeItem('trk_token'); }
@@ -1049,6 +1056,12 @@ function doLogout(){
   renderTabs("resident");
   go({dataset:{v:"resident"}});
 }
+async function signOutEverywhere(){
+  if (!confirm("Sign out of every device where you're signed in as a chief (including this one) and clear all saved sessions? You'll need to sign in again.")) return;
+  try{ var r = await call('signOutAllDevices', TOKEN); toast("Cleared " + (r.removed||0) + " saved session(s)."); }
+  catch(e){}
+  doLogout();
+}
 document.addEventListener("keydown", function(e){
   if (e.key==="Enter" && document.getElementById("v-login").classList.contains("on")) doLogin();
 });
@@ -1072,10 +1085,16 @@ async function boot(){
   try{ BOOT = await call('bootstrap', TOKEN || null); }
   catch(e){ BOOT = {todayConfs:[], liveConf:null, qEligible:[], webAppUrl:''}; }
   applyConfigDefaults();
-  // Session was validated inside bootstrap (one round-trip). Restore chief mode if valid.
-  if (TOKEN && BOOT.session){
-    if (BOOT.session.ok){ ADMIN = true; renderTabs("resident"); }
-    else { TOKEN = null; localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token'); }
+  // Session was validated inside bootstrap (one round-trip). Restore chief mode if
+  // valid. If bootstrap couldn't answer (transient/cold start), DON'T force a
+  // re-login — keep the token and try a direct validate; only a definite "invalid"
+  // clears it. (Forcing re-login here was creating extra sessions.)
+  if (TOKEN){
+    var sess = BOOT.session;
+    if (!sess){ try{ sess = await call('validateSession', TOKEN); }catch(e){ sess = null; } }
+    if (sess && sess.ok){ ADMIN = true; renderTabs("resident"); }
+    else if (sess && sess.ok === false){ TOKEN = null; localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token'); }
+    // sess === null → couldn't reach server; keep the token, retry on next load
   }
   qOptions();
 }
@@ -2223,6 +2242,44 @@ async function ahdDupeRemoveUI(){
     '<div class="msg ok" style="display:block">Removed ' + r.deleted + ' duplicate AHD listing(s). Sign-ins were not affected.</div>';
   loadAdmin();
 }
+async function scanAhdMerge(){
+  var out = document.getElementById("ahd-merge-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning every Thursday for duplicate hours…</p>';
+  var r;
+  try{ r = await call('ahdMergeReport', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't scan."); return; }
+  if (!r.groups.length){
+    out.innerHTML = '<div class="msg ok" style="display:block">Every AHD already has exactly one listing per hour. Nothing to merge.</div>';
+    return;
+  }
+  var rows = r.groups.map(function(g){
+    return '<tr><td class="mono" style="font-size:10.5px">' + g.date + '</td><td>' + g.hour + '</td>' +
+      '<td class="mono" style="text-align:center">' + g.copies + '&times;</td>' +
+      '<td class="mono" style="font-size:10px;color:var(--muted)">sign-ins: ' + g.signinsPerCopy.join(" / ") + '</td></tr>';
+  }).join("");
+  out.innerHTML =
+    '<div class="eyebrow" style="margin-top:14px">' + r.groups.length + ' hour(s) with duplicates · ' + r.extraListings + ' extra listing(s) to remove</div>' +
+    '<p class="sub">This keeps one listing per hour and <strong>moves every sign-in</strong> from the duplicate copies onto it. If a resident already has credit on the kept listing, the duplicate sign-in is voided (never double-counted). No attendance is lost.</p>' +
+    '<table class="roster-tbl"><tr><th>Date</th><th>Hour</th><th>Copies</th><th>Sign-ins per copy</th></tr>' + rows + '</table>';
+  var btn = document.createElement("button");
+  btn.className = "btn btn-primary"; btn.style.marginTop = "12px";
+  btn.textContent = "Merge to one listing per hour (remove " + r.extraListings + ")";
+  btn.onclick = function(){
+    if (confirm("Merge each Thursday down to Hour 1/2/3? Sign-ins on duplicate copies are moved onto the kept hour (duplicates for a resident already credited are voided, not double-counted). This removes " + r.extraListings + " extra listing(s). Continue?"))
+      ahdMergeApplyUI();
+  };
+  out.appendChild(btn);
+}
+async function ahdMergeApplyUI(){
+  var out = document.getElementById("ahd-merge-out");
+  out.innerHTML = '<p class="sub" style="margin-top:10px">Merging…</p>';
+  var r;
+  try{ r = await call('ahdMergeApply', TOKEN); }
+  catch(e){ out.innerHTML = ""; toast(e.message); return; }
+  out.innerHTML = '<div class="msg ok" style="display:block">Merged ' + r.mergedHours + ' hour(s): ' + r.moved + ' sign-in(s) moved, ' + r.voided + ' duplicate(s) voided, ' + r.removed + ' listing(s) removed. Every Thursday now has one listing per hour.</div>';
+  loadAdmin();
+}
 async function ahdDiagnose(){
   var out = document.getElementById("ahd-diag-out");
   out.innerHTML = '<p class="sub" style="margin-top:10px">Inspecting AHD dates…</p>';
@@ -2531,6 +2588,15 @@ async function importCommit(){
 function bulkCount(){
   var n = document.querySelectorAll("#bulk-roster input:checked").length;
   document.getElementById("bulk-n").textContent = n;
+}
+function bulkSelectAll(state){
+  var boxes = document.querySelectorAll("#bulk-roster input[type=checkbox]");
+  Array.prototype.forEach.call(boxes, function(cb){
+    var line = cb.closest(".check-line");
+    if (line && line.style.display === "none") return;   // skip anything filtered out of view
+    cb.checked = state;
+  });
+  bulkCount();
 }
 function bulkMatch(){
   var raw = document.getElementById("bulk-paste").value;
