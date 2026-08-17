@@ -766,6 +766,24 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div class="card">
+    <div class="eyebrow" style="color:var(--sky)">Manual JH/PEAC award</div>
+    <p class="sub">For a resident who did the module but didn't upload. Awards a module credit for their <strong>current clinic week</strong> (required = 1 conference credit, optional = +1 bonus). Skips anyone who already has it.</p>
+    <label class="fld" style="margin-top:8px">Module</label>
+    <select id="peac-award-kind">
+      <option value="required">Required module (1 conference credit)</option>
+      <option value="optional">Optional module (+1 bonus credit)</option>
+    </select>
+    <div class="fld" style="display:flex;align-items:center;gap:10px;margin-top:8px">
+      <span>Residents</span>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="peacAwardSelectAll(true)">Select all</button>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 10px" onclick="peacAwardSelectAll(false)">Clear</button>
+    </div>
+    <div class="roster-list" id="peac-award-roster"></div>
+    <button class="btn btn-primary" style="margin-top:10px" onclick="peacAwardUI()">Award module credit to selected</button>
+    <div id="peac-award-out"></div>
+  </div>
+
+  <div class="card">
     <div class="eyebrow" style="color:var(--adobe)">AHD attendance check</div>
     <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate. Cancelled and deleted AHDs never count toward the total, and neither do 7/2/2026 or the last two weeks of the year.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadAhdCheck()">Scan for partial AHD attendance</button>
@@ -1973,6 +1991,16 @@ function renderAdmin(){
     l.innerHTML = '<input type="checkbox" value="' + r.email + '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">PGY-' + r.pgy + '</span>';
     br.appendChild(l);
   });
+  var pr = document.getElementById("peac-award-roster");
+  if (pr){
+    pr.innerHTML = "";
+    D.roster.forEach(function(r){
+      var l = document.createElement("label");
+      l.className = "check-line";
+      l.innerHTML = '<input type="checkbox" value="' + r.email + '"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span>';
+      pr.appendChild(l);
+    });
+  }
 
   /* flags */
   var holder = document.getElementById("a-flags");
@@ -2191,32 +2219,39 @@ async function loadAhdCheck(){
     out.innerHTML = '<div class="msg ok" style="display:block">No partial AHD attendance found across ' + r.datesChecked + ' half-day(s). Everyone either attended all three hours or none.</div>';
     return;
   }
-  out.innerHTML = '<div class="eyebrow" style="margin-top:14px">' + r.partials.length + ' partial attendance(s) across ' + r.datesChecked + ' half-day(s)</div>';
+  out.innerHTML = '<div class="eyebrow" style="margin-top:14px">' + r.partials.length + ' partial attendance(s) across ' + r.datesChecked + ' half-day(s)</div>' +
+    '<p class="sub">Tick the hour(s) the resident actually attended but forgot to scan, then <strong>Approve</strong> to credit them — three hours makes a complete half-day. <strong>Deny</strong> leaves it as is; the hours already attended still count as conference attendance.</p>';
   r.partials.forEach(function(p){
     var d = document.createElement("div");
     d.className = "flag-item";
+    var hours = p.missing.map(function(m){
+      return '<label class="check-line" style="padding:5px 2px"><input type="checkbox" checked data-conf="' + m.confId + '"> Credit ' + m.label + ' (missed scan)</label>';
+    }).join("");
     d.innerHTML =
-      '<div class="fr"><span class="who">' + p.name + '</span><span class="chip warn" style="font-size:9px;padding:3px 8px">PGY-' + p.pgy + '</span>' +
+      '<div class="fr"><span class="who">' + p.name + '</span><span class="chip warn" style="font-size:9px;padding:3px 8px">' + classLabelJS(p.pgy) + '</span>' +
       '<span class="mono" style="margin-left:auto;font-size:9.5px;color:var(--faint)">' + p.date + '</span></div>' +
-      '<div class="why">Attended ' + p.attended.join(" + ") + ' · missing ' + p.missing.map(function(m){ return m.label; }).join(" + ") +
-      ' — no half-day credit until all three hours are recorded.</div>';
+      '<div class="why">Attended ' + p.attended.join(" + ") + ' · missing ' + p.missing.map(function(m){ return m.label; }).join(" + ") + '</div>' +
+      '<div class="ahd-hours" style="margin:4px 0 2px">' + hours + '</div>';
     var q = document.createElement("div"); q.className = "qbtns";
-    var fix = document.createElement("button"); fix.className = "qbtn ok";
-    fix.textContent = "Credit missing " + (p.missing.length>1 ? "hours" : "hour") + " (" + p.missing.map(function(m){ return m.label; }).join(", ") + ")";
-    fix.onclick = function(){
-      if (confirm("Manually credit " + p.name + " for " + p.missing.map(function(m){ return m.label; }).join(" and ") + " on " + p.date + "?"))
-        ahdFixUI(p.email, p.missing.map(function(m){ return m.confId; }));
+    var approve = document.createElement("button"); approve.className = "qbtn ok"; approve.textContent = "Approve — credit selected";
+    approve.onclick = function(){
+      var picked = Array.prototype.map.call(d.querySelectorAll('.ahd-hours input:checked'), function(cb){ return cb.dataset.conf; });
+      if (!picked.length){ toast("Tick at least one hour, or use Deny."); return; }
+      ahdFixUI(p.email, picked, d);
     };
-    q.appendChild(fix); d.appendChild(q);
+    var deny = document.createElement("button"); deny.className = "qbtn no"; deny.textContent = "Deny — keep as conference credit";
+    deny.onclick = function(){ d.style.opacity = "0.5"; d.querySelectorAll("button,input").forEach(function(el){ el.disabled = true; }); };
+    q.appendChild(approve); q.appendChild(deny); d.appendChild(q);
     out.appendChild(d);
   });
 }
-async function ahdFixUI(email, confIds){
+async function ahdFixUI(email, confIds, card){
   var r;
   try{ r = await call('ahdFixCredit', TOKEN, email, confIds); }
   catch(e){ toast(e.message); return; }
-  notify("Credited " + r.credited + " hour(s) — half-day now complete.");
-  loadAhdCheck();
+  toast("Credited " + r.credited + " hour(s).");
+  if (card){ card.style.opacity = "0.5"; card.querySelectorAll("button,input").forEach(function(el){ el.disabled = true; });
+    var done = document.createElement("div"); done.className = "why"; done.style.color = "var(--saguaro-d)"; done.textContent = "✓ Credited — half-day complete if all three hours are now in."; card.appendChild(done); }
 }
 async function scanAhdDupes(){
   var out = document.getElementById("ahd-dup-out");
@@ -2607,8 +2642,27 @@ function bulkCount(){
   var n = document.querySelectorAll("#bulk-roster input:checked").length;
   document.getElementById("bulk-n").textContent = n;
 }
-function bulkSelectAll(state){
-  var boxes = document.querySelectorAll("#bulk-roster input[type=checkbox]");
+function peacAwardSelectAll(state){
+  var boxes = document.querySelectorAll("#peac-award-roster input[type=checkbox]");
+  Array.prototype.forEach.call(boxes, function(cb){
+    var line = cb.closest(".check-line");
+    if (line && line.style.display === "none") return;
+    cb.checked = state;
+  });
+}
+async function peacAwardUI(){
+  var emails = Array.prototype.map.call(document.querySelectorAll("#peac-award-roster input:checked"), function(cb){ return cb.value; });
+  if (!emails.length){ toast("Select at least one resident."); return; }
+  var kind = document.getElementById("peac-award-kind").value;
+  if (!confirm("Award the " + kind + " module credit for their current clinic week to " + emails.length + " resident(s)?")) return;
+  var r;
+  try{ r = await call('peacManualAward', TOKEN, emails, kind); }
+  catch(e){ toast(e.message); return; }
+  document.getElementById("peac-award-out").innerHTML =
+    '<div class="msg ok" style="display:block;margin-top:10px">Awarded ' + kind + ' module credit to ' + r.n + ' resident(s).</div>';
+  loadAdmin();
+}
+function bulkSelectAll(state){  var boxes = document.querySelectorAll("#bulk-roster input[type=checkbox]");
   Array.prototype.forEach.call(boxes, function(cb){
     var line = cb.closest(".check-line");
     if (line && line.style.display === "none") return;   // skip anything filtered out of view
@@ -2669,7 +2723,7 @@ function classLabelJS(pgy){
 }
 function renderTally(){
   var rows = ADMIN_DATA.tally;
-  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Points</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
+  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = null;
   rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
@@ -2680,8 +2734,9 @@ function renderTally(){
       '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
       '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) +
+      '</td><td class="mono">' + (r.amb||0) + '</td><td class="mono">' + (r.peac||0) +
       '</td><td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
-    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="6" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
+    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="8" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
   });
   html += '</table>';
@@ -2742,9 +2797,27 @@ function reportHTML_(rp, meta){
     '<h2>Academic Half-Days</h2>' +
     '<table class="meta"><tr><td><b>Completed</b></td><td>' + ahdRaw + '</td></tr>' + ahdAdj + '</table>';
 
+  // Ambulatory Half Day section
+  var ambRaw = rp.ambOffered ? (rp.ambAttended + " / " + rp.ambOffered + " attended &nbsp;(" + (rp.ambPct==null?"—":rp.ambPct+"%") + ")") : "none offered yet";
+  var ambAdj = rp.hasRotations && rp.ambOffered
+    ? '<tr><td><b>Adjusted for protected time</b></td><td><b>' + (rp.ambAdjPct==null?"—":rp.ambAdjPct+"%") + '</b> &nbsp;<span style="color:#777">(' + rp.ambProtAttended + ' of ' + rp.ambProtOffered + ' offered while protected)</span></td></tr>'
+    : '';
+  var ambSection =
+    '<h2>Ambulatory Half Day</h2>' +
+    '<table class="meta"><tr><td><b>Attended</b></td><td>' + ambRaw + '</td></tr>' + ambAdj + '</table>';
+
+  // JH/PEAC modules section
+  var peacPctTxt = rp.peacPct==null ? "—" : rp.peacPct+"%";
+  var peacSection =
+    '<h2>JH / PEAC Modules</h2>' +
+    '<table class="meta">' +
+    '<tr><td><b>Required completed</b></td><td>' + rp.peacReq + ' / ' + rp.peacBlocks + ' &nbsp;(' + peacPctTxt + ')</td>' +
+      '<td><b>Optional (bonus)</b></td><td>' + rp.peacOpt + '</td></tr></table>' +
+    '<p style="font-size:10.5px;color:#777;margin:4px 0 0">On-time module submissions (Fri midnight for interns, Sun for PGY-2/3 of the clinic week). Each required module is one conference credit; each optional module is a bonus credit.</p>';
+
   // Unprotected rotations note
   var excusedSection = rp.hasRotations
-    ? '<p style="font-size:11px;color:#666;margin:12px 0 0"><b>Excused (unprotected rotations):</b> ' + rp.excusedTotal + ' sessions — Night Float ' + ex.NF + ' · ICU ' + ex.ICU + ' · Vacation ' + ex.Vacation + '. Adjusted rates exclude these, since conference and AHD are not protected on those rotations.</p>'
+    ? '<p style="font-size:11px;color:#666;margin:12px 0 0"><b>Excused (unprotected rotations):</b> ' + rp.excusedTotal + ' sessions — Night Float ' + ex.NF + ' · ICU ' + ex.ICU + ' · Vacation ' + ex.Vacation + '. Adjusted rates exclude these, since conference/AHD/Amb are not protected on those rotations.</p>'
     : '<p style="font-size:11px;color:#999;margin:12px 0 0;font-style:italic">Load the Rotations sheet to show attendance adjusted for night float, ICU, and vacation.</p>';
 
   return '<section class="rpt">' +
@@ -2752,7 +2825,7 @@ function reportHTML_(rp, meta){
     '<h1>Conference Attendance Report</h1></div>' +
     '<table class="meta"><tr><td><b>Resident</b></td><td>' + rp.name + '</td><td><b>Class</b></td><td>' + rp.pgy + '</td></tr>' +
     '<tr><td><b>House</b></td><td>' + (rp.house||"—") + '</td><td><b>Academic year</b></td><td>' + meta.year + '</td></tr></table>' +
-    confSection + ahdSection + excusedSection +
+    confSection + ahdSection + ambSection + peacSection + excusedSection +
     '<h2>Conference log (' + (rp.conferences?rp.conferences.length:0) + ')</h2>' +
     (rows ? '<table class="list"><thead><tr><th>Date</th><th>Conference</th><th>Credit</th></tr></thead><tbody>' + rows + '</tbody></table>'
           : '<p class="none">No conferences recorded yet.</p>') +
