@@ -766,20 +766,22 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div class="card">
-    <div class="eyebrow" style="color:var(--sky)">Manual JH/PEAC award</div>
-    <p class="sub">For a resident who did the module but didn't upload. Awards a module credit for their <strong>current clinic week</strong> (required = 1 conference credit, optional = +1 bonus). Skips anyone who already has it.</p>
-    <label class="fld" style="margin-top:8px">Module</label>
+    <div class="eyebrow" style="color:var(--sky)">Manual JH/PEAC module award</div>
+    <p class="sub">Award a Hopkins module credit by block. Required = 1 conference credit; Optional = +1 bonus. Credits flow into the totals and the JH/PEAC column. Prelims are excluded (no ambulatory modules). Skips anyone who already has that block's credit.</p>
+    <label class="fld" style="margin-top:8px">Block &amp; module</label>
+    <select id="peac-award-block"></select>
+    <label class="fld" style="margin-top:8px">Which module</label>
     <select id="peac-award-kind">
-      <option value="required">Required module (1 conference credit)</option>
-      <option value="optional">Optional module (+1 bonus credit)</option>
+      <option value="required">Required (1 credit)</option>
+      <option value="optional">Optional (+1 bonus)</option>
     </select>
-    <div class="fld" style="display:flex;align-items:center;gap:10px;margin-top:8px">
-      <span>Residents</span>
-      <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="peacAwardSelectAll(true)">Select all</button>
+    <div class="fld" style="display:flex;align-items:center;gap:10px;margin-top:10px">
+      <span>Residents by clinic group (house)</span>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="peacAwardSelectAll(true)">All</button>
       <button class="btn btn-ghost btn-sm" style="padding:3px 10px" onclick="peacAwardSelectAll(false)">Clear</button>
     </div>
-    <div class="roster-list" id="peac-award-roster"></div>
-    <button class="btn btn-primary" style="margin-top:10px" onclick="peacAwardUI()">Award module credit to selected</button>
+    <div id="peac-award-roster"></div>
+    <button class="btn btn-primary" style="margin-top:10px" onclick="peacAwardUI()">Award to selected (<span id="peac-award-n">0</span>)</button>
     <div id="peac-award-out"></div>
   </div>
 
@@ -1993,13 +1995,36 @@ function renderAdmin(){
   });
   var pr = document.getElementById("peac-award-roster");
   if (pr){
-    pr.innerHTML = "";
+    // block dropdown
+    var bsel = document.getElementById("peac-award-block");
+    if (bsel && D.peacBlocks){
+      bsel.innerHTML = "";
+      D.peacBlocks.forEach(function(b){
+        var o = document.createElement("option"); o.value = b.block;
+        o.textContent = "Block " + b.block + " — " + b.req + (b.opt ? " / " + b.opt : " (no optional)");
+        bsel.appendChild(o);
+      });
+    }
+    // roster grouped by house (clinic group), prelims excluded
+    var excl = {}; (D.peacExclude||[]).forEach(function(e){ excl[e]=1; });
+    var byHouse = {};
     D.roster.forEach(function(r){
-      var l = document.createElement("label");
-      l.className = "check-line";
-      l.innerHTML = '<input type="checkbox" value="' + r.email + '"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span>';
-      pr.appendChild(l);
+      if (excl[String(r.email).toLowerCase()]) return;
+      var h = r.house || "— no house —";
+      (byHouse[h] = byHouse[h] || []).push(r);
     });
+    var order = ["Catalina","Rincon","Santa Rita","Tortolita","Tucson"];
+    var houses = Object.keys(byHouse).sort(function(a,b){ var ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
+    pr.innerHTML = houses.map(function(h){
+      var rows = byHouse[h].sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); }).map(function(r){
+        return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
+      }).join("");
+      return '<div style="margin-top:8px"><div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--sky)">' + h +
+        ' <span style="color:var(--faint);font-weight:400">(' + byHouse[h].length + ')</span>' +
+        '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button></div>' +
+        '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
+    }).join("");
+    peacAwardCount();
   }
 
   /* flags */
@@ -2642,24 +2667,32 @@ function bulkCount(){
   var n = document.querySelectorAll("#bulk-roster input:checked").length;
   document.getElementById("bulk-n").textContent = n;
 }
+function peacAwardCount(){
+  var n = document.querySelectorAll("#peac-award-roster input:checked").length;
+  var el = document.getElementById("peac-award-n"); if (el) el.textContent = n;
+}
 function peacAwardSelectAll(state){
-  var boxes = document.querySelectorAll("#peac-award-roster input[type=checkbox]");
-  Array.prototype.forEach.call(boxes, function(cb){
-    var line = cb.closest(".check-line");
-    if (line && line.style.display === "none") return;
-    cb.checked = state;
-  });
+  Array.prototype.forEach.call(document.querySelectorAll("#peac-award-roster input[type=checkbox]"), function(cb){ cb.checked = state; });
+  peacAwardCount();
+}
+function peacAwardHouse(btn){
+  var block = btn.closest("div").parentNode.querySelectorAll("input[type=checkbox]");
+  var allOn = Array.prototype.every.call(block, function(cb){ return cb.checked; });
+  Array.prototype.forEach.call(block, function(cb){ cb.checked = !allOn; });
+  peacAwardCount();
 }
 async function peacAwardUI(){
   var emails = Array.prototype.map.call(document.querySelectorAll("#peac-award-roster input:checked"), function(cb){ return cb.value; });
   if (!emails.length){ toast("Select at least one resident."); return; }
+  var block = document.getElementById("peac-award-block").value;
   var kind = document.getElementById("peac-award-kind").value;
-  if (!confirm("Award the " + kind + " module credit for their current clinic week to " + emails.length + " resident(s)?")) return;
+  if (!confirm("Award the Block " + block + " " + kind + " module credit to " + emails.length + " resident(s)?")) return;
   var r;
-  try{ r = await call('peacManualAward', TOKEN, emails, kind); }
+  try{ r = await call('peacManualAward', TOKEN, emails, block, kind); }
   catch(e){ toast(e.message); return; }
+  if (!r.ok && r.reason === "nomodule"){ toast("That block has no " + kind + " module."); return; }
   document.getElementById("peac-award-out").innerHTML =
-    '<div class="msg ok" style="display:block;margin-top:10px">Awarded ' + kind + ' module credit to ' + r.n + ' resident(s).</div>';
+    '<div class="msg ok" style="display:block;margin-top:10px">Awarded "' + (r.module||kind) + '" to ' + r.n + ' resident(s)' + (r.skipped ? ' · ' + r.skipped + ' skipped (already had it or excluded)' : '') + '.</div>';
   loadAdmin();
 }
 function bulkSelectAll(state){  var boxes = document.querySelectorAll("#bulk-roster input[type=checkbox]");
@@ -2808,12 +2841,13 @@ function reportHTML_(rp, meta){
 
   // JH/PEAC modules section
   var peacPctTxt = rp.peacPct==null ? "—" : rp.peacPct+"%";
-  var peacSection =
-    '<h2>JH / PEAC Modules</h2>' +
-    '<table class="meta">' +
-    '<tr><td><b>Required completed</b></td><td>' + rp.peacReq + ' / ' + rp.peacBlocks + ' &nbsp;(' + peacPctTxt + ')</td>' +
-      '<td><b>Optional (bonus)</b></td><td>' + rp.peacOpt + '</td></tr></table>' +
-    '<p style="font-size:10.5px;color:#777;margin:4px 0 0">On-time module submissions (Fri midnight for interns, Sun for PGY-2/3 of the clinic week). Each required module is one conference credit; each optional module is a bonus credit.</p>';
+  var peacSection = rp.peacNA
+    ? '<h2>JH / PEAC Modules</h2><p style="font-size:12px;color:#777;margin:2px 0 0">Not applicable (prelim — no ambulatory modules).</p>'
+    : '<h2>JH / PEAC Modules</h2>' +
+      '<table class="meta">' +
+      '<tr><td><b>Required completed</b></td><td>' + rp.peacReq + ' / ' + rp.peacBlocks + ' &nbsp;(' + peacPctTxt + ')</td>' +
+        '<td><b>Optional (bonus)</b></td><td>' + rp.peacOpt + '</td></tr></table>' +
+      '<p style="font-size:10.5px;color:#777;margin:4px 0 0">Each required module is one conference credit; each optional module is a bonus credit.</p>';
 
   // Unprotected rotations note
   var excusedSection = rp.hasRotations
