@@ -957,6 +957,9 @@ function confLabel(type, title){
 var BOOT = null;              /* bootstrap payload */
 var currentResident = null;   /* {first,last,pgy,email} */
 var checkinInFlight = false;   /* guards against double-tapping the check-in button during lag */
+/* Prelims (no ambulatory modules) — shown N/A for Amb & JH/PEAC. Mirrors Code.gs PEAC_EXCLUDE. */
+var PEAC_EXCLUDE_FE = ['agong3@arizona.edu','milhirpara@arizona.edu','frholguin@arizona.edu','jocelynliu@arizona.edu','isamalannouf@arizona.edu','pawtrey@arizona.edu','ryanhakim@arizona.edu','rmeshgi@arizona.edu','rwaggoner@arizona.edu','laurazelis@arizona.edu','rileyhuffman@arizona.edu','kim64@arizona.edu','lucaslane@arizona.edu','christinalim@arizona.edu','e13sandoval@arizona.edu','samuelstewart@arizona.edu'];
+function prelimSet_(){ var s={}; ((ADMIN_DATA&&ADMIN_DATA.peacExclude&&ADMIN_DATA.peacExclude.length)?ADMIN_DATA.peacExclude:PEAC_EXCLUDE_FE).forEach(function(e){ s[String(e).toLowerCase()]=1; }); return s; }
 var TOKEN = localStorage.getItem('trk_token') || sessionStorage.getItem('trk_token') || null;
 var presenterConf = null;
 var presenterTimer = null;
@@ -1995,18 +1998,31 @@ function renderAdmin(){
   });
   var pr = document.getElementById("peac-award-roster");
   if (pr){
-    // block dropdown
+    // block dropdown (hardcoded so it always populates; matches Code.gs block order)
+    var blocks = (D.peacBlocks && D.peacBlocks.length) ? D.peacBlocks : [
+      {block:1, req:'HTN — email 3 article takeaways to R. Turk', opt:''},
+      {block:2, req:'Evidence-Based Medicine: Diagnosis', opt:'Evidence-Based Medicine: Therapy'},
+      {block:3, req:'Chronic Kidney Disease Part 1 (2027)', opt:'Chronic Kidney Disease Part 2 (2027)'},
+      {block:4, req:'Dermatitis for the Internist (2027)', opt:'Depression (2027)'},
+      {block:5, req:'Diabetes (2027)', opt:'Obesity & Overweight (2027)'},
+      {block:6, req:'Headaches (2027)', opt:'Dizziness (2027)'},
+      {block:7, req:'Back Pain (2027)', opt:'Hip/Knee Pain (2027)'},
+      {block:8, req:'Hepatitis C Infection (2027)', opt:'Alcohol Use Disorders (2027)'},
+      {block:9, req:'Menopause & HRT (2027)', opt:'Osteoporosis (2027)'},
+      {block:10, req:'Cancer Screening (2027)', opt:'Hypertension (2027)'}
+    ];
     var bsel = document.getElementById("peac-award-block");
-    if (bsel && D.peacBlocks){
+    if (bsel){
       bsel.innerHTML = "";
-      D.peacBlocks.forEach(function(b){
+      blocks.forEach(function(b){
         var o = document.createElement("option"); o.value = b.block;
         o.textContent = "Block " + b.block + " — " + b.req + (b.opt ? " / " + b.opt : " (no optional)");
         bsel.appendChild(o);
       });
     }
-    // roster grouped by house (clinic group), prelims excluded
+    // roster grouped by house / clinic group, prelims excluded
     var excl = {}; (D.peacExclude||[]).forEach(function(e){ excl[e]=1; });
+    var GNUM = {"Catalina":1,"Rincon":2,"Santa Rita":3,"Tortolita":4,"Tucson":5};
     var byHouse = {};
     D.roster.forEach(function(r){
       if (excl[String(r.email).toLowerCase()]) return;
@@ -2016,10 +2032,11 @@ function renderAdmin(){
     var order = ["Catalina","Rincon","Santa Rita","Tortolita","Tucson"];
     var houses = Object.keys(byHouse).sort(function(a,b){ var ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
     pr.innerHTML = houses.map(function(h){
+      var label = GNUM[h] ? (h + "/Group " + GNUM[h]) : h;
       var rows = byHouse[h].sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); }).map(function(r){
         return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
       }).join("");
-      return '<div style="margin-top:8px"><div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--sky)">' + h +
+      return '<div style="margin-top:8px"><div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--sky)">' + label +
         ' <span style="color:var(--faint);font-weight:400">(' + byHouse[h].length + ')</span>' +
         '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button></div>' +
         '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
@@ -2756,18 +2773,21 @@ function classLabelJS(pgy){
 }
 function renderTally(){
   var rows = ADMIN_DATA.tally;
+  var prelim = prelimSet_();
+  var na = '<span style="color:var(--faint)">N/A</span>';
   var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = null;
   rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
       : '<span class="' + (r.ahdPct >= 50 ? 'st-ok' : 'st-m') + '">' + r.ahdPct + '%</span>';
     var showClass = (String(r.pgy) !== String(lastPgy));
+    var isPrelim = prelim[String(r.email).toLowerCase()];
     html += '<tr class="tally-row" onclick="toggleResidentDetail(' + i + ')" style="cursor:pointer">' +
       '<td class="mono" id="tr-caret-' + i + '" style="color:var(--faint);text-align:center">▸</td>' +
       '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
       '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) +
-      '</td><td class="mono">' + (r.amb||0) + '</td><td class="mono">' + (r.peac||0) +
+      '</td><td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) +
       '</td><td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
     html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="8" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
@@ -2835,9 +2855,10 @@ function reportHTML_(rp, meta){
   var ambAdj = rp.hasRotations && rp.ambOffered
     ? '<tr><td><b>Adjusted for protected time</b></td><td><b>' + (rp.ambAdjPct==null?"—":rp.ambAdjPct+"%") + '</b> &nbsp;<span style="color:#777">(' + rp.ambProtAttended + ' of ' + rp.ambProtOffered + ' offered while protected)</span></td></tr>'
     : '';
-  var ambSection =
-    '<h2>Ambulatory Half Day</h2>' +
-    '<table class="meta"><tr><td><b>Attended</b></td><td>' + ambRaw + '</td></tr>' + ambAdj + '</table>';
+  var ambSection = rp.peacNA
+    ? '<h2>Ambulatory Half Day</h2><p style="font-size:12px;color:#777;margin:2px 0 0">Not applicable (prelim).</p>'
+    : '<h2>Ambulatory Half Day</h2>' +
+      '<table class="meta"><tr><td><b>Attended</b></td><td>' + ambRaw + '</td></tr>' + ambAdj + '</table>';
 
   // JH/PEAC modules section
   var peacPctTxt = rp.peacPct==null ? "—" : rp.peacPct+"%";
