@@ -279,6 +279,7 @@ table.roster-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top
 .verify-box{display:flex;align-items:center;gap:12px;background:var(--sky-tint);border:1px solid #C9D9E6;border-radius:10px;padding:13px;margin:12px 0}
 .spinner{width:22px;height:22px;border:3px solid #C9D9E6;border-top-color:var(--sky);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
+.spin-dot{display:inline-block;width:12px;height:12px;margin-left:5px;vertical-align:-2px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .55s linear infinite}
 .verify-box .vt{font-size:12.5px;color:var(--sky);font-weight:600;line-height:1.5}
 .ai-result{border-radius:10px;padding:13px;margin:12px 0;font-size:12.5px;line-height:1.6}
 .ai-result.pass{background:var(--saguaro-tint);border:1px solid #CBE0D2;color:var(--saguaro-d)}
@@ -408,7 +409,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
       <span class="chip info" id="sig-dev">Check-in linked to this device</span>
     </div>
 
-    <button class="btn btn-primary" style="margin-top:12px" onclick="residentSubmit()">Check in</button>
+    <button class="btn btn-primary" style="margin-top:12px" id="r-checkin-btn" onclick="residentSubmit()">Check in</button>
     <div class="divider"></div>
     <button class="btn btn-ghost" onclick="showQArea()">No conference? Submit practice question credit</button>
   </div>
@@ -419,7 +420,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
         <circle class="c" cx="37" cy="37" r="34"/>
         <path class="k" d="M23 38 l10 10 l19 -20"/>
       </svg>
-      <div class="big-status">Attendance recorded</div>
+      <div class="big-status">Recorded!</div>
     </div>
     <p class="sub" style="text-align:center;margin-top:7px" id="r-success-line">—</p>
     <div class="signal-row" style="justify-content:center;margin-top:13px">
@@ -935,6 +936,7 @@ function confLabel(type, title){
 /* ============ STATE ============ */
 var BOOT = null;              /* bootstrap payload */
 var currentResident = null;   /* {first,last,pgy,email} */
+var checkinInFlight = false;   /* guards against double-tapping the check-in button during lag */
 var TOKEN = localStorage.getItem('trk_token') || sessionStorage.getItem('trk_token') || null;
 var presenterConf = null;
 var presenterTimer = null;
@@ -1203,6 +1205,7 @@ function renderLiveConf(){
   }
 }
 async function residentSubmit(){
+  if (checkinInFlight) return;                     // ignore a second tap while the first is registering
   var liveNow = chosenLiveConf();
   if (!liveNow){ 
     var ce = document.getElementById("r-code-err");
@@ -1217,14 +1220,27 @@ async function residentSubmit(){
   var codeErr = document.getElementById("r-code-err");
   var dupeWarn = document.getElementById("r-dupe-warn");
   codeErr.style.display="none"; dupeWarn.style.display="none";
+
+  // Lock the button and show a clear "sit tight" state so nobody taps twice
+  // during the lag — the double-tap is what created duplicate check-ins.
+  var btn = document.getElementById("r-checkin-btn");
+  checkinInFlight = true;
+  btn.disabled = true;
+  btn.dataset.label = btn.textContent;
+  btn.textContent = "";
+  btn.innerHTML = 'Hang on \u2014 recording <span class="spin-dot"></span>';
+  btn.style.opacity = "0.75";
+  function releaseBtn(){ checkinInFlight = false; btn.disabled = false; btn.style.opacity = ""; btn.textContent = btn.dataset.label || "Check in"; }
+
   var res;
   try{
     res = await call('checkIn', {
       email: currentResident.email, confId: liveNow.id, code: entered,
       deviceId: deviceId(), track: chosenTrack
     });
-  }catch(e){ codeErr.textContent = e.message; codeErr.style.display="block"; return; }
+  }catch(e){ releaseBtn(); codeErr.textContent = e.message; codeErr.style.display="block"; return; }
   if (!res.ok){
+    releaseBtn();
     if (res.reason==="dupe"){ dupeWarn.style.display="block"; return; }
     boxes.forEach(function(b){ b.classList.add("err"); });
     setTimeout(function(){ boxes.forEach(function(b){ b.classList.remove("err"); }); }, 350);
@@ -1235,6 +1251,8 @@ async function residentSubmit(){
       : "That code is incorrect or has expired. Check the current code on the room screen and try again.";
     codeErr.style.display="block"; return;
   }
+  checkinInFlight = false;                          // success — step 3 replaces the button
+  btn.style.opacity = ""; btn.textContent = btn.dataset.label || "Check in";
   document.getElementById("r-success-chip").textContent =
     "CREDIT " + res.credit.toFixed(1) + " · " + currentResident.first.toUpperCase() + " " + currentResident.last.toUpperCase();
   document.getElementById("r-success-line").textContent = res.flags.length
