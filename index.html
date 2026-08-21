@@ -361,8 +361,8 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="msg warn" id="cr-ahd-inc" style="line-height:1.6">—</div>
     <div class="eyebrow" style="margin-top:12px">Conferences by type</div>
     <div id="cr-bytype"></div>
-    <div class="eyebrow" style="margin-top:12px">Recent credits</div>
-    <ul class="cred-recent" id="cr-recent"></ul>
+    <div class="eyebrow" style="margin-top:12px">All conferences <span id="cr-count" style="color:var(--faint);font-weight:400"></span></div>
+    <ul class="cred-recent" id="cr-recent" style="max-height:52vh;overflow-y:auto"></ul>
     <button class="btn btn-ghost" style="margin-top:14px" onclick="creditsBack()">Back</button>
   </div>
 
@@ -517,8 +517,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="card" style="padding:13px 15px">
       <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
         <span class="chip ok" id="pe-group">—</span>
-        <span class="chip info" id="pe-week">—</span>
-        <span class="chip mono" id="pe-deadline">—</span>
+        <select id="pe-block" onchange="peacBlockChange()" style="font-size:11px;padding:4px 8px;border-radius:8px"></select>
         <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="peacReset()">Not you?</button>
       </div>
       <p class="sub hide" id="pe-notweek" style="margin-top:9px">—</p>
@@ -774,6 +773,11 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <select id="peac-award-kind">
       <option value="required">Required (1 credit)</option>
       <option value="optional">Optional (+1 bonus)</option>
+    </select>
+    <label class="fld" style="margin-top:8px">Credit as</label>
+    <select id="peac-award-timing">
+      <option value="ontime">Completed in clinic week (on time)</option>
+      <option value="late">Submitted after the deadline (still credited)</option>
     </select>
     <div class="fld" style="display:flex;align-items:center;gap:10px;margin-top:10px">
       <span>Residents by clinic group (house)</span>
@@ -1336,10 +1340,14 @@ async function creditsLookup(){
   }
   var ul = document.getElementById("cr-recent");
   ul.innerHTML = "";
+  var cnt = document.getElementById("cr-count");
+  if (cnt) cnt.textContent = r.recent.length ? "(" + r.recent.length + ")" : "";
   if (!r.recent.length) ul.innerHTML = '<li><span class="sub">No credits recorded yet.</span></li>';
   r.recent.forEach(function(x){
     var li = document.createElement("li");
-    li.innerHTML = '<span class="d">' + x.date + '</span><span>' + x.type + (x.track ? ' — ' + x.track : '') + '</span><span class="s">' + x.status.toUpperCase() + '</span>';
+    var label = x.title && x.title !== x.type ? (x.type + " — " + x.title) : x.type;
+    if (x.track) label += " · " + x.track;
+    li.innerHTML = '<span class="d">' + (x.date||"—") + '</span><span>' + label + '</span><span class="s">' + x.status.toUpperCase() + '</span>';
     ul.appendChild(li);
   });
   document.getElementById("r-step1").classList.add("hide");
@@ -1604,15 +1612,20 @@ function peacRender(){
   var c = peacCtx;
   document.getElementById("pe-gate").classList.add("hide");
   document.getElementById("pe-main").classList.remove("hide");
-  document.getElementById("pe-group").textContent = "GROUP " + c.group + " · " + c.groupName.toUpperCase();
-  document.getElementById("pe-week").textContent = c.isClinicWeekNow
-    ? "CLINIC WEEK · " + c.clinicWeekMonday
-    : "LAST CLINIC WEEK · " + c.clinicWeekMonday;
-  document.getElementById("pe-deadline").textContent = "DUE " + c.deadline.toUpperCase();
+  document.getElementById("pe-group").textContent = "GROUP " + c.group + " · " + (["","CATALINA","RINCON","SANTA RITA","TORTOLITA","TUCSON"][c.group] || "");
+  var bsel = document.getElementById("pe-block");
+  if (bsel && (!bsel.options.length || bsel.dataset.for !== c._email)){
+    bsel.innerHTML = ""; bsel.dataset.for = c._email;
+    (c.blocks||[]).forEach(function(b){
+      var o = document.createElement("option"); o.value = b.block;
+      o.textContent = "Block " + b.block + (b.block===c.currentBlock ? " (current)" : "") + " — " + b.req;
+      bsel.appendChild(o);
+    });
+  }
+  if (bsel) bsel.value = c.block;
   var nw = document.getElementById("pe-notweek");
-  if (!c.isClinicWeekNow){
-    nw.textContent = "It isn't your clinic week right now — shown below is your most recent clinic week ("
-      + c.clinicWeekMonday + ")." + (c.nextClinicMonday ? " Your next clinic week starts " + c.nextClinicMonday + "." : "");
+  if (c.block !== c.currentBlock){
+    nw.textContent = "You're viewing a prior block. You can still submit a module for it — it will be credited (recorded as after the deadline).";
     nw.classList.remove("hide");
   } else nw.classList.add("hide");
   peacRenderModule('required', c.required, c);
@@ -1620,27 +1633,31 @@ function peacRender(){
 }
 function peacRenderModule(kind, m, c){
   var p = kind==='required' ? 'pe-req' : 'pe-opt';
-  document.getElementById(p+"-title").textContent = m.title || "(module not set yet — check back soon)";
+  document.getElementById(p+"-title").textContent = m.title || "(no " + kind + " module for this block)";
   var link = document.getElementById(p+"-link");
-  if (m.url){ link.href = m.url; link.classList.remove("hide"); } else link.classList.add("hide");
+  if (link) link.classList.add("hide");
   var done = document.getElementById(p+"-done");
   var form = document.getElementById(p+"-form");
   if (kind==='optional'){
     var blurb = document.getElementById("pe-opt-blurb");
-    blurb.textContent = c.optionalCreditOpen
-      ? "Optional. Worth one conference credit if submitted by your deadline."
-      : "The credit window for this clinic week has closed (deadline passed). You can still submit for completion, but no conference credit is awarded.";
+    if (blurb) blurb.textContent = "Optional module — worth one bonus conference credit.";
   }
-  if (m.sub && m.sub.submitted){
-    done.textContent = (kind==='required')
-      ? ("Submitted " + m.sub.when + (m.sub.onTime ? " · on time ✓" : " · late (recorded)"))
-      : ("Submitted " + m.sub.when + (m.sub.onTime ? " · on time ✓ · +1 conference credit recorded" : " · after deadline — no credit, completion recorded"));
+  if (!m.title){ if (form) form.classList.add("hide"); if (done) done.style.display="none"; return; }
+  if (m.done){
+    done.textContent = kind==='required' ? "Credited ✓" : "Credited ✓ · +1 bonus";
     done.style.display = "block";
-    form.classList.add("hide");
+    if (form) form.classList.add("hide");
   } else {
     done.style.display = "none";
-    form.classList.remove("hide");
+    if (form) form.classList.remove("hide");
   }
+}
+async function peacBlockChange(){
+  var b = document.getElementById("pe-block").value;
+  try{ peacCtx = await call('peacContext', peacCtx._email, b); peacCtx._email = document.getElementById("pe-email").value.trim().toLowerCase(); }
+  catch(e){ toast(e.message); return; }
+  peacImgs = { required: [], optional: [] };
+  peacRender();
 }
 function renderPeacFiles(kind){
   var p = kind==='required' ? 'pe-req' : 'pe-opt';
@@ -1695,22 +1712,22 @@ async function peacSend(kind){
   err.style.display = "none";
   var res;
   try{
-    res = await call('peacSubmit', { email: peacCtx._email, kind: kind,
+    res = await call('peacSubmit', { email: peacCtx._email, kind: kind, block: peacCtx.block,
       images: ready.map(function(im){ return { b64: im.b64, mediaType: im.mediaType }; }),
       deviceId: deviceId() });
   }catch(e){ err.textContent = e.message; err.style.display="block"; return; }
   if (!res.ok){
-    err.textContent = res.reason==="dupe" ? "You've already submitted this module for this clinic week."
+    err.textContent = res.reason==="dupe" ? "You've already been credited for this module."
       : res.reason==="noimage" ? "No screenshot was received — please re-attach and try again."
-      : res.reason==="nogroup" ? "You're not assigned to a clinic group — let a chief know."
+      : res.reason==="nogroup" ? "This isn't set up for you (prelims don't have ambulatory modules)."
       : "No roster match for that email.";
     err.style.display = "block"; return;
   }
   notify(kind==='required'
-    ? (res.onTime ? "Required module recorded — on time. Nice work!" : "Required module recorded (marked late).")
-    : (res.credited ? "Optional module recorded — +1 conference credit!" : "Optional module recorded — after the deadline, so no credit this time."));
+    ? (res.onTime ? "Required module recorded — on time. Nice work!" : "Required module recorded — credited (marked late).")
+    : (res.onTime ? "Optional module recorded — +1 conference credit!" : "Optional module recorded — credited (marked late)."));
   peacImgs[kind] = [];
-  try{ peacCtx = await call('peacContext', peacCtx._email); peacCtx._email = document.getElementById("pe-email").value.trim().toLowerCase(); }catch(e){}
+  try{ peacCtx = await call('peacContext', peacCtx._email, peacCtx.block); peacCtx._email = document.getElementById("pe-email").value.trim().toLowerCase(); }catch(e){}
   peacRender();
 }
 function peacReset(){
@@ -2703,9 +2720,10 @@ async function peacAwardUI(){
   if (!emails.length){ toast("Select at least one resident."); return; }
   var block = document.getElementById("peac-award-block").value;
   var kind = document.getElementById("peac-award-kind").value;
-  if (!confirm("Award the Block " + block + " " + kind + " module credit to " + emails.length + " resident(s)?")) return;
+  var late = document.getElementById("peac-award-timing").value === "late";
+  if (!confirm("Award the Block " + block + " " + kind + " module credit" + (late ? " (submitted late)" : "") + " to " + emails.length + " resident(s)?")) return;
   var r;
-  try{ r = await call('peacManualAward', TOKEN, emails, block, kind); }
+  try{ r = await call('peacManualAward', TOKEN, emails, block, kind, late); }
   catch(e){ toast(e.message); return; }
   if (!r.ok && r.reason === "nomodule"){ toast("That block has no " + kind + " module."); return; }
   document.getElementById("peac-award-out").innerHTML =
