@@ -279,6 +279,11 @@ table.roster-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top
 .verify-box{display:flex;align-items:center;gap:12px;background:var(--sky-tint);border:1px solid #C9D9E6;border-radius:10px;padding:13px;margin:12px 0}
 .spinner{width:22px;height:22px;border:3px solid #C9D9E6;border-top-color:var(--sky);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
+body.modules-off .mod-feature{display:none !important}
+.admin-nav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:9px 2px;margin-bottom:12px;background:var(--bg);border-bottom:1px solid var(--line-soft);-webkit-overflow-scrolling:touch}
+.admin-nav button{flex:0 0 auto;font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap}
+.admin-nav button:hover{background:var(--panel-2);color:var(--ink);border-color:var(--saguaro)}
+.admin-nav button:active{transform:scale(.96)}
 .spin-dot{display:inline-block;width:12px;height:12px;margin-left:5px;vertical-align:-2px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .55s linear infinite}
 .verify-box .vt{font-size:12.5px;color:var(--sky);font-weight:600;line-height:1.5}
 .ai-result{border-radius:10px;padding:13px;margin:12px 0;font-size:12.5px;line-height:1.6}
@@ -355,7 +360,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="cred-stats">
       <div class="stat"><div class="n" id="cr-total">0</div><div class="l">Points</div></div>
       <div class="stat sky"><div class="n" id="cr-ahd">0/0</div><div class="l">AHD Half-Days</div></div>
-      <div class="stat adobe"><div class="n" id="cr-amb">0</div><div class="l">Ambulatory</div></div>
+      <div class="stat adobe mod-feature"><div class="n" id="cr-amb">0</div><div class="l">Ambulatory</div></div>
     </div>
     <p class="hint" style="text-align:left;margin:0 0 6px" id="cr-pct">—</p>
     <div class="msg warn" id="cr-ahd-inc" style="line-height:1.6">—</div>
@@ -641,7 +646,26 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button>
   </div>
 
-  <div class="card">
+  <div class="admin-nav" id="admin-nav">
+    <button onclick="jumpTo('sec-tally')">Tally</button>
+    <button onclick="jumpTo('sec-award')">Award</button>
+    <button onclick="jumpTo('sec-review')">Review</button>
+    <button onclick="jumpTo('sec-ahd')">AHD</button>
+    <button onclick="jumpTo('sec-cleanup')">Cleanup</button>
+    <button onclick="jumpTo('sec-schedule')">Schedule</button>
+    <button class="mod-feature" onclick="jumpTo('sec-peac')">PEAC</button>
+    <button onclick="jumpTo('sec-exports')">Exports</button>
+  </div>
+
+  <div class="card" style="padding:11px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px">
+    <div>
+      <div style="font-weight:700;font-size:12px">Ambulatory Half Day &amp; JH/PEAC modules</div>
+      <div class="sub" style="margin:0">Backburner feature. When on, the PEAC tab, columns, review, and manual award appear.</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="mod-toggle" style="margin-left:auto" onclick="toggleModules()">—</button>
+  </div>
+
+  <div id="sec-award" class="card">
     <div class="eyebrow">Bulk credit award</div>
     <p class="sub">Award credit directly — for bonus events, speaker panels, or attendance collected on paper. For a Q-credit conference (Grand Rounds/AHD), pick it here and choose the <strong>Q-credit</strong> action to award residents who submitted questions by email.</p>
     <label class="fld">Conference</label>
@@ -668,7 +692,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="msg ok" id="bulk-ok">—</div>
   </div>
 
-  <div class="card">
+  <div id="sec-schedule" class="card">
     <div class="eyebrow">Schedule</div>
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
       <button class="mini-btn" onclick="weekNav(-1)">‹ Prev</button>
@@ -680,13 +704,18 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div id="a-week"></div>
   </div>
 
-  <div class="card">
-    <div class="eyebrow">Clean up duplicate listings</div>
-    <p class="sub">Finds listings that repeat the same date, type, title, and site. Removing them only ever deletes <strong>empty</strong> copies — any copy with recorded check-ins is kept, and at least one copy of every offering survives. Resident sign-ins are never touched.</p>
-    <button class="btn btn-ghost" style="margin-top:10px" onclick="scanDuplicates()">Scan for duplicates</button>
-    <button class="btn btn-ghost" style="margin-top:8px" onclick="scanCheckinDupes()">Scan for duplicate check-ins</button>
-    <div id="dup-out"></div>
+  <div id="sec-cleanup" class="card">
+    <div class="eyebrow">Duplicate cleanup</div>
+
+    <div style="font-weight:700;font-size:12.5px;margin-top:6px;color:var(--saguaro-d)">▸ Duplicate credits (resident credited twice)</div>
+    <p class="sub" style="font-size:11.5px;margin-top:3px">Finds anyone credited more than once for the <strong>same conference</strong> and removes only the extra credit — one is always kept, sign-ins are never lost. This is the one to run if points look inflated.</p>
+    <button class="btn btn-ghost" style="margin-top:6px" onclick="scanCheckinDupes()">Search for duplicate credits</button>
     <div id="ci-dup-out"></div>
+
+    <div style="font-weight:700;font-size:12.5px;margin-top:16px;border-top:1px solid var(--line-soft);padding-top:12px">▸ Duplicate conference listings</div>
+    <p class="sub" style="font-size:11.5px;margin-top:3px">Finds listings that repeat the same date, type, title, and site. Removes only <strong>empty</strong> copies — any copy with check-ins is kept, and at least one of every offering survives.</p>
+    <button class="btn btn-ghost" style="margin-top:6px" onclick="scanDuplicates()">Search for duplicate listings</button>
+    <div id="dup-out"></div>
   </div>
 
   <div class="card">
@@ -749,7 +778,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div id="imp-out"></div>
   </div>
 
-  <div class="card">
+  <div id="sec-review" class="card">
     <div class="eyebrow" style="color:var(--adobe)">Review queue</div>
     <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it. Submissions whose screenshot looks reused (dated well before submission) are flagged and held back from bulk approve.</p>
     <button class="btn btn-ghost" style="margin-bottom:6px" onclick="bulkApproveUI()">Approve all Q-credit submissions</button>
@@ -757,14 +786,14 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <p class="sub hide" id="a-noflags" style="text-align:center;padding:6px 0">No entries awaiting review.</p>
   </div>
 
-  <div class="card">
+  <div id="sec-peac" class="card mod-feature">
     <div class="eyebrow" style="color:var(--sky)">PEAC · clinic week review</div>
     <p class="sub">This week's clinic group, their assigned modules, and who has submitted. Thumbnails link to the full screenshot; Deny removes an optional module's conference credit.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadPeacReview()">Load this week's PEAC status</button>
     <div id="peac-rev-out"></div>
   </div>
 
-  <div class="card">
+  <div class="card mod-feature">
     <div class="eyebrow" style="color:var(--sky)">Manual JH/PEAC module award</div>
     <p class="sub">Award a Hopkins module credit by block. Required = 1 conference credit; Optional = +1 bonus. Credits flow into the totals and the JH/PEAC column. Prelims are excluded (no ambulatory modules). Skips anyone who already has that block's credit.</p>
     <label class="fld" style="margin-top:8px">Block &amp; module</label>
@@ -789,7 +818,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div id="peac-award-out"></div>
   </div>
 
-  <div class="card">
+  <div id="sec-ahd" class="card">
     <div class="eyebrow" style="color:var(--adobe)">AHD attendance check</div>
     <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate. Cancelled and deleted AHDs never count toward the total, and neither do 7/2/2026 or the last two weeks of the year.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadAhdCheck()">Scan for partial AHD attendance</button>
@@ -804,14 +833,14 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div id="ahd-diag-out"></div>
   </div>
 
-  <div class="card">
+  <div id="sec-integrity" class="card">
     <div class="eyebrow" style="color:var(--adobe)">Check-in integrity · shared devices</div>
     <p class="sub">One phone checking in several different residents for the same session is the signature of code-sharing. Live check-ins from a shared device are already flagged into the Review queue automatically; this scans the whole term (including anything the live check missed) and shows who turns up on a shared device repeatedly.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadDeviceIntegrity()">Scan for shared-device check-ins</button>
     <div id="dev-out"></div>
   </div>
 
-  <div class="card">
+  <div id="sec-tally" class="card">
     <div class="eyebrow">Credit totals · House Cup tally</div>
     <p class="sub">One conference credit per conference attended. AHD is separate: attending all three hours of an AHD earns one half-day credit (the hours don't each count as a conference credit); attending only some hours counts each attended hour as one conference credit. Goal is ≥50% of offered half-days. Tap any resident to see their conferences, or print their report.</p>
     <div id="tally-out"></div>
@@ -844,7 +873,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div id="ne-out"></div>
   </div>
 
-  <div class="card">
+  <div id="sec-exports" class="card">
     <div class="eyebrow">Exports</div>
     <label class="fld">Conference</label>
     <select id="exp-conf"></select>
@@ -1027,11 +1056,33 @@ document.addEventListener("visibilitychange", function(){
 
 /* ============ NAV + AUTH ============ */
 var ADMIN = !!TOKEN;
+var MODULES_ON = false;   /* Ambulatory Half Day + JH/PEAC feature flag (from bootstrap) */
+function applyModulesFlag(){
+  document.body.classList.toggle("modules-off", !MODULES_ON);
+  var b = document.getElementById("mod-toggle");
+  if (b){ b.textContent = MODULES_ON ? "On — turn off" : "Off — turn on"; b.className = "btn btn-sm " + (MODULES_ON ? "btn-primary" : "btn-ghost"); b.style.marginLeft = "auto"; }
+}
+function jumpTo(id){
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  else toast("That section is hidden right now.");
+}
+async function toggleModules(){
+  var next = !MODULES_ON;
+  if (!confirm(next ? "Turn ON Ambulatory Half Day & JH/PEAC modules? The PEAC tab, columns, and tools will reappear." : "Turn OFF (backburner) Ambulatory Half Day & JH/PEAC? All that code stays but is hidden.")) return;
+  try{ var r = await call('setModulesEnabled', TOKEN, next); MODULES_ON = !!r.enabled; }
+  catch(e){ toast(e.message); return; }
+  applyModulesFlag();
+  renderTabs("admin");
+  if (ADMIN_DATA) renderTally();
+  toast(MODULES_ON ? "Modules enabled." : "Modules moved to the backburner.");
+}
 function renderTabs(active){
   var t = document.getElementById("tabs");
   var defs = ADMIN
     ? [["resident","Check-In"],["peac","PEAC"],["presenter","Presenter"],["admin","Admin"]]
     : [["resident","Check-In"],["peac","PEAC"],["login","Chiefs"]];
+  if (!MODULES_ON) defs = defs.filter(function(d){ return d[0] !== "peac"; });   // PEAC hidden on backburner
   t.style.gridTemplateColumns = "repeat(" + defs.length + ",1fr)";
   t.innerHTML = "";
   defs.forEach(function(d){
@@ -1114,6 +1165,8 @@ async function boot(){
   try{ BOOT = await call('bootstrap', TOKEN || null); }
   catch(e){ BOOT = {todayConfs:[], liveConf:null, qEligible:[], webAppUrl:''}; }
   applyConfigDefaults();
+  MODULES_ON = !!BOOT.modulesEnabled;
+  applyModulesFlag();
   // Session was validated inside bootstrap (one round-trip). Restore chief mode if
   // valid. If bootstrap couldn't answer (transient/cold start), DON'T force a
   // re-login — keep the token and try a direct validate; only a definite "invalid"
@@ -2793,21 +2846,22 @@ function renderTally(){
   var rows = ADMIN_DATA.tally;
   var prelim = prelimSet_();
   var na = '<span style="color:var(--faint)">N/A</span>';
-  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
+  var modCols = MODULES_ON ? '<th>Amb ½-Day</th><th>JH/PEAC</th>' : '';
+  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th>' + modCols + '<th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = null;
   rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
       : '<span class="' + (r.ahdPct >= 50 ? 'st-ok' : 'st-m') + '">' + r.ahdPct + '%</span>';
     var showClass = (String(r.pgy) !== String(lastPgy));
     var isPrelim = prelim[String(r.email).toLowerCase()];
+    var modCells = MODULES_ON ? ('<td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) + '</td>') : '';
     html += '<tr class="tally-row" onclick="toggleResidentDetail(' + i + ')" style="cursor:pointer">' +
       '<td class="mono" id="tr-caret-' + i + '" style="color:var(--faint);text-align:center">▸</td>' +
       '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
-      '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) +
-      '</td><td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) +
-      '</td><td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
-    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="8" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
+      '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) + '</td>' + modCells +
+      '<td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
+    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="' + (MODULES_ON?8:6) + '" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
   });
   html += '</table>';
@@ -2898,7 +2952,7 @@ function reportHTML_(rp, meta){
     '<h1>Conference Attendance Report</h1></div>' +
     '<table class="meta"><tr><td><b>Resident</b></td><td>' + rp.name + '</td><td><b>Class</b></td><td>' + rp.pgy + '</td></tr>' +
     '<tr><td><b>House</b></td><td>' + (rp.house||"—") + '</td><td><b>Academic year</b></td><td>' + meta.year + '</td></tr></table>' +
-    confSection + ahdSection + ambSection + peacSection + excusedSection +
+    confSection + ahdSection + (MODULES_ON ? (ambSection + peacSection) : "") + excusedSection +
     '<h2>Conference log (' + (rp.conferences?rp.conferences.length:0) + ')</h2>' +
     (rows ? '<table class="list"><thead><tr><th>Date</th><th>Conference</th><th>Credit</th></tr></thead><tbody>' + rows + '</tbody></table>'
           : '<p class="none">No conferences recorded yet.</p>') +
