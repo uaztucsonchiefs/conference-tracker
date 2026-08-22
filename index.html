@@ -360,7 +360,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="cred-stats">
       <div class="stat"><div class="n" id="cr-total">0</div><div class="l">Points</div></div>
       <div class="stat sky"><div class="n" id="cr-ahd">0/0</div><div class="l">AHD Half-Days</div></div>
-      <div class="stat adobe mod-feature"><div class="n" id="cr-amb">0</div><div class="l">Ambulatory</div></div>
+      <div class="stat adobe"><div class="n" id="cr-amb">0</div><div class="l">Ambulatory</div></div>
     </div>
     <p class="hint" style="text-align:left;margin:0 0 6px" id="cr-pct">—</p>
     <div class="msg warn" id="cr-ahd-inc" style="line-height:1.6">—</div>
@@ -653,14 +653,14 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button onclick="jumpTo('sec-ahd')">AHD</button>
     <button onclick="jumpTo('sec-cleanup')">Cleanup</button>
     <button onclick="jumpTo('sec-schedule')">Schedule</button>
-    <button class="mod-feature" onclick="jumpTo('sec-peac')">PEAC</button>
+    <button onclick="jumpTo('sec-peac-award')">PEAC add</button>
     <button onclick="jumpTo('sec-exports')">Exports</button>
   </div>
 
   <div class="card" style="padding:11px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px">
     <div>
-      <div style="font-weight:700;font-size:12px">Ambulatory Half Day &amp; JH/PEAC modules</div>
-      <div class="sub" style="margin:0">Backburner feature. When on, the PEAC tab, columns, review, and manual award appear.</div>
+      <div style="font-weight:700;font-size:12px">Resident PEAC self-submission tab</div>
+      <div class="sub" style="margin:0">Off = residents can't self-submit modules (Rosie adds them manually). The Amb/PEAC columns and manual award stay on either way.</div>
     </div>
     <button class="btn btn-ghost btn-sm" id="mod-toggle" style="margin-left:auto" onclick="toggleModules()">—</button>
   </div>
@@ -793,7 +793,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div id="peac-rev-out"></div>
   </div>
 
-  <div class="card mod-feature">
+  <div id="sec-peac-award" class="card">
     <div class="eyebrow" style="color:var(--sky)">Manual JH/PEAC module award</div>
     <p class="sub">Award a Hopkins module credit by block. Required = 1 conference credit; Optional = +1 bonus. Credits flow into the totals and the JH/PEAC column. Prelims are excluded (no ambulatory modules). Skips anyone who already has that block's credit.</p>
     <label class="fld" style="margin-top:8px">Block &amp; module</label>
@@ -2038,11 +2038,13 @@ function renderAdmin(){
   (function(){
     var sel = document.getElementById("bulk-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
-    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28); }).forEach(function(c){
-      var o = document.createElement("option");
-      o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title + (c.qEligible ? "  · Q-credit" : "");
-      sel.appendChild(o);
-    });
+    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28); })
+      .sort(function(a,b){ return a.date < b.date ? 1 : a.date > b.date ? -1 : (a.type||"").localeCompare(b.type||""); })
+      .forEach(function(c){
+        var o = document.createElement("option");
+        o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title + (c.qEligible ? "  · Q-credit" : "");
+        sel.appendChild(o);
+      });
     if (keep) sel.value = keep;
   })();
   /* export selector — all conferences */
@@ -2162,6 +2164,7 @@ function editRow(row, c){
   f.className = "edit-grid";
   f.innerHTML =
     '<input class="full" id="ed-title" value="' + String(c.title).replace(/"/g,'&quot;') + '" placeholder="Title">' +
+    '<input id="ed-date" type="date" value="' + (c.date||"") + '">' +
     '<input id="ed-time" value="' + c.time + '" placeholder="Time (e.g., 12:00–13:00)">' +
     '<select id="ed-site">' + ["All Sites","BUMCT","South","VA",""].map(function(s){
       return '<option value="'+s+'"'+(s===c.site?' selected':'')+'>'+(s||"—")+'</option>'; }).join("") + '</select>' +
@@ -2174,11 +2177,13 @@ function editRow(row, c){
   save.onclick = async function(){
     var o = {
       title: f.querySelector("#ed-title").value.trim() || c.type,
+      date: f.querySelector("#ed-date").value || c.date,
       time: f.querySelector("#ed-time").value.trim() || "TBD",
       site: f.querySelector("#ed-site").value,
       credit: parseFloat(f.querySelector("#ed-credit").value) || 1,
       qEligible: f.querySelector("#ed-q").checked
     };
+    if (o.date !== c.date && !confirm("Move this conference to " + o.date + "? Existing check-ins stay attached to it.")) return;
     try{ await call('updateConference', TOKEN, c.id, o); }catch(e){ toast(e.message); return; }
     notify("Saved.");
     loadAdmin();
@@ -2846,22 +2851,21 @@ function renderTally(){
   var rows = ADMIN_DATA.tally;
   var prelim = prelimSet_();
   var na = '<span style="color:var(--faint)">N/A</span>';
-  var modCols = MODULES_ON ? '<th>Amb ½-Day</th><th>JH/PEAC</th>' : '';
-  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th>' + modCols + '<th>AHD Half-Days</th><th>AHD %</th></tr>';
+  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = null;
   rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
       : '<span class="' + (r.ahdPct >= 50 ? 'st-ok' : 'st-m') + '">' + r.ahdPct + '%</span>';
     var showClass = (String(r.pgy) !== String(lastPgy));
     var isPrelim = prelim[String(r.email).toLowerCase()];
-    var modCells = MODULES_ON ? ('<td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) + '</td>') : '';
+    var modCells = '<td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) + '</td>';
     html += '<tr class="tally-row" onclick="toggleResidentDetail(' + i + ')" style="cursor:pointer">' +
       '<td class="mono" id="tr-caret-' + i + '" style="color:var(--faint);text-align:center">▸</td>' +
       '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
       '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) + '</td>' + modCells +
       '<td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
-    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="' + (MODULES_ON?8:6) + '" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
+    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="8" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
   });
   html += '</table>';
@@ -2952,7 +2956,7 @@ function reportHTML_(rp, meta){
     '<h1>Conference Attendance Report</h1></div>' +
     '<table class="meta"><tr><td><b>Resident</b></td><td>' + rp.name + '</td><td><b>Class</b></td><td>' + rp.pgy + '</td></tr>' +
     '<tr><td><b>House</b></td><td>' + (rp.house||"—") + '</td><td><b>Academic year</b></td><td>' + meta.year + '</td></tr></table>' +
-    confSection + ahdSection + (MODULES_ON ? (ambSection + peacSection) : "") + excusedSection +
+    confSection + ahdSection + ambSection + peacSection + excusedSection +
     '<h2>Conference log (' + (rp.conferences?rp.conferences.length:0) + ')</h2>' +
     (rows ? '<table class="list"><thead><tr><th>Date</th><th>Conference</th><th>Credit</th></tr></thead><tbody>' + rows + '</tbody></table>'
           : '<p class="none">No conferences recorded yet.</p>') +
