@@ -398,13 +398,22 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
       <div class="msg err" id="r-track-err">Please select which session you're attending.</div>
     </div>
 
-    <p class="sub" style="text-align:center">Enter the code displayed at the front of the room.<br>It rotates every 30 seconds.</p>
+    <p class="sub" id="r-code-prompt" style="text-align:center">Enter the code displayed at the front of the room.<br>It rotates every 30 seconds.</p>
 
-    <div class="code-boxes">
+    <div class="code-boxes" id="r-code-boxes">
       <input class="code-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Code digit 1">
       <input class="code-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Code digit 2">
       <input class="code-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Code digit 3">
       <input class="code-box" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="Code digit 4">
+    </div>
+
+    <!-- Photo Proof conference path (shown instead of code boxes) -->
+    <div class="hide" id="r-photo-wrap">
+      <p class="sub" style="text-align:center;margin-bottom:8px">Upload a photo as proof of attendance. Once submitted it goes to a chief for approval — you'll see your credit once it's reviewed.</p>
+      <label class="fld" style="margin-top:6px">Photo / screenshot</label>
+      <input type="file" id="r-photo-file" accept="image/*" capture="environment" style="margin-bottom:8px" onchange="photoPreview()">
+      <canvas id="r-photo-canvas" style="display:none;width:100%;border-radius:8px;margin-bottom:8px"></canvas>
+      <div class="msg err" id="r-photo-err" style="display:none">Please attach a photo before submitting.</div>
     </div>
 
     <div class="msg err" id="r-code-err">That code is incorrect or has expired. Check the current code on the room screen and try again.</div>
@@ -414,8 +423,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
       <span class="chip info" id="sig-dev">Check-in linked to this device</span>
     </div>
 
-    <button class="btn btn-primary" style="margin-top:12px" id="r-checkin-btn" onclick="residentSubmit()">Check in</button>
-    <div class="divider"></div>
+    <button class="btn btn-primary" style="margin-top:12px" id="r-checkin-btn" onclick="residentSubmit()">Check in</button>    <div class="divider"></div>
     <button class="btn btn-ghost" onclick="showQArea()">No conference? Submit practice question credit</button>
   </div>
 
@@ -730,11 +738,34 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
           <option>Ambulatory Half Day</option>
           <option>AHD</option>
           <option>Bonus / Special Event</option>
+          <option>Photo Proof</option>
         </select>
       </div>
       <div>
         <label class="fld">Date</label>
         <input type="date" id="add-date" value="2026-07-08">
+      </div>
+    </div>
+    <div id="add-enddate-row" style="display:none">
+      <div class="grid-2">
+        <div>
+          <label class="fld">Open from</label>
+          <input type="date" id="add-enddate-start-mirror" disabled style="opacity:.6">
+        </div>
+        <div>
+          <label class="fld">Open through <span style="color:var(--muted);font-size:10.5px">(last day to upload)</span></label>
+          <input type="date" id="add-enddate">
+        </div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label class="fld">Conference credits</label>
+          <input type="number" id="add-ppcredit" value="2" min="0" step="0.5">
+        </div>
+        <div>
+          <label class="fld">Bonus AHD half-days <span style="color:var(--muted);font-size:10.5px">(total only, not %)</span></label>
+          <input type="number" id="add-ahdbonus" value="0" min="0" step="1">
+        </div>
       </div>
     </div>
     <label class="fld">Site</label>
@@ -782,6 +813,8 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="eyebrow" style="color:var(--adobe)">Review queue</div>
     <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it. Submissions whose screenshot looks reused (dated well before submission) are flagged and held back from bulk approve.</p>
     <button class="btn btn-ghost" style="margin-bottom:6px" onclick="bulkApproveUI()">Approve all Q-credit submissions</button>
+    <button class="btn btn-ghost" style="margin-bottom:6px" onclick="loadPhotoProofReview()">Photo Proof submissions</button>
+    <div id="photo-proof-out"></div>
     <div id="a-flags"></div>
     <p class="sub hide" id="a-noflags" style="text-align:center;padding:6px 0">No entries awaiting review.</p>
   </div>
@@ -916,7 +949,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-09";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -1173,9 +1206,29 @@ async function boot(){
   // clears it. (Forcing re-login here was creating extra sessions.)
   if (TOKEN){
     var sess = BOOT.session;
-    if (!sess){ try{ sess = await call('validateSession', TOKEN); }catch(e){ sess = null; } }
-    if (sess && sess.ok){ ADMIN = true; renderTabs("resident"); }
-    else if (sess && sess.ok === false){ TOKEN = null; localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token'); }
+    // Only act if we got a definitive answer from the server.
+    // If bootstrap threw (cold start, network) OR returned no session field,
+    // try validateSession once as a fallback.
+    if (!sess){
+      try{ sess = await call('validateSession', TOKEN); }
+      catch(e){ sess = null; }   // network/cold-start: keep token, try again next load
+    }
+    if (sess && sess.ok === true){ ADMIN = true; renderTabs("resident"); }
+    else if (sess && sess.ok === false){
+      // Only wipe the token if the server explicitly said it's invalid AND
+      // we actually reached the server (sess is a real response, not null).
+      // Guard: if this is a fresh deploy, the durable store may be empty.
+      // Give one more chance with a direct validateSession before giving up.
+      var confirm2;
+      try{ confirm2 = await call('validateSession', TOKEN); }catch(e){ confirm2 = null; }
+      if (confirm2 && confirm2.ok === false){
+        TOKEN = null;
+        localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token');
+      } else if (confirm2 && confirm2.ok === true){
+        ADMIN = true; renderTabs("resident");
+      }
+      // if confirm2 is null (server unreachable), keep the token
+    }
     // sess === null → couldn't reach server; keep the token, retry on next load
   }
   qOptions();
@@ -1191,8 +1244,29 @@ function applyConfigDefaults(){
     } else ft.textContent = "YOUR CHIEF RESIDENTS";
   }
   var todayIso = new Date().toISOString().slice(0,10);
-  var ad = document.getElementById("add-date"); if (ad && !ad.value) ad.value = todayIso;
-  if (ad) ad.value = todayIso;                                  // always default to today, not a stale date
+  // Default the date to today only when it is empty or still the hardcoded
+  // placeholder — never stomp a date the chief has actually chosen.
+  var ad = document.getElementById("add-date");
+  if (ad && (!ad.value || ad.value === "2026-07-08")) ad.value = todayIso;
+  var at = document.getElementById("add-type");
+  if (at && !at._photoListener){
+    at._photoListener = true;
+    at.addEventListener("change", function(){
+      var isPhoto = this.value === "Photo Proof";
+      var edr = document.getElementById("add-enddate-row");
+      if (edr) edr.style.display = isPhoto ? "" : "none";
+      var mir = document.getElementById("add-enddate-start-mirror");
+      var ad2 = document.getElementById("add-date");
+      if (mir && ad2) mir.value = ad2.value;
+      var cr = document.getElementById("add-credit");
+      if (cr){ cr.disabled = isPhoto; cr.title = isPhoto ? "Photo Proof uses the Conference credits field below" : ""; }
+    });
+    var adEl = document.getElementById("add-date");
+    if (adEl) adEl.addEventListener("change", function(){
+      var mir = document.getElementById("add-enddate-start-mirror");
+      if (mir) mir.value = this.value;
+    });
+  }
   var gs = document.getElementById("gen-start"); if (gs && BOOT.academicStart) gs.value = BOOT.academicStart;
   var ge = document.getElementById("gen-end");   if (ge && BOOT.academicEnd)   ge.value = BOOT.academicEnd;
 }
@@ -1273,25 +1347,69 @@ function renderTracks(lc){
     grid.appendChild(d);
   });
 }
+function photoPreview(){
+  var f = document.getElementById("r-photo-file"); if (!f || !f.files[0]) return;
+  var canvas = document.getElementById("r-photo-canvas"); canvas.style.display = "block";
+  var ctx2 = canvas.getContext("2d");
+  var img = new Image(); img.onload = function(){ canvas.width=img.width; canvas.height=img.height; ctx2.drawImage(img,0,0); };
+  img.src = URL.createObjectURL(f.files[0]);
+}
 function renderLiveConf(){
   var lc = chosenLiveConf();
   renderTracks(lc);
+  // Photo Proof conferences swap the rotating-code entry for a photo upload.
+  var isPhoto = !!(lc && lc.photoProof);
+  var boxes  = document.getElementById("r-code-boxes");
+  var prompt = document.getElementById("r-code-prompt");
+  var pwrap  = document.getElementById("r-photo-wrap");
+  var btn    = document.getElementById("r-checkin-btn");
+  if (boxes)  boxes.style.display  = isPhoto ? "none" : "";
+  if (prompt) prompt.style.display = isPhoto ? "none" : "";
+  if (pwrap)  pwrap.classList.toggle("hide", !isPhoto);
+  if (btn)    btn.textContent = isPhoto ? "Submit photo for review" : "Check in";
+
   if (lc){
     document.getElementById("r-conf-name").textContent = confLabel(lc.type, lc.title) + (siteTag(lc.site) ? " · " + siteTag(lc.site) : "");
-    document.getElementById("r-conf-meta").textContent = lc.date + " · " + lc.time + (lc.live ? " · IN SESSION" : " · OPEN ALL DAY");
+    document.getElementById("r-conf-meta").textContent = isPhoto
+      ? (lc.date + (lc.endDate && lc.endDate !== lc.date ? " – " + lc.endDate : "") + " · OPEN FOR UPLOAD")
+      : (lc.date + " · " + lc.time + (lc.live ? " · IN SESSION" : " · OPEN ALL DAY"));
   } else {
     document.getElementById("r-conf-name").textContent = "No conference is scheduled today";
     document.getElementById("r-conf-meta").textContent = "Q-CREDIT SUBMISSION IS STILL AVAILABLE BELOW";
   }
 }
 async function residentSubmit(){
-  if (checkinInFlight) return;                     // ignore a second tap while the first is registering
+  if (checkinInFlight) return;
   var liveNow = chosenLiveConf();
-  if (!liveNow){ 
+  if (!liveNow){
     var ce = document.getElementById("r-code-err");
-    ce.textContent = "No conference is scheduled today.";
-    ce.style.display="block"; return;
+    ce.textContent = "No conference is scheduled today."; ce.style.display="block"; return;
   }
+  // Photo Proof path — no rotating code; upload a photo instead
+  if (liveNow.photoProof){
+    var pf = document.getElementById("r-photo-file");
+    var pe = document.getElementById("r-photo-err");
+    pe.style.display = "none";
+    if (!pf || !pf.files[0]){ pe.style.display="block"; pe.textContent="Please attach a photo before submitting."; return; }
+    var btn = document.getElementById("r-checkin-btn");
+    checkinInFlight = true; btn.disabled = true; btn.style.opacity = "0.75";
+    btn.innerHTML = 'Hang on \u2014 uploading <span class="spin-dot"></span>';
+    function relBtn(){ checkinInFlight=false; btn.disabled=false; btn.style.opacity=""; btn.innerHTML="Submit photo for review"; }
+    var b64 = await new Promise(function(res){ var reader=new FileReader(); reader.onload=function(){ res(reader.result.split(",")[1]); }; reader.readAsDataURL(pf.files[0]); });
+    var shotDate = pf.files[0].lastModified ? String(pf.files[0].lastModified) : "";
+    var r2;
+    try{ r2 = await call('photoProofSubmit', { email: currentResident.email, confId: liveNow.id, b64: b64, mediaType: pf.files[0].type||"image/jpeg", shotDate: shotDate, deviceId: deviceId() }); }
+    catch(e){ relBtn(); pe.style.display="block"; pe.textContent=e.message; return; }
+    if (!r2.ok){ relBtn(); pe.style.display="block"; pe.textContent = r2.reason==="dupe" ? "You've already submitted for this event." : r2.reason==="notInWindow" ? "This event's submission window isn't open." : "Submission failed — try again."; return; }
+    checkinInFlight = false; btn.style.opacity=""; btn.innerHTML="Submit photo for review";
+    document.getElementById("r-step2").classList.add("hide");
+    var s3 = document.getElementById("r-step3"); s3.classList.remove("hide");
+    document.getElementById("r-success-chip").textContent = "SUBMITTED · PENDING REVIEW";
+    document.getElementById("r-success-line").textContent = "Photo received for " + (r2.title||liveNow.title)
+      + ". A chief will review it and credit you once approved (" + rewardText(liveNow.credit, liveNow.ahdBonus) + ").";
+    return;
+  }
+  // Standard code-entry path below
   if (liveNow.options && liveNow.options.length && !chosenTrack){
     document.getElementById("r-track-err").style.display = "block";
     return;
@@ -1814,7 +1932,7 @@ async function fillAllSelect(){
   if (!ADMIN_DATA){ try{ ADMIN_DATA = await call('getAdminData', TOKEN); }catch(e){ return; } }
   var sel = document.getElementById("p-select");
   sel.innerHTML = "";
-  ADMIN_DATA.conferences.filter(function(c){ return inWindow(c.date, 14, 28) && c.status !== "Cancelled"; }).forEach(function(c){
+  ADMIN_DATA.conferences.filter(function(c){ return inWindow(c.date, 21, 28) && c.status !== "Cancelled"; }).forEach(function(c){
     var o = document.createElement("option");
     o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
     if (c.id===presenterConf) o.selected = true;
@@ -2038,7 +2156,7 @@ function renderAdmin(){
   (function(){
     var sel = document.getElementById("bulk-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
-    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28); })
+    D.conferences.filter(function(c){ return inWindow(c.date, 400, 28); })
       .sort(function(a,b){ return a.date < b.date ? 1 : a.date > b.date ? -1 : (a.type||"").localeCompare(b.type||""); })
       .forEach(function(c){
         var o = document.createElement("option");
@@ -2051,7 +2169,7 @@ function renderAdmin(){
   (function(){
     var sel = document.getElementById("exp-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
-    D.conferences.filter(function(c){ return inWindow(c.date, 56, 28); }).forEach(function(c){
+    D.conferences.filter(function(c){ return inWindow(c.date, 400, 28); }).forEach(function(c){
       var o = document.createElement("option");
       o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
       sel.appendChild(o);
@@ -2092,27 +2210,60 @@ function renderAdmin(){
         bsel.appendChild(o);
       });
     }
-    // roster grouped by house / clinic group, prelims excluded
+    // roster grouped by clinic week (house/group + their current week), prelims excluded
     var excl = {}; (D.peacExclude||[]).forEach(function(e){ excl[e]=1; });
     var GNUM = {"Catalina":1,"Rincon":2,"Santa Rita":3,"Tortolita":4,"Tucson":5};
-    var byHouse = {};
-    D.roster.forEach(function(r){
-      if (excl[String(r.email).toLowerCase()]) return;
-      var h = r.house || "— no house —";
-      (byHouse[h] = byHouse[h] || []).push(r);
-    });
-    var order = ["Catalina","Rincon","Santa Rita","Tortolita","Tucson"];
-    var houses = Object.keys(byHouse).sort(function(a,b){ var ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
-    pr.innerHTML = houses.map(function(h){
-      var label = GNUM[h] ? (h + "/Group " + GNUM[h]) : h;
-      var rows = byHouse[h].sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); }).map(function(r){
-        return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
-      }).join("");
-      return '<div style="margin-top:8px"><div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--sky)">' + label +
-        ' <span style="color:var(--faint);font-weight:400">(' + byHouse[h].length + ')</span>' +
-        '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button></div>' +
-        '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
-    }).join("");
+    var cwr = D.clinicWeekRoster || [];
+
+    // Flag which group is active THIS week
+    var thisMon = (function(){
+      var d=new Date(); d.setDate(d.getDate()-d.getDay()+1); // Monday
+      return d.toISOString().slice(0,10);
+    })();
+
+    if (cwr.length) {
+      // clinic-week view: each group header shows week, with residents sorted alpha
+      pr.innerHTML = cwr.map(function(g){
+        var eligible = g.residents.filter(function(r){ return !excl[String(r.email).toLowerCase()]; })
+          .sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); });
+        if (!eligible.length) return '';
+        var isActive = g.monday === thisMon;
+        var weekLabel = isActive
+          ? '<span style="background:var(--saguaro);color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;margin-left:6px">THIS WEEK</span>'
+          : '<span style="color:var(--muted);font-size:10.5px;margin-left:6px">week of ' + g.monday + '</span>';
+        var rows = eligible.map(function(r){
+          return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> '
+            + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
+        }).join('');
+        return '<div style="margin-top:10px">'
+          + '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--sky);border-top:1px solid var(--line-soft);padding-top:8px">'
+          + g.house + '/Group ' + g.group + weekLabel
+          + '<span style="color:var(--faint);font-weight:400;margin-left:4px">(' + eligible.length + ')</span>'
+          + '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button>'
+          + '</div>'
+          + '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
+      }).join('');
+    } else {
+      // fallback: flat house grouping if clinicWeekRoster not loaded
+      var byHouse = {};
+      D.roster.forEach(function(r){
+        if (excl[String(r.email).toLowerCase()]) return;
+        var h = r.house || "— no house —";
+        (byHouse[h] = byHouse[h] || []).push(r);
+      });
+      var order = ["Catalina","Rincon","Santa Rita","Tortolita","Tucson"];
+      var houses = Object.keys(byHouse).sort(function(a,b){ var ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
+      pr.innerHTML = houses.map(function(h){
+        var label = GNUM[h] ? (h + "/Group " + GNUM[h]) : h;
+        var rows = byHouse[h].sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); }).map(function(r){
+          return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
+        }).join('');
+        return '<div style="margin-top:8px"><div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--sky)">' + label
+          + ' <span style="color:var(--faint);font-weight:400">(' + byHouse[h].length + ')</span>'
+          + '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button></div>'
+          + '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
+      }).join('');
+    }
     peacAwardCount();
   }
 
@@ -2165,10 +2316,12 @@ function editRow(row, c){
   f.innerHTML =
     '<input class="full" id="ed-title" value="' + String(c.title).replace(/"/g,'&quot;') + '" placeholder="Title">' +
     '<input id="ed-date" type="date" value="' + (c.date||"") + '">' +
+    '<input id="ed-enddate" type="date" value="' + (c.endDate||"") + '" title="Open through (leave blank for a single day)">' +
     '<input id="ed-time" value="' + c.time + '" placeholder="Time (e.g., 12:00–13:00)">' +
     '<select id="ed-site">' + ["All Sites","BUMCT","South","VA",""].map(function(s){
       return '<option value="'+s+'"'+(s===c.site?' selected':'')+'>'+(s||"—")+'</option>'; }).join("") + '</select>' +
-    '<input id="ed-credit" type="number" step="0.5" min="0.5" value="' + c.credit + '">' +
+    '<input id="ed-credit" type="number" step="0.5" min="0" value="' + c.credit + '" title="Conference credits">' +
+    '<input id="ed-ahdbonus" type="number" step="1" min="0" value="' + (c.ahdBonus||0) + '" title="Bonus AHD half-days (total only, not the %)">' +
     '<label class="tgl"><input type="checkbox" id="ed-q"' + (c.qEligible?' checked':'') + '> Q-credit eligible</label>';
   var bar = document.createElement("div");
   bar.className = "full"; bar.style.cssText = "display:flex;gap:8px";
@@ -2178,11 +2331,14 @@ function editRow(row, c){
     var o = {
       title: f.querySelector("#ed-title").value.trim() || c.type,
       date: f.querySelector("#ed-date").value || c.date,
+      endDate: f.querySelector("#ed-enddate").value || "",
       time: f.querySelector("#ed-time").value.trim() || "TBD",
       site: f.querySelector("#ed-site").value,
-      credit: parseFloat(f.querySelector("#ed-credit").value) || 1,
+      credit: parseFloat(f.querySelector("#ed-credit").value) || 0,
+      ahdBonus: parseInt(f.querySelector("#ed-ahdbonus").value, 10) || 0,
       qEligible: f.querySelector("#ed-q").checked
     };
+    if (o.endDate && o.endDate < o.date){ toast("The end date can't be before the start date."); return; }
     if (o.date !== c.date && !confirm("Move this conference to " + o.date + "? Existing check-ins stay attached to it.")) return;
     try{ await call('updateConference', TOKEN, c.id, o); }catch(e){ toast(e.message); return; }
     notify("Saved.");
@@ -2250,6 +2406,44 @@ async function deleteConfUI(confId, future){
 async function resolveFlagUI(logId, approve){
   try{ await call('resolveFlag', TOKEN, logId, approve); }catch(e){ toast(e.message); return; }
   loadAdmin();
+}
+function rewardText(credit, ahdBonus){
+  var parts = [];
+  if (credit) parts.push(credit + " conference credit" + (credit==1?"":"s"));
+  if (ahdBonus) parts.push(ahdBonus + " bonus AHD half-day" + (ahdBonus==1?"":"s"));
+  return parts.length ? parts.join(" + ") : "no credit";
+}
+async function loadPhotoProofReview(){
+  var out = document.getElementById("photo-proof-out");
+  out.innerHTML = '<p class="sub">Loading…</p>';
+  var r;
+  try{ r = await call('photoProofReviewData', TOKEN); }
+  catch(e){ out.innerHTML=""; toast(e.message); return; }
+  if (!r.pending.length){ out.innerHTML='<div class="msg ok" style="display:block;margin-bottom:8px">No Photo Proof submissions pending.</div>'; return; }
+  out.innerHTML = '<div class="eyebrow" style="margin-top:10px">' + r.pending.length + ' photo proof submission(s) pending</div>';
+  r.pending.forEach(function(s){
+    var d = document.createElement("div"); d.className = "flag-item";
+    d.innerHTML =
+      '<div class="fr"><span class="who">' + s.email + '</span>' +
+      '<span class="mono" style="margin-left:auto;font-size:9.5px;color:var(--faint)">' + s.confDate + (s.endDate&&s.endDate!==s.confDate?' → '+s.endDate:'') + '</span></div>' +
+      '<div class="why">' + s.confTitle + '</div>' +
+      (s.fileUrl ? '<a href="' + s.fileUrl + '" target="_blank"><img src="' + s.fileUrl + '" style="max-width:100%;max-height:160px;border-radius:6px;margin:6px 0;display:block" alt="proof"></a>' : '<p class="sub">No file</p>');
+    var q = document.createElement("div"); q.className = "qbtns";
+    var approve = document.createElement("button"); approve.className = "qbtn ok";
+    approve.textContent = "Approve — " + rewardText(s.credit, s.ahdBonus);
+    approve.onclick = function(){ if(confirm("Approve and credit " + s.email + "?")) photoProofResolveUI(s._row, true, d); };
+    var deny = document.createElement("button"); deny.className = "qbtn no"; deny.textContent = "Deny";
+    deny.onclick = function(){ if(confirm("Deny this submission?")) photoProofResolveUI(s._row, false, d); };
+    q.appendChild(approve); q.appendChild(deny); d.appendChild(q);
+    out.appendChild(d);
+  });
+}
+async function photoProofResolveUI(rowNum, approve, card){
+  var r;
+  try{ r = await call('photoProofResolve', TOKEN, rowNum, approve); }
+  catch(e){ toast(e.message); return; }
+  toast(approve ? "Approved — 2 credits + 1 AHD bonus awarded." : "Denied.");
+  if(card){ card.style.opacity="0.5"; card.querySelectorAll("button").forEach(function(b){ b.disabled=true; }); }
 }
 async function bulkApproveUI(){
   var n = (ADMIN_DATA && ADMIN_DATA.flags) ? ADMIN_DATA.flags.length : 0;
@@ -2665,14 +2859,22 @@ async function removeDupesUI(){
   loadAdmin();
 }
 async function addConference(){
+  var type = document.getElementById("add-type").value;
+  var isPhoto = type === "Photo Proof";
   var o = {
-    type: document.getElementById("add-type").value,
+    type: type,
     date: document.getElementById("add-date").value,
+    endDate: isPhoto ? (document.getElementById("add-enddate").value || "") : "",
     site: document.getElementById("add-site").value,
-    title: document.getElementById("add-title").value.trim() || "Untitled session",
-    credit: parseFloat(document.getElementById("add-credit").value) || 1,
+    title: document.getElementById("add-title").value.trim() || (isPhoto ? "Photo Proof Event" : "Untitled session"),
+    credit: isPhoto ? (parseFloat(document.getElementById("add-ppcredit").value) || 0)
+                    : (parseFloat(document.getElementById("add-credit").value) || 1),
+    ahdBonus: isPhoto ? (parseInt(document.getElementById("add-ahdbonus").value, 10) || 0) : 0,
     qEligible: document.getElementById("add-qelig").checked
   };
+  if (isPhoto && !o.endDate){ toast("Set the last day to upload."); return; }
+  if (isPhoto && o.endDate < o.date){ toast("The end date can't be before the start date."); return; }
+  if (isPhoto && !o.credit && !o.ahdBonus){ toast("Give the event some value — credits, bonus AHD, or both."); return; }
   try{ await call('addConference', TOKEN, o); }catch(e){ toast(e.message); return; }
   document.getElementById("add-title").value = "";
   var ok = document.getElementById("add-ok");
@@ -2851,11 +3053,14 @@ function renderTally(){
   var rows = ADMIN_DATA.tally;
   var prelim = prelimSet_();
   var na = '<span style="color:var(--faint)">N/A</span>';
-  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
+  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th title="Share of conferences offered while this resident was on night float, ICU, or vacation">Unprot.</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = null;
   rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
       : '<span class="' + (r.ahdPct >= 50 ? 'st-ok' : 'st-m') + '">' + r.ahdPct + '%</span>';
+    // Unprotected time — amber above 25% so a low conference total reads fairly.
+    var up = (r.unprotPct == null) ? '<span style="color:var(--faint)">—</span>'
+      : '<span' + (r.unprotPct >= 25 ? ' class="st-m"' : '') + ' title="' + (r.unprotected||0) + ' of ' + (r.offeredAll||0) + ' offered sessions during NF/ICU/vacation">' + r.unprotPct + '%</span>';
     var showClass = (String(r.pgy) !== String(lastPgy));
     var isPrelim = prelim[String(r.email).toLowerCase()];
     var modCells = '<td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) + '</td>';
@@ -2863,9 +3068,10 @@ function renderTally(){
       '<td class="mono" id="tr-caret-' + i + '" style="color:var(--faint);text-align:center">▸</td>' +
       '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
-      '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) + '</td>' + modCells +
+      '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) +
+      '</td><td class="mono">' + up + '</td>' + modCells +
       '<td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
-    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="8" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
+    html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="9" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
   });
   html += '</table>';
@@ -2948,7 +3154,12 @@ function reportHTML_(rp, meta){
 
   // Unprotected rotations note
   var excusedSection = rp.hasRotations
-    ? '<p style="font-size:11px;color:#666;margin:12px 0 0"><b>Excused (unprotected rotations):</b> ' + rp.excusedTotal + ' sessions — Night Float ' + ex.NF + ' · ICU ' + ex.ICU + ' · Vacation ' + ex.Vacation + '. Adjusted rates exclude these, since conference/AHD/Amb are not protected on those rotations.</p>'
+    ? '<h2>Time on unprotected rotations</h2>'
+      + '<table class="meta"><tr><td><b>Conferences offered during NF / ICU / vacation</b></td>'
+      + '<td><b>' + (rp.offeredSessions ? Math.round(100 * rp.excusedTotal / rp.offeredSessions) : 0) + '%</b>'
+      + ' &nbsp;<span style="color:#777">(' + rp.excusedTotal + ' of ' + rp.offeredSessions + ' offered)</span></td></tr>'
+      + '<tr><td><b>Breakdown</b></td><td>Night Float ' + ex.NF + ' &middot; ICU ' + ex.ICU + ' &middot; Vacation ' + ex.Vacation + '</td></tr></table>'
+      + '<p style="font-size:10.5px;color:#777;margin:4px 0 0">Conference attendance is not protected on these rotations. Read the totals above with this share in mind; the adjusted rates already exclude these sessions.</p>'
     : '<p style="font-size:11px;color:#999;margin:12px 0 0;font-style:italic">Load the Rotations sheet to show attendance adjusted for night float, ICU, and vacation.</p>';
 
   return '<section class="rpt">' +
