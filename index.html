@@ -949,7 +949,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27b";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -2063,7 +2063,19 @@ async function loadAdmin(){
       '<p class="sub" style="text-align:center;padding:14px 0">Loading this year\'s schedule…</p>';
   }
   try{ ADMIN_DATA = await call('getAdminData', TOKEN); }
-  catch(e){ toast("Session expired — sign in again."); doLogout(); return; }
+  catch(e){
+    var msg = String(e && e.message || e);
+    // Only a genuine auth failure should sign you out. Anything else (a missing
+    // sheet, a backend exception, a dropped connection) used to be reported as
+    // "Session expired" and logged you out — which hid the real problem.
+    if (/sign in again|session expired|not authorized/i.test(msg)){
+      toast("Session expired — sign in again."); doLogout(); return;
+    }
+    document.getElementById("a-week").innerHTML =
+      '<div class="msg err" style="display:block">Couldn\'t load the admin data.<br><span class="mono" style="font-size:10.5px">' +
+      msg.replace(/</g,"&lt;") + '</span><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="loadAdmin()">Retry</button></div>';
+    return;
+  }
   renderAdmin();
 }
 function renderAdmin(){
