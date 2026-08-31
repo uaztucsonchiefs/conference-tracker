@@ -654,6 +654,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button>
   </div>
 
+  <div class="msg err" id="admin-section-err" style="display:none;margin-bottom:10px"></div>
   <div class="admin-nav" id="admin-nav">
     <button onclick="jumpTo('sec-tally')">Tally</button>
     <button onclick="jumpTo('sec-award')">Award</button>
@@ -949,7 +950,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27b";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27c";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -2078,7 +2079,26 @@ async function loadAdmin(){
   }
   renderAdmin();
 }
+function safeSection(name, fn){
+  try { fn(); }
+  catch(e){
+    console.error("Admin section failed: " + name, e);
+    if (!window.__adminSectionErrors) window.__adminSectionErrors = [];
+    window.__adminSectionErrors.push(name + ": " + (e && e.message || e));
+  }
+}
+function reportSectionErrors(){
+  var errs = window.__adminSectionErrors || [];
+  var box = document.getElementById("admin-section-err");
+  if (!box) return;
+  if (!errs.length){ box.style.display = "none"; return; }
+  box.style.display = "block";
+  box.innerHTML = "<b>Some admin sections didn't load:</b><br>" +
+    errs.map(function(x){ return "• " + String(x).replace(/</g,"&lt;"); }).join("<br>") +
+    '<br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ADMIN_DATA=null;loadAdmin()">Reload admin data</button>';
+}
 function renderAdmin(){
+  window.__adminSectionErrors = [];
   var D = ADMIN_DATA;
 
   /* schedule — one week at a time */
@@ -2086,6 +2106,7 @@ function renderAdmin(){
   var s = iso(weekStart), e = iso(wkEnd);
   var fmt = function(d){ return d.toLocaleDateString(undefined, {month:"short", day:"numeric"}); };
   document.getElementById("wk-label").textContent = "Week of " + fmt(weekStart) + " – " + fmt(wkEnd) + ", " + wkEnd.getFullYear();
+  safeSection("week schedule", function(){
   var wk = document.getElementById("a-week");
   wk.innerHTML = "";
   var weekConfs = D.conferences.filter(function(c){ return c.date >= s && c.date <= e; });
@@ -2162,10 +2183,11 @@ function renderAdmin(){
     });
     wk.appendChild(g);
   });
+  });
 
   /* bulk-award selector — excludes Q-credit conferences (those earn credit via
      question submission + review, never a blanket award) */
-  (function(){
+  safeSection("bulk conference list", function(){
     var sel = document.getElementById("bulk-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
     D.conferences.filter(function(c){ return inWindow(c.date, 400, 28); })
@@ -2176,9 +2198,9 @@ function renderAdmin(){
         sel.appendChild(o);
       });
     if (keep) sel.value = keep;
-  })();
+  });
   /* export selector — all conferences */
-  (function(){
+  safeSection("export conference list", function(){
     var sel = document.getElementById("exp-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
     D.conferences.filter(function(c){ return inWindow(c.date, 400, 28); }).forEach(function(c){
@@ -2190,14 +2212,19 @@ function renderAdmin(){
   })();
 
   /* roster checkboxes */
+  safeSection("bulk resident list", function(){
   var br = document.getElementById("bulk-roster");
+  if (!br) return;
   br.innerHTML = "";
-  D.roster.forEach(function(r){
+  (D.roster||[]).forEach(function(r){
     var l = document.createElement("label");
     l.className = "check-line";
     l.innerHTML = '<input type="checkbox" value="' + r.email + '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">PGY-' + r.pgy + '</span>';
     br.appendChild(l);
   });
+  });
+
+  safeSection("PEAC award list", function(){
   var pr = document.getElementById("peac-award-roster");
   if (pr){
     // block dropdown (hardcoded so it always populates; matches Code.gs block order)
@@ -2278,8 +2305,10 @@ function renderAdmin(){
     }
     peacAwardCount();
   }
+  });
 
   /* flags */
+  reportSectionErrors();
   var holder = document.getElementById("a-flags");
   holder.innerHTML = "";
   document.getElementById("a-noflags").classList.toggle("hide", D.flags.length>0);
