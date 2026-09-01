@@ -236,7 +236,11 @@ label.fld{display:block;font-size:11px;font-weight:700;color:var(--muted);letter
 .check-line:last-child{border-bottom:none}
 .check-line input{accent-color:var(--saguaro-d);width:16px;height:16px}
 .check-line .cls{font-family:var(--mono);font-size:9.5px;color:var(--faint);margin-left:auto}
-.roster-list{max-height:230px;overflow-y:auto;border:1px solid var(--line);border-radius:9px;padding:4px 10px;background:var(--panel-2);margin-top:6px}
+.cls-group{margin-bottom:4px}
+.cls-head{display:flex;align-items:center;gap:8px;font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--saguaro-d);background:var(--saguaro-tint);border-radius:6px;padding:6px 9px;margin:8px 0 2px;position:sticky;top:0;z-index:2}
+.cls-head .n{color:var(--muted);font-weight:400;letter-spacing:0}
+.cls-head button{margin-left:auto;padding:2px 9px;font-size:10px}
+.roster-list{max-height:340px;overflow-y:auto;border:1px solid var(--line);border-radius:9px;padding:4px 10px;background:var(--panel-2);margin-top:6px}
 .export-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 .exp-btn{border:1px solid var(--line);background:var(--panel-2);border-radius:11px;padding:13px 12px;cursor:pointer;text-align:left;transition:all .13s}
 .exp-btn:hover{border-color:var(--saguaro);background:var(--saguaro-tint)}
@@ -685,7 +689,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="bulkMatch()">Match pasted list</button>
     <div class="msg warn" id="bulk-unmatched"></div>
     <div class="fld" style="display:flex;align-items:center;gap:10px">
-      <span>Residents</span>
+      <span>Residents by class</span>
       <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="bulkSelectAll(true)">Select all</button>
       <button class="btn btn-ghost btn-sm" style="padding:3px 10px" onclick="bulkSelectAll(false)">Clear</button>
     </div>
@@ -844,7 +848,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
       <option value="late">Submitted after the deadline (still credited)</option>
     </select>
     <div class="fld" style="display:flex;align-items:center;gap:10px;margin-top:10px">
-      <span>Residents by clinic group (house)</span>
+      <span>Residents by clinic group</span>
       <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="peacAwardSelectAll(true)">All</button>
       <button class="btn btn-ghost btn-sm" style="padding:3px 10px" onclick="peacAwardSelectAll(false)">Clear</button>
     </div>
@@ -951,7 +955,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27g";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27k";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -2206,6 +2210,11 @@ function renderAdmin(){
         o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title + (c.qEligible ? "  · Q-credit" : "");
         sel.appendChild(o);
       });
+    if (!sel.options.length){
+      var o0 = document.createElement("option");
+      o0.value = ""; o0.textContent = "— no conferences loaded —";
+      sel.appendChild(o0);
+    }
     if (keep) sel.value = keep;
   });
   /* export selector — all conferences */
@@ -2222,15 +2231,34 @@ function renderAdmin(){
 
   /* roster checkboxes */
   safeSection("bulk resident list", function(){
-  var br = document.getElementById("bulk-roster");
-  if (!br) return;
-  br.innerHTML = "";
-  (D.roster||[]).forEach(function(r){
-    var l = document.createElement("label");
-    l.className = "check-line";
-    l.innerHTML = '<input type="checkbox" value="' + r.email + '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">PGY-' + r.pgy + '</span>';
-    br.appendChild(l);
-  });
+    var br = document.getElementById("bulk-roster");
+    if (!br) return;
+    br.innerHTML = "";
+    var list = D.roster || [];
+    if (!list.length){
+      br.innerHTML = '<p class="sub" style="padding:8px 2px;color:var(--brick)">No residents loaded — the admin data didn\'t include a roster.</p>';
+      return;
+    }
+    // Grouped by PGY class, alphabetical by last name within each class.
+    var byClass = {};
+    list.forEach(function(r){
+      var k = classSortKey(r.pgy);
+      (byClass[k] = byClass[k] || []).push(r);
+    });
+    br.innerHTML = Object.keys(byClass).sort(function(a,b){ return Number(a) - Number(b); }).map(function(k){
+      var rows = byClass[k].sort(function(a,b){
+        return (a.last + " " + a.first).toLowerCase().localeCompare((b.last + " " + b.first).toLowerCase());
+      }).map(function(r){
+        return '<label class="check-line"><input type="checkbox" value="' + r.email +
+               '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + '</label>';
+      }).join("");
+      return '<div class="cls-group">' +
+        '<div class="cls-head">' + classLabelJS(byClass[k][0].pgy) +
+        '<span class="n">(' + byClass[k].length + ')</span>' +
+        '<button class="btn btn-ghost btn-sm" onclick="bulkSelectClass(this)">select class</button></div>' +
+        rows + '</div>';
+    }).join("");
+    bulkCount();
   });
 
   safeSection("PEAC award list", function(){
@@ -2258,59 +2286,37 @@ function renderAdmin(){
         bsel.appendChild(o);
       });
     }
-    // roster grouped by clinic week (house/group + their current week), prelims excluded
+    // Modules are assigned by CLINIC GROUP, so this list groups by group/house
+    // (alphabetical within each). Prelims are excluded — no ambulatory modules.
     var excl = {}; (D.peacExclude||[]).forEach(function(e){ excl[e]=1; });
     var GNUM = {"Catalina":1,"Rincon":2,"Santa Rita":3,"Tortolita":4,"Tucson":5};
-    var cwr = D.clinicWeekRoster || [];
-
-    // Flag which group is active THIS week
-    var thisMon = (function(){
-      var d=new Date(); d.setDate(d.getDate()-d.getDay()+1); // Monday
-      return d.toISOString().slice(0,10);
-    })();
-
-    if (cwr.length) {
-      // clinic-week view: each group header shows week, with residents sorted alpha
-      pr.innerHTML = cwr.map(function(g){
-        var eligible = g.residents.filter(function(r){ return !excl[String(r.email).toLowerCase()]; })
-          .sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); });
-        if (!eligible.length) return '';
-        var isActive = g.monday === thisMon;
-        var weekLabel = isActive
-          ? '<span style="background:var(--saguaro);color:#fff;border-radius:4px;padding:1px 6px;font-size:10px;margin-left:6px">THIS WEEK</span>'
-          : '<span style="color:var(--muted);font-size:10.5px;margin-left:6px">week of ' + g.monday + '</span>';
-        var rows = eligible.map(function(r){
-          return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> '
-            + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
-        }).join('');
-        return '<div style="margin-top:10px">'
-          + '<div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--sky);border-top:1px solid var(--line-soft);padding-top:8px">'
-          + g.house + '/Group ' + g.group + weekLabel
-          + '<span style="color:var(--faint);font-weight:400;margin-left:4px">(' + eligible.length + ')</span>'
-          + '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button>'
-          + '</div>'
-          + '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
-      }).join('');
+    var eligible = (D.roster||[]).filter(function(r){ return !excl[String(r.email).toLowerCase()]; });
+    if (!eligible.length){
+      pr.innerHTML = '<p class="sub" style="padding:8px 2px;color:var(--brick)">No residents loaded.</p>';
     } else {
-      // fallback: flat house grouping if clinicWeekRoster not loaded
-      var byHouse = {};
-      (D.roster||[]).forEach(function(r){
-        if (excl[String(r.email).toLowerCase()]) return;
-        var h = r.house || "— no house —";
-        (byHouse[h] = byHouse[h] || []).push(r);
+      var byGroup = {};
+      eligible.forEach(function(r){
+        var h = r.house || "— no clinic group —";
+        (byGroup[h] = byGroup[h] || []).push(r);
       });
       var order = ["Catalina","Rincon","Santa Rita","Tortolita","Tucson"];
-      var houses = Object.keys(byHouse).sort(function(a,b){ var ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib); });
-      pr.innerHTML = houses.map(function(h){
-        var label = GNUM[h] ? (h + "/Group " + GNUM[h]) : h;
-        var rows = byHouse[h].sort(function(a,b){ return (a.last+a.first).toLowerCase().localeCompare((b.last+b.first).toLowerCase()); }).map(function(r){
-          return '<label class="check-line"><input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
-        }).join('');
-        return '<div style="margin-top:8px"><div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--sky)">' + label
-          + ' <span style="color:var(--faint);font-weight:400">(' + byHouse[h].length + ')</span>'
-          + '<button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:1px 8px;font-size:10px" onclick="peacAwardHouse(this)">group</button></div>'
-          + '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
-      }).join('');
+      pr.innerHTML = Object.keys(byGroup).sort(function(a,b){
+        var ia = order.indexOf(a), ib = order.indexOf(b);
+        return (ia<0?99:ia) - (ib<0?99:ib);
+      }).map(function(h){
+        var rows = byGroup[h].sort(function(a,b){
+          return (a.last+" "+a.first).toLowerCase().localeCompare((b.last+" "+b.first).toLowerCase());
+        }).map(function(r){
+          return '<label class="check-line"><input type="checkbox" value="' + r.email +
+                 '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first +
+                 ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
+        }).join("");
+        var label = GNUM[h] ? ("Group " + GNUM[h] + " · " + h) : h;
+        return '<div class="cls-group"><div class="cls-head">' + label +
+          '<span class="n">(' + byGroup[h].length + ')</span>' +
+          '<button class="btn btn-ghost btn-sm" onclick="peacSelectClass(this)">select group</button></div>' +
+          '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
+      }).join("");
     }
     peacAwardCount();
   }
@@ -2332,7 +2338,14 @@ function renderAdmin(){
   holder.innerHTML = "";
   var flags = D.flags || [];
   var nf = document.getElementById("a-noflags");
-  if (nf) nf.classList.toggle("hide", flags.length>0);
+  if (nf){
+    nf.classList.toggle("hide", flags.length>0);
+    // Be explicit: this queue only holds FLAGGED items. With AI screenshot
+    // verification off, Q-credit posts straight through and is never flagged,
+    // so an empty queue here is normal — not a broken panel.
+    nf.textContent = flags.length ? "" :
+      "Nothing awaiting review. Q-credit submissions only appear here if they were flagged (reused screenshot, shared device). With AI verification off they post directly, so this staying empty is normal.";
+  }
   flags.forEach(function(f){
     var d = document.createElement("div");
     d.className = "flag-item";
@@ -3029,6 +3042,14 @@ function peacAwardCount(){
   var n = document.querySelectorAll("#peac-award-roster input:checked").length;
   var el = document.getElementById("peac-award-n"); if (el) el.textContent = n;
 }
+function peacSelectClass(btn){
+  var group = btn.closest(".cls-group");
+  if (!group) return;
+  var boxes = group.querySelectorAll("input[type=checkbox]");
+  var allOn = Array.prototype.every.call(boxes, function(cb){ return cb.checked; });
+  Array.prototype.forEach.call(boxes, function(cb){ cb.checked = !allOn; });
+  peacAwardCount();
+}
 function peacAwardSelectAll(state){
   Array.prototype.forEach.call(document.querySelectorAll("#peac-award-roster input[type=checkbox]"), function(cb){ cb.checked = state; });
   peacAwardCount();
@@ -3113,6 +3134,22 @@ async function bulkAward(){
 }
 
 /* tally */
+/* Sort key for PGY class: 1,2,3 … then Chief/other last. */
+function classSortKey(pgy){
+  var raw = String(pgy==null?"":pgy).trim().toUpperCase().replace(/^PGY[-\s]?/,"");
+  var map = {I:1, II:2, III:3, IV:4, V:5};
+  var n = map[raw] != null ? map[raw] : parseInt(raw,10);
+  return (n>=1 && n<=8) ? n : 99;
+}
+/* Select / deselect every resident in one PGY class block. */
+function bulkSelectClass(btn){
+  var group = btn.closest(".cls-group");
+  if (!group) return;
+  var boxes = group.querySelectorAll("input[type=checkbox]");
+  var allOn = Array.prototype.every.call(boxes, function(cb){ return cb.checked; });
+  Array.prototype.forEach.call(boxes, function(cb){ cb.checked = !allOn; });
+  bulkCount();
+}
 function classLabelJS(pgy){
   var raw = String(pgy==null?"":pgy).trim();
   var s = raw.toUpperCase().replace(/^PGY[-\s]?/,"");
