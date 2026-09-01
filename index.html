@@ -955,7 +955,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27L";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "SEP01-A";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -2258,6 +2258,16 @@ function renderAdmin(){
         '<button class="btn btn-ghost btn-sm" onclick="bulkSelectClass(this)">select class</button></div>' +
         rows + '</div>';
     }).join("");
+    // Last-resort fallback: if the grouped markup somehow came out empty, fall
+    // back to a plain flat list so this box can never render blank with no
+    // explanation. Whatever happens, the chief sees residents or a reason.
+    if (!br.innerHTML){
+      br.innerHTML = '<div class="cls-head">All residents <span class="n">(' + list.length + ')</span></div>' +
+        list.map(function(r){
+          return '<label class="check-line"><input type="checkbox" value="' + r.email +
+                 '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + '</label>';
+        }).join("");
+    }
     bulkCount();
   });
 
