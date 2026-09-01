@@ -951,7 +951,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27e";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27g";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -1462,7 +1462,7 @@ async function residentSubmit(){
   }
   releaseBtn();                                     // success — fully restore the button
   document.getElementById("r-success-chip").textContent =
-    "CREDIT " + res.credit.toFixed(1) + " · " + currentResident.first.toUpperCase() + " " + currentResident.last.toUpperCase();
+    "CREDIT " + Number(res.credit||0).toFixed(1) + " · " + currentResident.first.toUpperCase() + " " + currentResident.last.toUpperCase();
   document.getElementById("r-success-line").textContent = res.flags.length
     ? "You're checked in for " + res.title + ". One or more verification signals were flagged — a chief resident will review this entry."
     : "You're checked in for " + res.title + ".";
@@ -1488,7 +1488,7 @@ async function creditsLookup(){
   err.style.display="none";
   rememberEmail(em);
   document.getElementById("cr-name").textContent = r.first + "'s conference credits";
-  document.getElementById("cr-total").textContent = r.total.toFixed(0);
+  document.getElementById("cr-total").textContent = Number(r.total||0).toFixed(0);
   document.getElementById("cr-ahd").textContent = r.ahdHalf + "/" + r.ahdOf;
   document.getElementById("cr-amb").textContent = r.amb;
   document.getElementById("cr-pct").textContent = (r.ahdPct == null)
@@ -2145,7 +2145,7 @@ function renderAdmin(){
       if (cancelled) row.style.opacity = ".72";
       row.innerHTML =
         '<div class="ci"><div class="ct">' + confLabel(c.type, c.title) + '</div>' +
-        '<div class="cm">' + (siteTag(c.site) ? siteTag(c.site) + ' · ' : '') + c.time + ' · CREDIT ' + c.credit.toFixed(1) + ' · ' + c.id + '</div>' +
+        '<div class="cm">' + (siteTag(c.site) ? siteTag(c.site) + ' · ' : '') + c.time + ' · CREDIT ' + Number(c.credit||0).toFixed(1) + ' · ' + c.id + '</div>' +
         '<div class="badges">' + (c.live?'<span class="chip ok">IN SESSION</span>':'') +
         (cancelled?'<span class="chip" style="border-color:#E4C0B8;color:var(--brick)">CANCELLED</span>':'') +
         (c.qEligible?'<span class="chip info">Q-CREDIT ELIGIBLE</span>':'') +
@@ -3089,10 +3089,17 @@ function bulkMatch(){
   } else un.style.display = "none";
 }
 async function bulkAward(){
-  var confId = document.getElementById("bulk-conf").value;
+  var confSel = document.getElementById("bulk-conf");
+  var confId = confSel.value;
   var action = document.getElementById("bulk-action").value;
   var emails = Array.prototype.map.call(document.querySelectorAll("#bulk-roster input:checked"), function(cb){ return cb.value; });
-  if (!emails.length) return;
+  if (!emails.length){ toast("Select at least one resident first."); return; }
+  if (!confId){ toast("Pick a conference first."); return; }
+  // This can touch the whole program in one click — always confirm, and name the
+  // conference and count so a mis-click on the wrong session is obvious.
+  var confLabelTxt = confSel.options[confSel.selectedIndex] ? confSel.options[confSel.selectedIndex].textContent : confId;
+  var verb = action==="Excused" ? "mark excused" : action==="Q-Credit" ? "award Q-credit" : "award credit";
+  if (!confirm("You're about to " + verb + " for " + emails.length + " resident" + (emails.length===1?"":"s") + ".\n\nConference: " + confLabelTxt + "\n\nContinue?")) return;
   var r;
   try{ r = await call('bulkAward', TOKEN, confId, emails, action); }catch(e){ toast(e.message); return; }
   if (r && r.ok === false){ toast(r.message || "That conference can't be bulk-awarded."); return; }
@@ -3132,7 +3139,7 @@ function renderTally(){
       '<td class="mono" id="tr-caret-' + i + '" style="color:var(--faint);text-align:center">▸</td>' +
       '<td class="pgy">' + (showClass ? classLabelJS(r.pgy) : "") + '</td><td>' + r.last + ', ' + r.first +
       '</td><td style="color:var(--muted);font-size:11px">' + (r.house||"") +
-      '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + r.total.toFixed(0) +
+      '</td><td class="mono" style="font-weight:700;color:var(--saguaro-d)">' + Number(r.total||0).toFixed(0) +
       '</td><td class="mono">' + up + '</td>' + modCells +
       '<td class="mono">' + r.ahdHalf + '/' + r.ahdOf + '</td><td class="mono">' + pct + '</td></tr>';
     html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="9" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
