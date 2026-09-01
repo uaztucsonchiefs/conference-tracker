@@ -655,6 +655,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div class="msg err" id="admin-section-err" style="display:none;margin-bottom:10px"></div>
+  <div id="admin-diag" class="mono" style="font-size:10px;color:var(--faint);margin-bottom:10px"></div>
   <div class="admin-nav" id="admin-nav">
     <button onclick="jumpTo('sec-tally')">Tally</button>
     <button onclick="jumpTo('sec-award')">Award</button>
@@ -2309,6 +2310,15 @@ function renderAdmin(){
 
   /* flags */
   reportSectionErrors();
+  (function(){
+    var d = document.getElementById("admin-diag"); if (!d) return;
+    var nConf = (D.conferences||[]).length, nRes = (D.roster||[]).length;
+    var be = D.backendVersion || "unknown (old backend)";
+    var mismatch = (be !== APP_VERSION);
+    d.innerHTML = "loaded " + nConf + " conferences · " + nRes + " residents &nbsp;|&nbsp; front-end " +
+      APP_VERSION + " · backend " + be +
+      (mismatch ? ' <span style="color:var(--brick);font-weight:700">← versions differ, redeploy the other half</span>' : "");
+  })();
   var holder = document.getElementById("a-flags");
   holder.innerHTML = "";
   document.getElementById("a-noflags").classList.toggle("hide", D.flags.length>0);
