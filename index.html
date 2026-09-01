@@ -951,7 +951,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27c";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27d";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -2110,7 +2110,7 @@ function renderAdmin(){
   safeSection("week schedule", function(){
   var wk = document.getElementById("a-week");
   wk.innerHTML = "";
-  var weekConfs = D.conferences.filter(function(c){ return c.date >= s && c.date <= e; });
+  var weekConfs = (D.conferences||[]).filter(function(c){ return c.date >= s && c.date <= e; });
   if (!weekConfs.length){
     wk.innerHTML = '<p class="sub" style="text-align:center;padding:12px 0">No conferences this week. Use Generate or Add below.</p>';
   }
@@ -2191,7 +2191,7 @@ function renderAdmin(){
   safeSection("bulk conference list", function(){
     var sel = document.getElementById("bulk-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
-    D.conferences.filter(function(c){ return inWindow(c.date, 400, 28); })
+    (D.conferences||[]).filter(function(c){ return inWindow(c.date, 400, 28); })
       .sort(function(a,b){ return a.date < b.date ? 1 : a.date > b.date ? -1 : (a.type||"").localeCompare(b.type||""); })
       .forEach(function(c){
         var o = document.createElement("option");
@@ -2204,7 +2204,7 @@ function renderAdmin(){
   safeSection("export conference list", function(){
     var sel = document.getElementById("exp-conf"); if (!sel) return;
     var keep = sel.value; sel.innerHTML = "";
-    D.conferences.filter(function(c){ return inWindow(c.date, 400, 28); }).forEach(function(c){
+    (D.conferences||[]).filter(function(c){ return inWindow(c.date, 400, 28); }).forEach(function(c){
       var o = document.createElement("option");
       o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
       sel.appendChild(o);
@@ -2286,7 +2286,7 @@ function renderAdmin(){
     } else {
       // fallback: flat house grouping if clinicWeekRoster not loaded
       var byHouse = {};
-      D.roster.forEach(function(r){
+      (D.roster||[]).forEach(function(r){
         if (excl[String(r.email).toLowerCase()]) return;
         var h = r.house || "— no house —";
         (byHouse[h] = byHouse[h] || []).push(r);
@@ -2309,7 +2309,6 @@ function renderAdmin(){
   });
 
   /* flags */
-  reportSectionErrors();
   (function(){
     var d = document.getElementById("admin-diag"); if (!d) return;
     var nConf = (D.conferences||[]).length, nRes = (D.roster||[]).length;
@@ -2319,10 +2318,14 @@ function renderAdmin(){
       APP_VERSION + " · backend " + be +
       (mismatch ? ' <span style="color:var(--brick);font-weight:700">← versions differ, redeploy the other half</span>' : "");
   })();
+  safeSection("review queue", function(){
   var holder = document.getElementById("a-flags");
+  if (!holder) return;
   holder.innerHTML = "";
-  document.getElementById("a-noflags").classList.toggle("hide", D.flags.length>0);
-  D.flags.forEach(function(f){
+  var flags = D.flags || [];
+  var nf = document.getElementById("a-noflags");
+  if (nf) nf.classList.toggle("hide", flags.length>0);
+  flags.forEach(function(f){
     var d = document.createElement("div");
     d.className = "flag-item";
     d.innerHTML =
@@ -2357,8 +2360,10 @@ function renderAdmin(){
     q.appendChild(a); q.appendChild(n); d.appendChild(q);
     holder.appendChild(d);
   });
+  });
 
-  renderTally();
+  safeSection("credit totals", function(){ renderTally(); });
+  reportSectionErrors();
 }
 function editRow(row, c){
   row.innerHTML = "";
