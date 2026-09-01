@@ -951,7 +951,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "2026-08-27d";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "2026-08-27e";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -1397,13 +1397,22 @@ async function residentSubmit(){
     checkinInFlight = true; btn.disabled = true; btn.style.opacity = "0.75";
     btn.innerHTML = 'Hang on \u2014 uploading <span class="spin-dot"></span>';
     function relBtn(){ checkinInFlight=false; btn.disabled=false; btn.style.opacity=""; btn.innerHTML="Submit photo for review"; }
-    var b64 = await new Promise(function(res){ var reader=new FileReader(); reader.onload=function(){ res(reader.result.split(",")[1]); }; reader.readAsDataURL(pf.files[0]); });
+    var b64;
+    try{
+      b64 = await new Promise(function(res, rej){
+        var reader = new FileReader();
+        reader.onload  = function(){ res(String(reader.result).split(",")[1]); };
+        reader.onerror = function(){ rej(new Error("Couldn't read that photo — try taking it again.")); };
+        reader.onabort = function(){ rej(new Error("Photo upload was cancelled.")); };
+        reader.readAsDataURL(pf.files[0]);
+      });
+    }catch(e){ relBtn(); pe.style.display="block"; pe.textContent=e.message; return; }
     var shotDate = pf.files[0].lastModified ? String(pf.files[0].lastModified) : "";
     var r2;
     try{ r2 = await call('photoProofSubmit', { email: currentResident.email, confId: liveNow.id, b64: b64, mediaType: pf.files[0].type||"image/jpeg", shotDate: shotDate, deviceId: deviceId() }); }
     catch(e){ relBtn(); pe.style.display="block"; pe.textContent=e.message; return; }
     if (!r2.ok){ relBtn(); pe.style.display="block"; pe.textContent = r2.reason==="dupe" ? "You've already submitted for this event." : r2.reason==="notInWindow" ? "This event's submission window isn't open." : "Submission failed — try again."; return; }
-    checkinInFlight = false; btn.style.opacity=""; btn.innerHTML="Submit photo for review";
+    relBtn();                                   // fully re-enable (button stays usable if they come back)
     document.getElementById("r-step2").classList.add("hide");
     var s3 = document.getElementById("r-step3"); s3.classList.remove("hide");
     document.getElementById("r-success-chip").textContent = "SUBMITTED · PENDING REVIEW";
@@ -1451,8 +1460,7 @@ async function residentSubmit(){
       : "That code is incorrect or has expired. Check the current code on the room screen and try again.";
     codeErr.style.display="block"; return;
   }
-  checkinInFlight = false;                          // success — step 3 replaces the button
-  btn.style.opacity = ""; btn.textContent = btn.dataset.label || "Check in";
+  releaseBtn();                                     // success — fully restore the button
   document.getElementById("r-success-chip").textContent =
     "CREDIT " + res.credit.toFixed(1) + " · " + currentResident.first.toUpperCase() + " " + currentResident.last.toUpperCase();
   document.getElementById("r-success-line").textContent = res.flags.length
