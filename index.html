@@ -38,6 +38,7 @@ body{background:var(--bg);color:var(--dusk);font-family:var(--sans);min-height:1
 body::before{content:"";position:fixed;top:0;left:0;right:0;height:3px;z-index:80;
   background:linear-gradient(90deg,#3a9268,#2a6f50)}
 .wrap{max-width:540px;margin:0 auto;padding:0 14px 96px}
+footer{padding-bottom:120px}
 @media(min-width:900px){.wrap.admin-wide{max-width:900px}}
 
 /* ============ HEADER ============ */
@@ -283,7 +284,6 @@ table.roster-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top
 .verify-box{display:flex;align-items:center;gap:12px;background:var(--sky-tint);border:1px solid #C9D9E6;border-radius:10px;padding:13px;margin:12px 0}
 .spinner{width:22px;height:22px;border:3px solid #C9D9E6;border-top-color:var(--sky);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-body.modules-off .mod-feature{display:none !important}
 .admin-nav{position:sticky;top:0;z-index:20;display:flex;gap:6px;overflow-x:auto;padding:9px 2px;margin-bottom:12px;background:var(--bg);border-bottom:1px solid var(--line-soft);-webkit-overflow-scrolling:touch}
 .admin-nav button{flex:0 0 auto;font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap}
 .admin-nav button:hover{background:var(--panel-2);color:var(--ink);border-color:var(--saguaro)}
@@ -689,7 +689,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="bulkMatch()">Match pasted list</button>
     <div class="msg warn" id="bulk-unmatched"></div>
     <div class="fld" style="display:flex;align-items:center;gap:10px">
-      <span>Residents by class</span>
+      <span>Residents by class <span id="bulk-count-lbl" style="color:var(--brick);font-weight:700"></span></span>
       <button class="btn btn-ghost btn-sm" style="margin-left:auto;padding:3px 10px" onclick="bulkSelectAll(true)">Select all</button>
       <button class="btn btn-ghost btn-sm" style="padding:3px 10px" onclick="bulkSelectAll(false)">Clear</button>
     </div>
@@ -816,7 +816,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   </div>
 
   <div id="sec-review" class="card">
-    <div class="eyebrow" style="color:var(--adobe)">Review queue</div>
+    <div class="eyebrow" style="color:var(--adobe)">Review queue <span id="flags-count-lbl" style="color:var(--brick)"></span></div>
     <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it. Submissions whose screenshot looks reused (dated well before submission) are flagged and held back from bulk approve.</p>
     <button class="btn btn-ghost" style="margin-bottom:6px" onclick="bulkApproveUI()">Approve all Q-credit submissions</button>
     <button class="btn btn-ghost" style="margin-bottom:6px" onclick="loadPhotoProofReview()">Photo Proof submissions</button>
@@ -825,7 +825,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <p class="sub hide" id="a-noflags" style="text-align:center;padding:6px 0">No entries awaiting review.</p>
   </div>
 
-  <div id="sec-peac" class="card mod-feature">
+  <div id="sec-peac" class="card">
     <div class="eyebrow" style="color:var(--sky)">PEAC · clinic week review</div>
     <p class="sub">This week's clinic group, their assigned modules, and who has submitted. Thumbnails link to the full screenshot; Deny removes an optional module's conference credit.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadPeacReview()">Load this week's PEAC status</button>
@@ -955,7 +955,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "SEP01-A";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "SEP01-FIX";   // bump on each deploy; shown in the footer to confirm which build is live
 function call(fn){
   var args = Array.prototype.slice.call(arguments, 1);
   if (typeof google !== "undefined" && google.script && google.script.run){
@@ -2090,6 +2090,17 @@ async function loadAdmin(){
       msg.replace(/</g,"&lt;") + '</span><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="loadAdmin()">Retry</button></div>';
     return;
   }
+  // If the combined payload came back without a roster or review queue, fetch
+  // each from its own endpoint. A failure in one part of the big payload can no
+  // longer leave the award lists and review queue silently blank.
+  if (!ADMIN_DATA.roster || !ADMIN_DATA.roster.length){
+    try{ var rr = await call('getRoster', TOKEN); if (rr && rr.roster) ADMIN_DATA.roster = rr.roster; }
+    catch(e){ console.error("getRoster fallback failed", e); }
+  }
+  if (!ADMIN_DATA.flags || !ADMIN_DATA.flags.length){
+    try{ var fq = await call('getReviewQueue', TOKEN); if (fq && fq.flags) ADMIN_DATA.flags = fq.flags; }
+    catch(e){ console.error("getReviewQueue fallback failed", e); }
+  }
   renderAdmin();
 }
 function safeSection(name, fn){
@@ -2227,126 +2238,50 @@ function renderAdmin(){
       sel.appendChild(o);
     });
     if (keep) sel.value = keep;
-  })();
-
-  /* roster checkboxes */
-  safeSection("bulk resident list", function(){
-    var br = document.getElementById("bulk-roster");
-    if (!br) return;
-    br.innerHTML = "";
-    var list = D.roster || [];
-    if (!list.length){
-      br.innerHTML = '<p class="sub" style="padding:8px 2px;color:var(--brick)">No residents loaded — the admin data didn\'t include a roster.</p>';
-      return;
-    }
-    // Grouped by PGY class, alphabetical by last name within each class.
-    var byClass = {};
-    list.forEach(function(r){
-      var k = classSortKey(r.pgy);
-      (byClass[k] = byClass[k] || []).push(r);
-    });
-    br.innerHTML = Object.keys(byClass).sort(function(a,b){ return Number(a) - Number(b); }).map(function(k){
-      var rows = byClass[k].sort(function(a,b){
-        return (a.last + " " + a.first).toLowerCase().localeCompare((b.last + " " + b.first).toLowerCase());
-      }).map(function(r){
-        return '<label class="check-line"><input type="checkbox" value="' + r.email +
-               '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + '</label>';
-      }).join("");
-      return '<div class="cls-group">' +
-        '<div class="cls-head">' + classLabelJS(byClass[k][0].pgy) +
-        '<span class="n">(' + byClass[k].length + ')</span>' +
-        '<button class="btn btn-ghost btn-sm" onclick="bulkSelectClass(this)">select class</button></div>' +
-        rows + '</div>';
-    }).join("");
-    // Last-resort fallback: if the grouped markup somehow came out empty, fall
-    // back to a plain flat list so this box can never render blank with no
-    // explanation. Whatever happens, the chief sees residents or a reason.
-    if (!br.innerHTML){
-      br.innerHTML = '<div class="cls-head">All residents <span class="n">(' + list.length + ')</span></div>' +
-        list.map(function(r){
-          return '<label class="check-line"><input type="checkbox" value="' + r.email +
-                 '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + '</label>';
-        }).join("");
-    }
-    bulkCount();
   });
 
-  safeSection("PEAC award list", function(){
+  /* roster checkboxes */
+  /* roster checkboxes — original simple rendering */
+  var br = document.getElementById("bulk-roster");
+  br.innerHTML = "";
+  D.roster.forEach(function(r){
+    var l = document.createElement("label");
+    l.className = "check-line";
+    l.innerHTML = '<input type="checkbox" value="' + r.email + '" onchange="bulkCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span>';
+    br.appendChild(l);
+  });
+
+  /* PEAC award roster — original simple rendering, prelims excluded */
   var pr = document.getElementById("peac-award-roster");
   if (pr){
-    // block dropdown (hardcoded so it always populates; matches Code.gs block order)
-    var blocks = (D.peacBlocks && D.peacBlocks.length) ? D.peacBlocks : [
-      {block:1, req:'HTN — email 3 article takeaways to R. Turk', opt:''},
-      {block:2, req:'Evidence-Based Medicine: Diagnosis', opt:'Evidence-Based Medicine: Therapy'},
-      {block:3, req:'Chronic Kidney Disease Part 1 (2027)', opt:'Chronic Kidney Disease Part 2 (2027)'},
-      {block:4, req:'Dermatitis for the Internist (2027)', opt:'Depression (2027)'},
-      {block:5, req:'Diabetes (2027)', opt:'Obesity & Overweight (2027)'},
-      {block:6, req:'Headaches (2027)', opt:'Dizziness (2027)'},
-      {block:7, req:'Back Pain (2027)', opt:'Hip/Knee Pain (2027)'},
-      {block:8, req:'Hepatitis C Infection (2027)', opt:'Alcohol Use Disorders (2027)'},
-      {block:9, req:'Menopause & HRT (2027)', opt:'Osteoporosis (2027)'},
-      {block:10, req:'Cancer Screening (2027)', opt:'Hypertension (2027)'}
-    ];
     var bsel = document.getElementById("peac-award-block");
-    if (bsel){
+    if (bsel && D.peacBlocks && D.peacBlocks.length){
       bsel.innerHTML = "";
-      blocks.forEach(function(b){
+      D.peacBlocks.forEach(function(b){
         var o = document.createElement("option"); o.value = b.block;
         o.textContent = "Block " + b.block + " — " + b.req + (b.opt ? " / " + b.opt : " (no optional)");
         bsel.appendChild(o);
       });
     }
-    // Modules are assigned by CLINIC GROUP, so this list groups by group/house
-    // (alphabetical within each). Prelims are excluded — no ambulatory modules.
     var excl = {}; (D.peacExclude||[]).forEach(function(e){ excl[e]=1; });
-    var GNUM = {"Catalina":1,"Rincon":2,"Santa Rita":3,"Tortolita":4,"Tucson":5};
-    var eligible = (D.roster||[]).filter(function(r){ return !excl[String(r.email).toLowerCase()]; });
-    if (!eligible.length){
-      pr.innerHTML = '<p class="sub" style="padding:8px 2px;color:var(--brick)">No residents loaded.</p>';
-    } else {
-      var byGroup = {};
-      eligible.forEach(function(r){
-        var h = r.house || "— no clinic group —";
-        (byGroup[h] = byGroup[h] || []).push(r);
-      });
-      var order = ["Catalina","Rincon","Santa Rita","Tortolita","Tucson"];
-      pr.innerHTML = Object.keys(byGroup).sort(function(a,b){
-        var ia = order.indexOf(a), ib = order.indexOf(b);
-        return (ia<0?99:ia) - (ib<0?99:ib);
-      }).map(function(h){
-        var rows = byGroup[h].sort(function(a,b){
-          return (a.last+" "+a.first).toLowerCase().localeCompare((b.last+" "+b.first).toLowerCase());
-        }).map(function(r){
-          return '<label class="check-line"><input type="checkbox" value="' + r.email +
-                 '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first +
-                 ' <span class="cls">' + classLabelJS(r.pgy) + '</span></label>';
-        }).join("");
-        var label = GNUM[h] ? ("Group " + GNUM[h] + " · " + h) : h;
-        return '<div class="cls-group"><div class="cls-head">' + label +
-          '<span class="n">(' + byGroup[h].length + ')</span>' +
-          '<button class="btn btn-ghost btn-sm" onclick="peacSelectClass(this)">select group</button></div>' +
-          '<div class="roster-list" style="max-height:none">' + rows + '</div></div>';
-      }).join("");
-    }
+    pr.innerHTML = "";
+    D.roster.forEach(function(r){
+      if (excl[String(r.email).toLowerCase()]) return;
+      var l = document.createElement("label");
+      l.className = "check-line";
+      l.innerHTML = '<input type="checkbox" value="' + r.email + '" onchange="peacAwardCount()"> ' + r.last + ', ' + r.first + ' <span class="cls">' + classLabelJS(r.pgy) + '</span>';
+      pr.appendChild(l);
+    });
     peacAwardCount();
   }
-  });
 
-  /* flags */
-  (function(){
-    var d = document.getElementById("admin-diag"); if (!d) return;
-    var nConf = (D.conferences||[]).length, nRes = (D.roster||[]).length;
-    var be = D.backendVersion || "unknown (old backend)";
-    var mismatch = (be !== APP_VERSION);
-    d.innerHTML = "loaded " + nConf + " conferences · " + nRes + " residents &nbsp;|&nbsp; front-end " +
-      APP_VERSION + " · backend " + be +
-      (mismatch ? ' <span style="color:var(--brick);font-weight:700">← versions differ, redeploy the other half</span>' : "");
-  })();
-  safeSection("review queue", function(){
+  /* flags — original rendering */
   var holder = document.getElementById("a-flags");
   if (!holder) return;
   holder.innerHTML = "";
   var flags = D.flags || [];
+  var flbl = document.getElementById("flags-count-lbl");
+  if (flbl) flbl.textContent = "(" + flags.length + " pending)";
   var nf = document.getElementById("a-noflags");
   if (nf){
     nf.classList.toggle("hide", flags.length>0);
@@ -2391,10 +2326,8 @@ function renderAdmin(){
     q.appendChild(a); q.appendChild(n); d.appendChild(q);
     holder.appendChild(d);
   });
-  });
 
-  safeSection("credit totals", function(){ renderTally(); });
-  reportSectionErrors();
+  renderTally();
 }
 function editRow(row, c){
   row.innerHTML = "";
