@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-tracker-build="OCT05-OFFLINE">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#203F37">
 <title>Conference Tracker · University of Arizona–Tucson Internal Medicine</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
   --bg:#F4F5F2;
@@ -305,6 +306,42 @@ table.roster-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top
 @media(prefers-reduced-motion:reduce){#toast{transition:opacity .22s}}
 ::selection{background:rgba(58,146,104,.22)}
 footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mono);font-size:8.5px;color:var(--faint);letter-spacing:.09em;line-height:2}
+
+/* Rotation upload */
+.rotation-import-summary { display:flex; flex-wrap:wrap; gap:8px 20px; margin:18px 0 8px; padding:14px; border:1px solid var(--line-soft); border-radius:8px; }
+.rotation-import-summary span { color:var(--muted); }
+.rotation-import-scroll { max-height:340px; overflow:auto; margin:12px 0; }
+.rotation-import-scroll th { position:sticky; top:0; background:var(--paper, #fff); }
+.rotation-import-scroll td { vertical-align:top; }
+.rotation-import-scroll select { min-width:200px; }
+.rotation-import-details { margin:12px 0; }
+#sec-rotations summary { cursor:pointer; }
+#rotation-upload-file { width:100%; padding:12px; border:1px solid var(--line-soft); border-radius:8px; }
+#rotation-upload-file::file-selector-button { margin-right:12px; padding:8px 12px; border:1px solid var(--line-soft); border-radius:5px; cursor:pointer; }
+#rotation-upload-message { overflow-wrap:anywhere; }
+/* Calm, readable workspace: sandstone, deep green, restrained copper. */
+:root{--bg:#F3F2ED;--panel:#fff;--panel-2:#FAFAF7;--dusk:#243A34;--muted:#64716B;--faint:#748078;--saguaro:#38735C;--saguaro-d:#203F37;--line:#DFE4DE;--line-soft:#EBEEE8;--shadow:0 5px 24px rgba(36,58,52,.045)}
+body{background-image:radial-gradient(ellipse at 80% 0,rgba(200,172,129,.12),transparent 42%);line-height:1.45}
+header{background:rgba(249,249,244,.97);backdrop-filter:none}
+.hd-top{max-width:1260px;padding:18px 24px;gap:14px}.hd-title{font-size:22px;letter-spacing:-.6px}.hd-sub{font-size:11px;margin-top:3px}.hd-clock .d{color:var(--muted)}
+.ridge{max-width:1260px;height:10px}.wrap{max-width:600px;padding:0 20px 88px}.view{padding-top:20px}
+.card{padding:24px;border-radius:18px;margin-bottom:18px;box-shadow:var(--shadow)}h2{font-size:25px;letter-spacing:-.65px;line-height:1.2;margin-bottom:10px}h3{font-size:17px}
+.eyebrow{font-size:10px;letter-spacing:.12em;color:#748078;margin-bottom:10px}.eyebrow::before{background:#C39969;height:8px;width:8px;border-radius:50%}
+.sub{font-size:13px;line-height:1.65}.btn{padding:14px 16px;border-radius:10px;min-height:44px}.btn-primary,.tab.on{background:#203F37;box-shadow:none}.btn-primary:hover{background:#2C5748;box-shadow:none}.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn-ghost{background:#FAFBF8}.btn-sm{padding:8px 12px;min-height:34px}input[type=email],input[type=text],input[type=password],select{font-size:16px;min-height:44px;border-radius:10px;background:#FCFCFA}
+.connection-card{margin-top:16px;padding:13px 16px;background:#EBEFE8;border:1px solid #DBE3D7;border-radius:14px}.connection-top{display:flex;gap:10px;align-items:center}.connection-pill{font-size:11px;font-weight:700;color:#25543E;display:inline-flex;align-items:center;gap:7px}.connection-pill::before{content:'';height:7px;width:7px;border-radius:50%;background:#438666}.connection-pill.offline{color:#8F5C24}.connection-pill.offline::before{background:#B88647}.connection-top button{margin-left:auto;border:0;background:none;font:inherit;font-size:11px;color:#40554A;cursor:pointer}.connection-card p{font-size:11.5px;color:#58675D;margin-top:6px;line-height:1.5}.queue-count{background:#fff;border-radius:20px;padding:3px 8px;font-size:10px}.connection-card details{margin-top:10px;border-top:1px solid #D5DED0;padding-top:10px}.connection-card summary{cursor:pointer;font-size:12px;font-weight:600}.sync-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.sync-item{display:grid;gap:3px;padding:11px 0;border-top:1px solid #D8E0D4;font-size:12px}.sync-item>span{font-size:11px;color:var(--muted)}.sync-item .sync-state{color:#356D51}.sync-item .attention{color:#99482F}#sync-items{max-height:290px;overflow:auto}
+#r-step1{border-top:3px solid #203F37}#r-step1 h2{margin-top:12px;font-size:30px;max-width:340px}.code-box{border-radius:14px;box-shadow:none}.conf-banner{background:#F1F5EF;border:1px solid #DCE5D6;padding:16px;border-radius:13px}.live-dot{animation:none}.success-head .big-status{font-size:25px}.success-head{gap:14px}#r-step3{text-align:center}
+.admin-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin:24px 0 18px}.admin-heading h2{font-size:30px;margin:0}.admin-heading .sub{font-size:12px}.admin-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}#admin-freshness{font-size:11px;color:var(--muted);max-width:310px}
+.admin-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 20px}.overview-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}.overview-stat:first-child{background:#203F37;color:#fff;border-color:#203F37}.overview-stat .metric-label{font-size:11px;color:var(--muted)}.overview-stat:first-child .metric-label{color:#CFDAD1}.overview-stat strong{display:block;font-family:var(--disp);font-size:34px;font-weight:600;line-height:1.15;letter-spacing:-1px;margin:8px 0}.overview-stat small{font-size:10px;color:var(--muted)}.overview-stat:first-child small{color:#CFDAD1}
+.admin-nav{display:flex;gap:7px;overflow:auto;flex-wrap:nowrap;margin:0 0 20px;padding:3px 0 8px}.admin-nav button{white-space:nowrap;flex:0 0 auto;border:1px solid var(--line);background:#FAFBF8;color:#54665B;border-radius:20px;font-size:11px;padding:8px 13px;min-height:35px}
+.admin-workspace{display:grid;gap:20px;align-items:start;grid-template-columns:minmax(0,1fr)}.admin-main,.admin-tools{min-width:0}.admin-tools .tool-group{border:1px solid var(--line);background:#fff;border-radius:14px;margin-bottom:12px;overflow:hidden}.tool-group>summary{cursor:pointer;padding:18px 20px;font-size:12px;font-weight:600;color:#384E41;list-style-position:inside}.tool-group[open]>summary{border-bottom:1px solid var(--line-soft);background:#FAFBF8}.tool-group>.card{border:0;border-radius:0;margin:0;box-shadow:none;padding:18px}.tool-group>.card>.eyebrow:first-child{display:none}
+.tally-toolbar{display:flex;align-items:center;gap:9px;margin:18px 0 10px;flex-wrap:wrap}.tally-toolbar input{flex:1 1 160px;min-width:140px}.tally-toolbar select{width:118px;font-size:12px}.tally-toolbar span{font-size:10px;color:var(--muted)}#tally-out{max-height:650px;overflow:auto;border-top:1px solid var(--line-soft)}.roster-tbl{border-collapse:separate;border-spacing:0}.roster-tbl th{font-size:9px;letter-spacing:.045em;text-transform:uppercase;color:#728071;background:#FAFBF8;border-bottom:1px solid #DCE3D8;padding:12px 8px;position:sticky;top:0;z-index:1}.roster-tbl td{padding:12px 8px;border-bottom:1px solid #EEF1EA;font-size:12px}.tally-row:hover{background:#F2F6EF}.rotation-meter{display:inline-flex;flex-direction:column;gap:4px;min-width:61px;font-size:12px;color:#35664D}.rotation-meter i{height:3px;width:65px;background:#E8ECE5;border-radius:8px;overflow:hidden}.rotation-meter b{display:block;height:3px;background:#5D8C68;border-radius:8px}.rotation-incomplete{font-size:10px;color:#8C673D;background:#F6EEDF;border-radius:20px;padding:4px 7px}
+#sec-rotations{background:#FCFDF9;border-color:#D5DFC9}#rotation-upload-file{background:#F3F6ED;border:1px dashed #A6B89A;padding:18px;border-radius:12px}#sec-rotations .rotation-import-summary{background:#EDF2E8;border:0}#sec-rotations details{padding:10px 0}.pcode-row .pdigit{border-radius:15px;background:#F4F7EF;box-shadow:none}nav{backdrop-filter:none;background:#fff}.tabs{max-width:600px}.tab{min-height:44px;font-size:12px;border-radius:12px}footer{font-size:9px;color:#788578}
+#tally-search{font:inherit;font-size:13px;background:#FAFBF8;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:44px}
+@media(min-width:1100px){.wrap.admin-wide{max-width:1440px;padding:0 28px 90px}.admin-workspace{grid-template-columns:minmax(0,1fr) 340px}.admin-wide .connection-card{margin-top:20px}.admin-wide #sec-tally{padding:24px 22px}}
+@media(max-width:600px){.hd-top{padding:14px 18px}.hd-title{font-size:19px}.hd-sub{font-size:9px}.hd-clock{display:none}.wrap{padding-left:14px;padding-right:14px}.card{padding:22px 18px}.admin-metrics{gap:8px}.overview-stat{padding:14px 12px}.overview-stat strong{font-size:27px}.overview-stat .metric-label{font-size:10px}.admin-heading{align-items:flex-start;flex-direction:column;gap:12px}.admin-heading h2{font-size:27px}.admin-actions{justify-content:flex-start}.roster-tbl{min-width:620px}.admin-workspace{gap:4px}#r-step1 h2{font-size:29px}.connection-card p{font-size:11px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -340,13 +377,23 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
 </header>
 
 <div class="wrap" id="wrap">
+<section class="connection-card" aria-label="Connection and saved check-ins">
+  <div class="connection-top"><span id="connection-pill" class="connection-pill">Connecting</span><span class="queue-count" id="queue-count" hidden></span><button type="button" id="app-update-button" hidden onclick="location.reload()">Reload update ↗</button></div>
+  <p id="connection-detail" role="status" aria-live="polite">Preparing your conference workspace…</p>
+  <details><summary>Saved check-ins <span id="sync-count">&amp; offline access</span></summary>
+    <p id="sync-detail">Code check-ins can be saved on this device.</p><p id="schedule-stamp"></p>
+    <div class="sync-actions"><button class="btn btn-ghost btn-sm" onclick="prepareOffline_()">Prepare for offline</button><button class="btn btn-ghost btn-sm" onclick="syncSavedCheckins_(true)">Sync now</button><button class="btn btn-ghost btn-sm" onclick="exportSavedCheckins_()">Download saved entries</button></div>
+    <div id="sync-items"></div>
+  </details>
+</section>
+
 
 <!-- ==================== RESIDENT ==================== -->
 <section class="view on" id="v-resident">
 
   <div class="card" id="r-step1">
-    <div class="eyebrow">Step 1 of 2 · Identify</div>
-    <h2>Conference check-in</h2>
+    <div class="eyebrow">Resident check-in · AY 2026–27</div>
+    <h2>Check in to conference.</h2>
     <p class="sub">Enter your program email. It's matched against the residency roster — no account or password needed.</p>
     <div style="margin-top:13px">
       <input type="email" id="r-email" placeholder="you@arizona.edu" autocomplete="email" inputmode="email">
@@ -386,7 +433,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
       <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="residentNotMe()">Not you?</button>
     </div>
 
-    <label class="fld">Now in session</label>
+    <label class="fld">Today’s conference</label>
     <div class="conf-banner">
       <div class="live-dot"></div>
       <div style="flex:1;min-width:0">
@@ -437,15 +484,11 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
         <circle class="c" cx="37" cy="37" r="34"/>
         <path class="k" d="M23 38 l10 10 l19 -20"/>
       </svg>
-      <div class="big-status">Recorded!</div>
+      <div class="big-status" id="r-result-title">Recorded!</div>
     </div>
     <p class="sub" style="text-align:center;margin-top:7px" id="r-success-line">—</p>
     <div class="signal-row" style="justify-content:center;margin-top:13px">
       <span class="chip ok" id="r-success-chip">CREDIT 1.0</span>
-    </div>
-    <div style="text-align:center;margin-top:16px">
-      <div style="font-size:42px;line-height:1">&#128522;</div>
-      <p class="sub" style="margin-top:8px;font-weight:600;color:var(--saguaro-d)">Hope you learned something — keep fighting the good fight!</p>
     </div>
     <div style="margin-top:15px">
       <button class="btn btn-ghost" onclick="residentReset()">Done</button>
@@ -501,10 +544,6 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <div class="reply-prev">
       <div class="fr">AUTO-REPLY · FROM uaztucsonchiefs@gmail.com</div>
       <div id="q-reply-body">—</div>
-    </div>
-    <div style="text-align:center;margin-top:16px">
-      <div style="font-size:42px;line-height:1">&#128522;</div>
-      <p class="sub" style="margin-top:8px;font-weight:600;color:var(--saguaro-d)">Hope you learned something — keep fighting the good fight!</p>
     </div>
     <div style="margin-top:13px">
       <button class="btn btn-ghost" onclick="qReset()">Submit another</button>
@@ -640,7 +679,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     </div>
 
     <div class="qr-holder"><div id="qrbox"></div></div>
-    <p class="pres-meta">SCAN TO OPEN CHECK-IN · QR CARRIES THE LIVE CODE<br>CODE ROTATES EVERY 30 SECONDS · UNIQUE PER CONFERENCE</p>
+    <p class="pres-meta">SCAN TO OPEN CHECK-IN · QR SELECTS THE SESSION<br>CODE ROTATES EVERY 30 SECONDS · UNIQUE PER CONFERENCE</p>
   </div>
 
   <div class="card">
@@ -658,10 +697,14 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
     <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign out</button>
   </div>
 
+
+  <div class="admin-heading"><div><div class="eyebrow">Chief resident workspace</div><h2>Program overview</h2></div><div class="admin-actions"><span id="admin-freshness" role="status">Ready to refresh</span><button class="btn btn-ghost btn-sm" onclick="loadAdmin(true)">Refresh data ↻</button></div></div>
+  <div class="admin-metrics"><div class="overview-stat"><div class="metric-label">Active residents</div><strong id="metric-residents">—</strong><small>Across all training classes</small></div><div class="overview-stat"><div class="metric-label">Conference credits</div><strong id="metric-credits">—</strong><small>Academic year to date</small></div><div class="overview-stat"><div class="metric-label">Classified schedules</div><strong id="metric-coverage">—</strong><small>Complete through the report date</small></div></div>
   <div class="msg err" id="admin-section-err" style="display:none;margin-bottom:10px"></div>
   <div id="admin-diag" class="mono" style="font-size:10px;color:var(--faint);margin-bottom:10px"></div>
   <div class="admin-nav" id="admin-nav">
     <button onclick="jumpTo('sec-tally')">Tally</button>
+    <button onclick="jumpTo('sec-rotations')">Rotations</button>
     <button onclick="jumpTo('sec-award')">Award</button>
     <button onclick="jumpTo('sec-review')">Review</button>
     <button onclick="jumpTo('sec-ahd')">AHD</button>
@@ -677,6 +720,23 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
       <div class="sub" style="margin:0">Off = residents can't self-submit modules (Rosie adds them manually). The Amb/PEAC columns and manual award stay on either way.</div>
     </div>
     <button class="btn btn-ghost btn-sm" id="mod-toggle" style="margin-left:auto" onclick="toggleModules()">—</button>
+  </div>
+
+  <div id="sec-rotations" class="card">
+    <div class="eyebrow">Rotation schedule</div>
+    <h3 style="margin:6px 0 9px">Upload Amion &amp; recalculate</h3>
+    <p class="sub">In Amion, open the full <strong>2026–27 Block Schedule</strong> with all residents and weeks visible. Save the page as <strong>Webpage, HTML only</strong>, then choose the file here.</p>
+    <p class="sub" id="rotation-upload-status">Upload a new schedule whenever Amion changes.</p>
+    <label class="fld" for="rotation-upload-file">Amion schedule file (.html or .htm)</label>
+    <input type="file" id="rotation-upload-file" accept=".html,.htm,text/html" onchange="rotationFileChanged_()" aria-describedby="rotation-upload-help">
+    <p class="sub" id="rotation-upload-help" style="margin:7px 0 14px">Your rotation rules and confirmed name matches carry forward. Missing residents retain their existing schedules. Blank blocks stay unknown.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <button id="rotation-preview-button" class="btn btn-ghost" disabled onclick="previewRotationUploadUI()">1. Preview update</button>
+      <button id="rotation-apply-button" class="btn btn-primary" disabled style="display:none" onclick="applyRotationUploadUI()">2. Apply &amp; recalculate</button>
+    </div>
+    <div id="rotation-upload-message" class="msg" role="status" aria-live="polite" style="display:none"></div>
+    <div id="rotation-upload-preview"></div>
+    <p class="sub" style="margin-top:14px"><a href="https://docs.google.com/spreadsheets/d/1lBY4gBSEXVqKuis5hLAqe_opa_uJ2NCIIjnfLC11g9o/edit" target="_blank" rel="noopener">Open workbook</a> to adjust categories in <strong>Rotation_Rules</strong>. Changes recalculate the workbook; reload the tracker to refresh its display.</p>
   </div>
 
   <div id="sec-award" class="card">
@@ -882,7 +942,7 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
   <div id="sec-tally" class="card">
     <div class="eyebrow">Credit totals · House Cup tally</div>
     <p class="sub">One conference credit per conference attended. AHD is separate: attending all three hours of an AHD earns one half-day credit (the hours don't each count as a conference credit); attending only some hours counts each attended hour as one conference credit. Goal is ≥50% of offered half-days. Tap any resident to see their conferences, or print their report.</p>
-    <div id="tally-out"></div>
+    <div class="tally-toolbar"><input type="search" id="tally-search" placeholder="Find a resident or house…" aria-label="Search residents" oninput="filterTally_()"><select id="tally-class" aria-label="Filter by class" onchange="filterTally_()"><option value="">All classes</option><option value="I">PGY-1</option><option value="II">PGY-2</option><option value="III">PGY-3</option><option value="Chief">Chiefs</option></select><span id="tally-visible"></span></div><div id="tally-out"></div>
     <div class="export-grid">
       <button class="exp-btn" onclick="tallyDownload()">
         <div class="t">Export totals CSV</div>
@@ -955,52 +1015,216 @@ footer{max-width:540px;margin:20px auto 0;text-align:center;font-family:var(--mo
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "SEP01-FIX";   // bump on each deploy; shown in the footer to confirm which build is live
-function call(fn){
-  var args = Array.prototype.slice.call(arguments, 1);
-  if (typeof google !== "undefined" && google.script && google.script.run){
-    return new Promise(function(ok, bad){
-      var runner = google.script.run
-        .withSuccessHandler(ok)
-        .withFailureHandler(function(e){ bad(new Error(e && e.message ? e.message : 'Server error')); });
-      runner[fn].apply(runner, args);
-    });
-  }
-  return callWithRetry(fn, args, 1);
-}
-function callWithRetry(fn, args, attempt){
-  var url = API_URL + (API_URL.indexOf("?") < 0 ? "?" : "&") + "cb=" + Date.now();
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, // simple request: no CORS preflight
-    cache: "no-store",
-    body: JSON.stringify({ action: fn, args: args })
-  }).then(function(r){
-    if (!r.ok) throw { _transient: true, msg: "HTTP " + r.status };
-    return r.text();
-  }).then(function(txt){
-    var env;
-    try { env = JSON.parse(txt); }
-    catch(e){ throw { _transient: true, msg: "bad response" }; } // cold-start HTML error page
-    if (!env.apiOk) throw new Error(env.error || "Server error"); // real app error — do NOT retry
-    return env.data;
-  }).catch(function(e){
-    // retry only transient transport failures (cold starts, blips, dropped
-    // mobile connections): up to 3 tries
-    var transient = (e && e._transient) || (e instanceof TypeError);
-    if (transient && attempt < 3){
-      return new Promise(function(res){ setTimeout(res, attempt * 800); })
-        .then(function(){ return callWithRetry(fn, args, attempt + 1); });
-    }
-    // Exhausted transient retries: give an actionable message instead of the raw
-    // browser "Failed to fetch". A real application error (env.error) is a plain
-    // Error with a useful message and is surfaced unchanged.
-    if (transient){
-      throw new Error("Couldn't reach the server. Check your connection and try again — wifi is more reliable than cell data for photo uploads.");
-    }
+var APP_VERSION = "OCT05-OFFLINE";   // bump on each deploy; shown in the footer to confirm which build is live
+/* ==================== CONNECTION + LOCAL CHECK-INS ====================== */
+var RPC_PENDING = Object.create(null), ADMIN_CACHE_AT = 0, ADMIN_REV = 0;
+var PUBLIC_BOOT_AT = 0, PUBLIC_BOOT_STALE = true, QUEUE_BUSY = false, QUEUE_DB = null;
+var WORKER_READY = false, WORKER_UPDATE = false, WORKER_ERROR = '', QUEUE_STORAGE_READY = false, SHELL_SAVED = document.documentElement.hasAttribute('data-offline-shell');
+var READ_ACTIONS = ['bootstrap','residentStart','lookupResident','getAdminData','getConferences','getRoster','getReviewQueue','myCredits','residentDetail','presenterState','presenterCodes','validateSession','peacContext','qPhoto'];
+function connectionError_(message) { var e = new Error(message || 'Connection unavailable. Try again when you have service.'); e.transient = true; return e; }
+function call(fn) {
+  var args = Array.prototype.slice.call(arguments, 1), read = READ_ACTIONS.indexOf(fn) >= 0;
+  if (navigator.onLine === false) return Promise.reject(connectionError_('You’re offline. This action needs a connection.'));
+  var key = fn + ':' + JSON.stringify(args);
+  if (read && RPC_PENDING[key]) return RPC_PENDING[key];
+  var timeout = /checkIn|syncOfflineCheckIn/.test(fn) ? 12000 : /Upload|Submit|Report|export|generate|import/i.test(fn) ? 150000 : 45000;
+  var promise = rpcAttempt_(fn, args, timeout).catch(function(e){
+    // Only reads retry automatically. A check-in retry uses its durable queue ID.
+    if (read && e.transient && navigator.onLine !== false) return rpcAttempt_(fn, args, timeout);
     throw e;
+  }).then(function(result){
+    if (!read) { ADMIN_CACHE_AT = 0; ADMIN_REV++; PUBLIC_BOOT_AT = 0; }
+    return result;
+  }).finally(function(){ if (read) delete RPC_PENDING[key]; });
+  if (read) RPC_PENDING[key] = promise;
+  return promise;
+}
+function rpcAttempt_(fn, args, timeout) {
+  return new Promise(function(resolve,reject){
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = setTimeout(function(){ if (controller) controller.abort(); reject(connectionError_('The server is taking too long to respond.')); }, timeout);
+    function ok(v){ clearTimeout(timer); resolve(v); }
+    function bad(e){ clearTimeout(timer); reject(e); }
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      var runner = google.script.run.withSuccessHandler(ok).withFailureHandler(function(e){bad(new Error(e && e.message || 'Server error'));});
+      runner[fn].apply(runner,args); return;
+    }
+    fetch(API_URL, {method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store',
+      signal:controller ? controller.signal : undefined,body:JSON.stringify({action:fn,args:args})})
+      .then(function(r){ if (!r.ok) throw connectionError_('Server unavailable (HTTP ' + r.status + ').'); return r.text(); })
+      .then(function(txt){var env; try{env=JSON.parse(txt);}catch(e){throw connectionError_('The server returned an incomplete response.');}
+        if (!env.apiOk) throw new Error(env.error || 'Server error'); return env.data;}).then(ok,function(e){bad(e.name==='AbortError'||e instanceof TypeError ? connectionError_() : e);});
   });
 }
+function phoenixDay_(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
+function storePublicBoot_(data) {
+  var copy = JSON.parse(JSON.stringify(data)); ['session','resident','found','first','last','pgy'].forEach(function(k){delete copy[k];});
+  PUBLIC_BOOT_AT = Date.now(); PUBLIC_BOOT_STALE = false;
+  try { localStorage.setItem('trk_public_schedule_v2', JSON.stringify({at:PUBLIC_BOOT_AT,api:API_URL,data:copy})); } catch(ignore) {}
+  renderConnection_();
+}
+function cachedPublicBoot_() {
+  try {
+    var saved=JSON.parse(localStorage.getItem('trk_public_schedule_v2')||'null');
+    if (!saved || saved.api!==API_URL || Date.now()-saved.at>7*86400000 || saved.at>Date.now()+300000) return null;
+    var data=saved.data, day=phoenixDay_(), all=data.upcomingConfs||data.todayConfs||[];
+    data.todayConfs=all.filter(function(c){return c.date===day;});
+    data.liveConfs=[]; data.liveConf=null; data.qEligible=[]; // live state is never inferred offline.
+    data.todayConfs.forEach(function(c){c.live=false;});
+    PUBLIC_BOOT_AT=saved.at; PUBLIC_BOOT_STALE=true; return data;
+  } catch(ignore){return null;}
+}
+async function refreshPublicBoot_(force,token) {
+  if (!force && BOOT && !PUBLIC_BOOT_STALE && Date.now()-PUBLIC_BOOT_AT<30000) return BOOT;
+  var data=await call('bootstrap',token||null); BOOT=data; storePublicBoot_(data); return data;
+}
+function saveResidentProfile_(email,hit) {
+  try { localStorage.setItem('trk_resident_profile_v2',JSON.stringify({email:email,hit:hit,at:Date.now(),api:API_URL})); } catch(ignore) {}
+}
+function cachedResidentProfile_(email) {
+  try { var p=JSON.parse(localStorage.getItem('trk_resident_profile_v2')||'null');return p&&p.email===email&&p.api===API_URL&&Date.now()-p.at<90*86400000?p.hit:null; } catch(ignore){return null;}
+}
+function queueDB_() {
+  if (QUEUE_DB) return QUEUE_DB;
+  QUEUE_DB=new Promise(function(resolve,reject){
+    if (!window.indexedDB) {reject(new Error('This browser cannot save check-ins offline.'));return;}
+    var req=indexedDB.open('uaim-conference-checkins',1);
+    req.onupgradeneeded=function(){req.result.createObjectStore('checkins',{keyPath:'key'});};
+    req.onsuccess=function(){QUEUE_STORAGE_READY=true;renderConnection_();resolve(req.result);}; req.onerror=function(){reject(new Error('Local storage is unavailable. Enable browser storage before going offline.'));};
+  }); return QUEUE_DB;
+}
+async function queueAll_(){var db=await queueDB_();return new Promise(function(resolve,reject){var req=db.transaction('checkins','readonly').objectStore('checkins').getAll();req.onsuccess=function(){resolve(req.result);};req.onerror=function(){reject(req.error);};});}
+async function queueChange_(key,fn) {
+  var db=await queueDB_();return new Promise(function(resolve,reject){
+    var tx=db.transaction('checkins','readwrite'),store=tx.objectStore('checkins'),req=store.get(key),out;
+    req.onsuccess=function(){try{out=fn(req.result||null);if(out)store.put(out);}catch(e){tx.abort();reject(e);}};
+    tx.oncomplete=function(){resolve(out);};tx.onerror=function(){reject(tx.error||new Error('Could not save the check-in on this device.'));};tx.onabort=tx.onerror;
+  });
+}
+function checkinId_(){ return 'ci-'+(window.crypto&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+'-'+Math.random().toString(36).slice(2)); }
+async function queueSave_(payload,title) {
+  var key=API_URL+'|'+payload.email+'|'+payload.confId;
+  return queueChange_(key,function(old){
+    if (old && old.state!=='attention') return old;
+    return {key:key,id:checkinId_(),payload:payload,title:title,api:API_URL,state:'queued',savedAt:Date.now(),attemptAt:0,error:''};
+  });
+}
+async function queuePatch_(entry,changes){return queueChange_(entry.key,function(old){return old&&old.id===entry.id?Object.assign(old,changes):old;});}
+function checkinReason_(reason){return {roster:'Your email did not match the roster. Ask a chief to check it.',closed:'This conference is unavailable. Ask a chief to review your saved check-in.',code:'The code was incorrect or expired. Enter the current room code.',notToday:'The reported check-in date does not match this conference.',track:'Select the correct session track.',offlineDate:'The saved date needs a chief’s review. Download your saved check-in and contact a chief.',request:'This saved request could not be verified.',busy:'The server is busy. Your check-in is saved and will retry.'}[reason]||'Could not confirm this check-in. Contact a chief if retrying does not help.';}
+async function sendQueuedCheckin_(entry,live,force) {
+  if (entry.state==='done') return entry.result;
+  if (navigator.onLine===false) return {queued:true};
+  var claimed=false;
+  entry=await queueChange_(entry.key,function(old){
+    if (!old||old.id!==entry.id||old.state==='done'||(!force&&old.state==='attention')||(old.state==='sending'&&Date.now()-old.attemptAt<60000))return old;
+    claimed=true;return Object.assign(old,{state:'sending',attemptAt:Date.now(),error:''});
+  });
+  if (!claimed) return entry&&entry.state==='done'?entry.result:{queued:true};
+  try {
+    var result=await call(live?'checkIn':'syncOfflineCheckIn',Object.assign({},entry.payload,{requestId:entry.id}));
+    if (!result || !result.ok) {
+      var message=checkinReason_(result&&result.reason);
+      await queuePatch_(entry,{state:result&&result.retryable?'queued':'attention',error:message});
+      return result&&result.retryable?{queued:true}:{attention:true,message:message};
+    }
+    await queuePatch_(entry,{state:'done',result:result,syncedAt:Date.now(),error:''});return result;
+  } catch(e) {
+    await queuePatch_(entry,{state:e.transient?'queued':'attention',error:e.message||String(e)});
+    return e.transient?{queued:true}:{attention:true,message:e.message||String(e)};
+  } finally {renderQueue_();}
+}
+async function syncSavedCheckins_(force) {
+  if (QUEUE_BUSY || navigator.onLine===false) return;
+  QUEUE_BUSY=true;
+  try {
+    var rows=await queueAll_();
+    for (var i=0;i<rows.length;i++) {
+      var row=rows[i];
+      if (row.api!==API_URL || row.state==='done' || (!force && row.state==='attention')) continue;
+      await sendQueuedCheckin_(row,false,force);
+      if (navigator.onLine===false) break;
+    }
+  } catch(e){var box=document.getElementById('sync-detail');if(box)box.textContent=e.message;}
+  finally {QUEUE_BUSY=false;renderQueue_();}
+}
+async function renderQueue_() {
+  var box=document.getElementById('sync-items');if(!box)return;
+  try {
+    var rows=(await queueAll_()).sort(function(a,b){return b.savedAt-a.savedAt;}),pending=rows.filter(function(r){return r.state!=='done';});
+    document.getElementById('queue-count').textContent=pending.length?pending.length+' saved':'';
+    document.getElementById('queue-count').hidden=!pending.length;
+    document.getElementById('sync-count').textContent=pending.length?pending.length+' waiting to sync':'All caught up';
+    box.innerHTML='';
+    rows.slice(0,12).forEach(function(r){
+      var item=document.createElement('div');item.className='sync-item';
+      var title=document.createElement('strong');title.textContent=r.title;item.appendChild(title);
+      var line=document.createElement('span');line.textContent=r.payload.email+' · '+new Date(r.savedAt).toLocaleString();item.appendChild(line);
+      var status=document.createElement('span');status.className='sync-state '+(r.state==='attention'?'attention':'');
+      status.textContent=r.state==='done'?(r.result.denied?'Reviewed · no credit':r.result.pending?'Received · awaiting chief review':'Confirmed · credit recorded'):r.state==='attention'?'Needs attention · '+r.error:r.state==='sending'?'Sending…':'Saved on this device · will sync';
+      item.appendChild(status);box.appendChild(item);
+    });
+    document.getElementById('sync-detail').textContent='Code check-ins sync when this page is open and connected. Saved does not mean credit has been awarded.';
+  }catch(e){document.getElementById('sync-detail').textContent=e.message;}
+}
+async function exportSavedCheckins_() {
+  try {var rows=await queueAll_(),url=URL.createObjectURL(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='conference-saved-checkins.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);}catch(e){toast(e.message);}
+}
+function renderConnection_(){
+  var pill=document.getElementById('connection-pill');if(!pill)return;
+  var offline=navigator.onLine===false; pill.classList.toggle('offline',offline||PUBLIC_BOOT_STALE);
+  pill.textContent=offline?'Offline':PUBLIC_BOOT_STALE?'Saved schedule':'Connected';
+  var text=document.getElementById('connection-detail');
+  text.textContent=WORKER_UPDATE?'An app update is ready. Reload when you’re ready.':offline?'Save a code check-in here, then reopen this page when service returns.':SHELL_SAVED?'Using a saved page after a connection problem. Reload to check for the latest build.':PUBLIC_BOOT_STALE?'Showing the last saved schedule. Connect to refresh it.':WORKER_ERROR?WORKER_ERROR:WORKER_READY&&QUEUE_STORAGE_READY?'Ready for weak Wi-Fi. Code check-ins can be saved on this device.':'Preparing this device for offline access…';
+  document.getElementById('app-update-button').hidden=!(WORKER_UPDATE||SHELL_SAVED);
+  var stamp=document.getElementById('schedule-stamp');
+  if(stamp)stamp.textContent=PUBLIC_BOOT_AT?'Schedule saved '+new Date(PUBLIC_BOOT_AT).toLocaleString():'';
+}
+async function prepareOffline_(){
+  try {await refreshPublicBoot_(true,TOKEN);await registerWorker_();await queueDB_();if(!WORKER_READY)throw new Error(WORKER_ERROR||'Offline installation is still finishing. Try Prepare for offline again in a moment.');if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});toast('Schedule saved. This browser is ready for offline check-ins.',false);}
+  catch(e){toast(e.message);}renderConnection_();renderQueue_();
+}
+async function registerWorker_(){
+  if (!('serviceWorker' in navigator) || location.protocol!=='https:' || /(?:^|\.)google(?:usercontent)?\.com$/.test(location.hostname)) {WORKER_ERROR='Use the HTTPS Vercel app to prepare offline page access.';renderConnection_();return;}
+  try {
+    var registration=await navigator.serviceWorker.register('/sw.js',{scope:'/',updateViaCache:'none'});
+    registration.update().catch(function(){});
+    var ready=navigator.serviceWorker.ready.then(function(){WORKER_READY=true;WORKER_ERROR='';renderConnection_();if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage({type:'CHECK_VERSION'});});
+    await new Promise(function(resolve,reject){var timer=setTimeout(function(){reject(new Error('Installation not ready'));},12000);ready.then(function(){clearTimeout(timer);resolve();},function(e){clearTimeout(timer);reject(e);});});
+  }catch(e){WORKER_ERROR='Offline page unavailable. Check that /sw.js is deployed beside index.html.';renderConnection_();}
+}
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message',function(event){if(event.data&&event.data.type==='WORKER_VERSION'){WORKER_UPDATE=event.data.version!==APP_VERSION;renderConnection_();}});
+  navigator.serviceWorker.addEventListener('controllerchange',function(){if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage({type:'CHECK_VERSION'});});
+}
+window.addEventListener('online',function(){refreshPublicBoot_(true).then(function(){renderConnection_();}).catch(function(){});syncSavedCheckins_(false);});
+window.addEventListener('offline',function(){PUBLIC_BOOT_STALE=true;renderConnection_();});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){renderConnection_();syncSavedCheckins_(false);}});
+setInterval(function(){if(!document.hidden)syncSavedCheckins_(false);},30000);
+
+async function submitDurableCheckin_(conf,code) {
+  var payload={email:currentResident.email,confId:conf.id,code:code,deviceId:deviceId(),track:chosenTrack,capturedAt:Date.now()};
+  var entry;
+  try{entry=await queueSave_(payload,confLabel(conf.type,conf.title));}
+  catch(e){
+    if(navigator.onLine===false)throw e;
+    // Online check-in remains available if a browser refuses local storage.
+    var direct=await call('checkIn',Object.assign(payload,{requestId:checkinId_()}));
+    if(!direct.ok)throw new Error(checkinReason_(direct.reason));return direct;
+  }
+  renderQueue_();
+  document.getElementById('r-checkin-btn').textContent='Saved on this device · confirming…';
+  var result=await sendQueuedCheckin_(entry,Date.now()-entry.savedAt<10000,false);renderQueue_();
+  if(result.attention)throw new Error(result.message);return result;
+}
+function showDurableCheckinResult_(result,conf) {
+  var saved=result.queued,pending=result.pending,denied=result.denied;
+  document.getElementById('r-result-title').textContent=saved?'Saved on this device':denied?'Reviewed':pending?'Submitted for review':'You’re checked in';
+  document.getElementById('r-success-chip').className='chip '+(saved||pending||denied?'info':'ok');
+  document.getElementById('r-success-chip').textContent=saved?'SAVED · WAITING TO SYNC':denied?'REVIEWED · NO CREDIT':pending?'RECEIVED · PENDING REVIEW':'CREDIT '+Number(result.credit||0).toFixed(1);
+  document.getElementById('r-success-line').textContent=saved?'Your check-in for '+confLabel(conf.type,conf.title)+' is saved on this device. Keep or reopen this page when service returns. Delayed submissions go to a chief for review.':denied?'A chief reviewed this entry and did not award credit. Contact a chief if you have a question.':pending?'Your check-in was received. A chief will verify attendance before credit is awarded.':(result.already?'Your check-in was already recorded for ':'You’re checked in for ')+(result.title||conf.title)+'.';
+  document.getElementById('r-step2').classList.add('hide');document.getElementById('r-step3').classList.remove('hide');
+}
+
 var _toastT = null;
 function toast(msg, isErr){
   var t = document.getElementById("toast");
@@ -1103,7 +1327,7 @@ function applyModulesFlag(){
 }
 function jumpTo(id){
   var el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (el){ var parent=el.closest('details');if(parent)parent.open=true;el.scrollIntoView({ behavior: "smooth", block: "start" }); }
   else toast("That section is hidden right now.");
 }
 async function toggleModules(){
@@ -1139,7 +1363,7 @@ function go(btn){
   document.querySelectorAll(".view").forEach(function(x){ x.classList.remove("on"); });
   document.getElementById("v-"+v).classList.add("on");
   document.getElementById("wrap").classList.toggle("admin-wide", v==="admin");
-  if (v==="admin") loadAdmin();
+  if (v==="admin") loadAdmin(false);
   if (v==="peac") peacInit();
   if (v==="presenter") renderTodayButtons();
   if (v!=="presenter") stopPresenterPolling();
@@ -1169,7 +1393,7 @@ async function doLogin(){
 }
 function doLogout(){
   if (TOKEN){ try{ call('logout', TOKEN); }catch(e){} }   // revoke server-side too
-  TOKEN = null; ADMIN = false;
+  TOKEN = null; ADMIN = false; ADMIN_DATA=null; ADMIN_CACHE_AT=0;
   localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token');
   stopPresenterPolling();
   renderTabs("resident");
@@ -1188,56 +1412,21 @@ document.addEventListener("keydown", function(e){
 /* ============ BOOTSTRAP ============ */
 var PENDING_CONF = null;   // conference preselected by a scanned QR (?conf=...)
 async function boot(){
-  console.log("Conference Tracker front-end · build " + APP_VERSION);
-  var bs = document.getElementById("build-stamp");
-  if (bs) bs.textContent = "BUILD " + APP_VERSION;
-  try{ PENDING_CONF = new URLSearchParams(location.search).get("conf") || null; }catch(e){}
-  if (!PENDING_CONF && typeof google !== "undefined" && google.script && google.script.url && google.script.url.getLocation){
-    try{ google.script.url.getLocation(function(loc){ PENDING_CONF = (loc.parameter && loc.parameter.conf) || null; }); }catch(e){}
-  }
-  var savedEmail = recalledEmail();
-  if (savedEmail){
-    var re = document.getElementById("r-email"); if (re && !re.value) re.value = savedEmail;
-    var qe = document.getElementById("q-email"); if (qe && !qe.value) qe.value = savedEmail;
-  }
-  renderTabs("resident");
-  try{ BOOT = await call('bootstrap', TOKEN || null); }
-  catch(e){ BOOT = {todayConfs:[], liveConf:null, qEligible:[], webAppUrl:''}; }
-  applyConfigDefaults();
-  MODULES_ON = !!BOOT.modulesEnabled;
-  applyModulesFlag();
-  // Session was validated inside bootstrap (one round-trip). Restore chief mode if
-  // valid. If bootstrap couldn't answer (transient/cold start), DON'T force a
-  // re-login — keep the token and try a direct validate; only a definite "invalid"
-  // clears it. (Forcing re-login here was creating extra sessions.)
-  if (TOKEN){
-    var sess = BOOT.session;
-    // Only act if we got a definitive answer from the server.
-    // If bootstrap threw (cold start, network) OR returned no session field,
-    // try validateSession once as a fallback.
-    if (!sess){
-      try{ sess = await call('validateSession', TOKEN); }
-      catch(e){ sess = null; }   // network/cold-start: keep token, try again next load
-    }
-    if (sess && sess.ok === true){ ADMIN = true; renderTabs("resident"); }
-    else if (sess && sess.ok === false){
-      // Only wipe the token if the server explicitly said it's invalid AND
-      // we actually reached the server (sess is a real response, not null).
-      // Guard: if this is a fresh deploy, the durable store may be empty.
-      // Give one more chance with a direct validateSession before giving up.
-      var confirm2;
-      try{ confirm2 = await call('validateSession', TOKEN); }catch(e){ confirm2 = null; }
-      if (confirm2 && confirm2.ok === false){
-        TOKEN = null;
-        localStorage.removeItem('trk_token'); sessionStorage.removeItem('trk_token');
-      } else if (confirm2 && confirm2.ok === true){
-        ADMIN = true; renderTabs("resident");
-      }
-      // if confirm2 is null (server unreachable), keep the token
-    }
-    // sess === null → couldn't reach server; keep the token, retry on next load
-  }
-  qOptions();
+  document.getElementById('build-stamp').textContent='BUILD '+APP_VERSION;
+  try{PENDING_CONF=new URLSearchParams(location.search).get('conf')||null;}catch(ignore){}
+  if(!PENDING_CONF&&typeof google!=='undefined'&&google.script&&google.script.url)try{google.script.url.getLocation(function(loc){PENDING_CONF=loc.parameter&&loc.parameter.conf||null;});}catch(ignore){}
+  var savedEmail=recalledEmail();if(savedEmail){document.getElementById('r-email').value=savedEmail;document.getElementById('q-email').value=savedEmail;}
+  BOOT=cachedPublicBoot_()||{todayConfs:[],liveConf:null,qEligible:[],webAppUrl:''};
+  applyConfigDefaults();MODULES_ON=!!BOOT.modulesEnabled;applyModulesFlag();renderTabs('resident');qOptions();renderConnection_();
+  registerWorker_();renderQueue_();
+  try{
+    var requestedToken=TOKEN;await refreshPublicBoot_(true,requestedToken||null);
+    if(TOKEN===requestedToken&&TOKEN&&BOOT.session&&BOOT.session.ok===false){TOKEN=null;ADMIN=false;ADMIN_DATA=null;localStorage.removeItem('trk_token');sessionStorage.removeItem('trk_token');go({dataset:{v:'resident'}});}
+    else if(TOKEN===requestedToken&&TOKEN&&BOOT.session&&BOOT.session.ok)ADMIN=true;
+    applyConfigDefaults();MODULES_ON=!!BOOT.modulesEnabled;applyModulesFlag();renderTabs((document.querySelector('.view.on')||{id:'v-resident'}).id.replace('v-',''));qOptions();
+    syncSavedCheckins_(false);
+  }catch(e){PUBLIC_BOOT_STALE=true;}
+  renderConnection_();
 }
 /* Pull year/contact settings from the backend so nothing is hardcoded in the
  * frontend — a new chief edits only the YEAR block in Code.gs. */
@@ -1282,17 +1471,25 @@ async function residentLookup(){
   var em = document.getElementById("r-email").value.trim().toLowerCase();
   var err = document.getElementById("r-email-err");
   if (!em || em.indexOf("@")<1){ err.style.display="block"; return; }
-  var hit;
-  try{ hit = await call('lookupResident', em); }
-  catch(e){ err.textContent = e.message; err.style.display="block"; return; }
-  if (!hit.found){ err.style.display="block"; return; }
+  var hit=cachedResidentProfile_(em);
+  try{
+    if(!hit || PUBLIC_BOOT_STALE || Date.now()-PUBLIC_BOOT_AT>60000){
+      var data=await call('residentStart',em);hit=data.resident;
+      BOOT=data;storePublicBoot_(data);
+      if(hit&&hit.found)saveResidentProfile_(em,hit);
+    }
+  }catch(e){
+    if(!e.transient){err.textContent=e.message;err.style.display='block';return;}
+    hit=hit||{found:true,first:em.split('@')[0],last:'',pgy:'—',unverified:true};
+    PUBLIC_BOOT_STALE=true;renderConnection_();
+  }
+  if (!hit || !hit.found){ err.textContent='No active roster match for that email. Check the spelling or contact a chief.';err.style.display="block"; return; }
   err.style.display="none";
   rememberEmail(em);
   currentResident = {first:hit.first, last:hit.last, pgy:hit.pgy, email:em};
-  try{ BOOT = await call('bootstrap'); }catch(e){}
-  document.getElementById("r-avatar").textContent = hit.first[0]+hit.last[0];
+  document.getElementById("r-avatar").textContent = (hit.first[0]||'?')+(hit.last[0]||'');
   document.getElementById("r-name").textContent = hit.first+" "+hit.last;
-  document.getElementById("r-class").textContent = "PGY-"+hit.pgy+" · ROSTER MATCH";
+  document.getElementById("r-class").textContent = hit.unverified ? "ROSTER WILL BE VERIFIED WHEN CONNECTED" : "PGY-"+hit.pgy+" · ROSTER MATCH";
   var sel = document.getElementById("r-conf-select");
   var lcs = todaysCheckable();
   sel.innerHTML = "";
@@ -1323,7 +1520,7 @@ boxes.forEach(function(b,i){
   });
 });
 function todaysCheckable(){
-  var list = (BOOT.todayConfs || []).filter(function(c){ return c.status !== "Cancelled"; });
+  var list = (BOOT.todayConfs || []).filter(function(c){ return c.status !== "Cancelled" && c.date === phoenixDay_(); });
   // put any in-session conference first as the default selection
   list.sort(function(a,b){ return (b.live?1:0) - (a.live?1:0); });
   return list;
@@ -1378,7 +1575,7 @@ function renderLiveConf(){
     document.getElementById("r-conf-name").textContent = confLabel(lc.type, lc.title) + (siteTag(lc.site) ? " · " + siteTag(lc.site) : "");
     document.getElementById("r-conf-meta").textContent = isPhoto
       ? (lc.date + (lc.endDate && lc.endDate !== lc.date ? " – " + lc.endDate : "") + " · OPEN FOR UPLOAD")
-      : (lc.date + " · " + lc.time + (lc.live ? " · IN SESSION" : " · OPEN ALL DAY"));
+      : (lc.date + " · " + lc.time + (PUBLIC_BOOT_STALE || navigator.onLine===false ? " · SAVED SCHEDULE" : lc.live ? " · IN SESSION" : " · OPEN ALL DAY"));
   } else {
     document.getElementById("r-conf-name").textContent = "No conference is scheduled today";
     document.getElementById("r-conf-meta").textContent = "Q-CREDIT SUBMISSION IS STILL AVAILABLE BELOW";
@@ -1419,62 +1616,22 @@ async function residentSubmit(){
     relBtn();                                   // fully re-enable (button stays usable if they come back)
     document.getElementById("r-step2").classList.add("hide");
     var s3 = document.getElementById("r-step3"); s3.classList.remove("hide");
+    document.getElementById("r-result-title").textContent="Submitted for review";
     document.getElementById("r-success-chip").textContent = "SUBMITTED · PENDING REVIEW";
     document.getElementById("r-success-line").textContent = "Photo received for " + (r2.title||liveNow.title)
       + ". A chief will review it and credit you once approved (" + rewardText(liveNow.credit, liveNow.ahdBonus) + ").";
     return;
   }
-  // Standard code-entry path below
-  if (liveNow.options && liveNow.options.length && !chosenTrack){
-    document.getElementById("r-track-err").style.display = "block";
-    return;
-  }
-  var entered = Array.prototype.map.call(boxes, function(b){return b.value;}).join("");
-  var codeErr = document.getElementById("r-code-err");
-  var dupeWarn = document.getElementById("r-dupe-warn");
-  codeErr.style.display="none"; dupeWarn.style.display="none";
-
-  // Lock the button and show a clear "sit tight" state so nobody taps twice
-  // during the lag — the double-tap is what created duplicate check-ins.
-  var btn = document.getElementById("r-checkin-btn");
-  checkinInFlight = true;
-  btn.disabled = true;
-  btn.dataset.label = btn.textContent;
-  btn.textContent = "";
-  btn.innerHTML = 'Hang on \u2014 recording <span class="spin-dot"></span>';
-  btn.style.opacity = "0.75";
-  function releaseBtn(){ checkinInFlight = false; btn.disabled = false; btn.style.opacity = ""; btn.textContent = btn.dataset.label || "Check in"; }
-
-  var res;
-  try{
-    res = await call('checkIn', {
-      email: currentResident.email, confId: liveNow.id, code: entered,
-      deviceId: deviceId(), track: chosenTrack
-    });
-  }catch(e){ releaseBtn(); codeErr.textContent = e.message; codeErr.style.display="block"; return; }
-  if (!res.ok){
-    releaseBtn();
-    if (res.reason==="dupe"){ dupeWarn.style.display="block"; return; }
-    boxes.forEach(function(b){ b.classList.add("err"); });
-    setTimeout(function(){ boxes.forEach(function(b){ b.classList.remove("err"); }); }, 350);
-    codeErr.textContent = res.reason==="closed"
-      ? "This conference isn't available for check-in."
-      : res.reason==="notToday"
-      ? "That conference isn't scheduled for today."
-      : "That code is incorrect or has expired. Check the current code on the room screen and try again.";
-    codeErr.style.display="block"; return;
-  }
-  releaseBtn();                                     // success — fully restore the button
-  document.getElementById("r-success-chip").textContent =
-    "CREDIT " + Number(res.credit||0).toFixed(1) + " · " + currentResident.first.toUpperCase() + " " + currentResident.last.toUpperCase();
-  document.getElementById("r-success-line").textContent = res.flags.length
-    ? "You're checked in for " + res.title + ". One or more verification signals were flagged — a chief resident will review this entry."
-    : "You're checked in for " + res.title + ".";
-  document.getElementById("r-step2").classList.add("hide");
-  var s3 = document.getElementById("r-step3");
-  s3.classList.remove("hide");
-  s3.querySelectorAll(".c,.k").forEach(function(el){ el.style.animation="none"; void el.getBoundingClientRect(); el.style.animation=""; });
+  if(liveNow.options&&liveNow.options.length&&!chosenTrack){document.getElementById('r-track-err').style.display='block';return;}
+  var entered=Array.prototype.map.call(boxes,function(b){return b.value;}).join(''),err=document.getElementById('r-code-err');
+  err.style.display='none';
+  if(!/^\d{4}$/.test(entered)){err.textContent='Enter all four digits from the room screen.';err.style.display='block';return;}
+  var btn=document.getElementById('r-checkin-btn');checkinInFlight=true;btn.disabled=true;btn.textContent='Saving your check-in…';
+  try{var result=await submitDurableCheckin_(liveNow,entered);showDurableCheckinResult_(result,liveNow);}
+  catch(e){err.textContent=e.message;err.style.display='block';}
+  finally{checkinInFlight=false;btn.disabled=false;btn.textContent='Check in';}
 }
+
 async function creditsLookup(){
   var em = document.getElementById("r-email").value.trim().toLowerCase();
   var err = document.getElementById("r-email-err");
@@ -1536,6 +1693,9 @@ async function creditsLookup(){
     ul.appendChild(li);
   });
   document.getElementById("r-step1").classList.add("hide");
+  var rotationBox = document.getElementById("r-rotation-time");
+  if (!rotationBox) { rotationBox = document.createElement("div"); rotationBox.id = "r-rotation-time"; rotationBox.style.cssText = "margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:8px"; document.getElementById("r-credits").appendChild(rotationBox); }
+  rotationBox.innerHTML = rotationSummaryHTML_(r.rotationTime, false);
   document.getElementById("r-credits").classList.remove("hide");
   window.scrollTo({top:0});
 }
@@ -1568,7 +1728,7 @@ function residentNotMe(){
   re.value = ""; re.focus();
 }
 async function showQArea(){
-  try{ BOOT = await call('bootstrap'); }catch(e){}
+  try{ await refreshPublicBoot_(false); }catch(e){}
   qOptions();
   if (currentResident) document.getElementById("q-email").value = currentResident.email;
   document.getElementById("r-step2").classList.add("hide");
@@ -1926,7 +2086,7 @@ function peacReset(){
 
 /* ============ PRESENTER ============ */
 async function renderTodayButtons(){
-  try{ BOOT = await call('bootstrap'); }catch(e){}
+  try{ await refreshPublicBoot_(false); }catch(e){}
   var holder = document.getElementById("p-today");
   holder.innerHTML = "";
   var confs = (BOOT.todayConfs||[]).filter(function(c){ return c.time !== "—" && c.status !== "Cancelled"; });
@@ -1943,10 +2103,10 @@ async function renderTodayButtons(){
   fillAllSelect();
 }
 async function fillAllSelect(){
-  if (!ADMIN_DATA){ try{ ADMIN_DATA = await call('getAdminData', TOKEN); }catch(e){ return; } }
+  try{var loaded=await call('getConferences',TOKEN);PRESENTER_CONFS=loaded.conferences;}catch(e){if(!PRESENTER_CONFS.length)return;}
   var sel = document.getElementById("p-select");
   sel.innerHTML = "";
-  ADMIN_DATA.conferences.filter(function(c){ return inWindow(c.date, 21, 28) && c.status !== "Cancelled"; }).forEach(function(c){
+  PRESENTER_CONFS.filter(function(c){ return inWindow(c.date, 21, 28) && c.status !== "Cancelled"; }).forEach(function(c){
     var o = document.createElement("option");
     o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
     if (c.id===presenterConf) o.selected = true;
@@ -1955,7 +2115,7 @@ async function fillAllSelect(){
 }
 function presenterPick(){ pickSession(document.getElementById("p-select").value); }
 async function pickSession(id){
-  presenterConf = id;
+  presenterConf = id; PRESENTER_CODES=[];PRESENTER_FEED_KEY="";LAST_QR_CONF="";PRESENTER_FETCH_AT=0;
   lastCode = "";   // force QR + code refresh with the newly selected session
   try{ await call('openConference', TOKEN, id); }
   catch(e){ toast(e.message); return; }
@@ -1966,7 +2126,7 @@ var lastCode = "", ringAnim = null;
 async function pClose(){
   if (!presenterConf) return;
   try{ await call('closeConference', TOKEN, presenterConf); }catch(e){ toast(e.message); return; }
-  stopPresenterPolling();
+  stopPresenterPolling(); presenterConf=null;PRESENTER_CODES=[];
   var holder = document.getElementById("p-code");
   Array.prototype.forEach.call(holder.children, function(d){ d.textContent = "·"; });
   document.getElementById("p-count").textContent = "";
@@ -1998,16 +2158,19 @@ function startPresenterPolling(){
   presenterAuthLost = false;
   acquireWakeLock();                       // keep the screen awake while projecting
   pollPresenter();
-  presenterTimer = setInterval(pollPresenter, 4000);
+  presenterTimer = setInterval(pollPresenter, 12000);
+  loadPresenterCodes_();
+  PRESENTER_CODE_TIMER=setInterval(paintBufferedCode_,200);
 }
 function stopPresenterPolling(){
+  if(PRESENTER_CODE_TIMER){clearInterval(PRESENTER_CODE_TIMER);PRESENTER_CODE_TIMER=null;}
   if (presenterTimer){ clearInterval(presenterTimer); presenterTimer = null; }
   if (ringAnim){ clearInterval(ringAnim); ringAnim = null; }
   releaseWakeLock();
 }
 var presenterAuthLost = false;
 var pollMisses = 0;
-async function pollPresenter(){
+async function pollPresenterOnce_(expectedConf){
   if (!presenterConf) return;
   var st;
   try{
@@ -2026,38 +2189,17 @@ async function pollPresenter(){
     presenterStatus("reconnect", "Reconnecting…");
     return;
   }
+  if(expectedConf!==presenterConf)return;
   if (pollMisses){ pollMisses = 0; }
   presenterStatus("live", "● live");
-  var c = (ADMIN_DATA ? ADMIN_DATA.conferences : []).filter(function(x){ return x.id===presenterConf; })[0];
+  var c = (PRESENTER_CONFS.length ? PRESENTER_CONFS : (ADMIN_DATA ? ADMIN_DATA.conferences : [])).filter(function(x){ return x.id===presenterConf; })[0];
   if (c){
     document.getElementById("p-title").textContent = c.type + " — " + c.title;
     document.getElementById("p-meta").textContent = c.date + " · " + c.time;
   }
-  var holder = document.getElementById("p-code");
-  var changed = st.code !== lastCode;
-  st.code.split("").forEach(function(ch, i){
-    var d = holder.children[i];
-    if (d.textContent !== ch){ d.textContent = ch; if (changed){ d.classList.add("tick"); setTimeout(function(){ d.classList.remove("tick"); }, 220); } }
-  });
-  if (changed){
-    lastCode = st.code;
-    var box = document.getElementById("qrbox");
-    box.innerHTML = "";
-    if (window.QRCode && BOOT.webAppUrl){
-      // Carry the presenter's chosen session in the QR so scanning preselects it
-      var qrUrl = BOOT.webAppUrl + (BOOT.webAppUrl.indexOf("?")<0 ? "?" : "&") + "conf=" + encodeURIComponent(presenterConf);
-      new QRCode(box, {text: qrUrl, width:145, height:145,
-        colorDark:"#2A6F50", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M});
-    }
-  }
-  var end = Date.now() + st.msLeft;
-  if (ringAnim) clearInterval(ringAnim);
-  ringAnim = setInterval(function(){
-    var msLeft = Math.max(0, end - Date.now());
-    var C = 194.8;
-    document.getElementById("p-ring").style.strokeDashoffset = (C * (1 - msLeft/st.windowMs)).toFixed(1);
-    document.getElementById("p-secs").textContent = Math.ceil(msLeft/1000);
-  }, 200);
+  if(!PRESENTER_CODES.length)paintCode_(st.code,st.msLeft,st.windowMs);
+  var feedKey=expectedConf+JSON.stringify(st.recent);
+  if(feedKey===PRESENTER_FEED_KEY)return;PRESENTER_FEED_KEY=feedKey;
   var ul = document.getElementById("p-feed");
   var savedScroll = ul.scrollTop;                 // keep the presenter's place across polls
   ul.innerHTML = "";
@@ -2070,39 +2212,213 @@ async function pollPresenter(){
   document.getElementById("p-count").textContent = "· " + st.count + " recorded";
 }
 
-/* ============ ADMIN ============ */
-async function loadAdmin(){
-  if (!ADMIN_DATA){
-    document.getElementById("a-week").innerHTML =
-      '<p class="sub" style="text-align:center;padding:14px 0">Loading this year\'s schedule…</p>';
-  }
-  try{ ADMIN_DATA = await call('getAdminData', TOKEN); }
-  catch(e){
-    var msg = String(e && e.message || e);
-    // Only a genuine auth failure should sign you out. Anything else (a missing
-    // sheet, a backend exception, a dropped connection) used to be reported as
-    // "Session expired" and logged you out — which hid the real problem.
-    if (/sign in again|session expired|not authorized/i.test(msg)){
-      toast("Session expired — sign in again."); doLogout(); return;
-    }
-    document.getElementById("a-week").innerHTML =
-      '<div class="msg err" style="display:block">Couldn\'t load the admin data.<br><span class="mono" style="font-size:10.5px">' +
-      msg.replace(/</g,"&lt;") + '</span><br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="loadAdmin()">Retry</button></div>';
-    return;
-  }
-  // If the combined payload came back without a roster or review queue, fetch
-  // each from its own endpoint. A failure in one part of the big payload can no
-  // longer leave the award lists and review queue silently blank.
-  if (!ADMIN_DATA.roster || !ADMIN_DATA.roster.length){
-    try{ var rr = await call('getRoster', TOKEN); if (rr && rr.roster) ADMIN_DATA.roster = rr.roster; }
-    catch(e){ console.error("getRoster fallback failed", e); }
-  }
-  if (!ADMIN_DATA.flags || !ADMIN_DATA.flags.length){
-    try{ var fq = await call('getReviewQueue', TOKEN); if (fq && fq.flags) ADMIN_DATA.flags = fq.flags; }
-    catch(e){ console.error("getReviewQueue fallback failed", e); }
-  }
-  renderAdmin();
+/* ============ ROTATION SCHEDULE UPLOAD ============ */
+var ROTATION_UPLOAD = {payload:null, preview:null, busy:false};
+function rotationUploadMessage_(message, error) {
+  var box = document.getElementById('rotation-upload-message');
+  box.className = 'msg ' + (error ? 'err' : 'ok'); box.style.display = message ? 'block' : 'none';
+  box.textContent = message;
 }
+function rotationUploadBusy_(busy) {
+  ROTATION_UPLOAD.busy = busy;
+  document.getElementById('rotation-upload-file').disabled = busy;
+  document.getElementById('rotation-preview-button').disabled = busy || !ROTATION_UPLOAD.payload;
+  document.getElementById('rotation-apply-button').disabled = busy || !ROTATION_UPLOAD.preview || !ROTATION_UPLOAD.preview.previewId;
+  document.querySelectorAll('[data-rotation-match]').forEach(function (el) { el.disabled = busy; });
+}
+async function rotationFileChanged_() {
+  if (ROTATION_UPLOAD.busy) return;
+  ROTATION_UPLOAD.payload = null; ROTATION_UPLOAD.preview = null;
+  document.getElementById('rotation-upload-preview').innerHTML = '';
+  document.getElementById('rotation-apply-button').style.display = 'none';
+  rotationUploadMessage_('', false); rotationUploadBusy_(false);
+  var file = document.getElementById('rotation-upload-file').files[0];
+  if (!file) return;
+  if (!/\.html?$/i.test(file.name)) { rotationUploadMessage_('Choose the saved Amion .html or .htm file.', true); return; }
+  if (file.size > 2 * 1024 * 1024) { rotationUploadMessage_('This file exceeds 2 MB. Save only the Amion Block Schedule page.', true); return; }
+  rotationUploadBusy_(true);
+  try {
+    var bytes = await file.arrayBuffer(), html;
+    try { html = new TextDecoder('utf-8', {fatal:true}).decode(bytes); }
+    catch (encodingError) { html = new TextDecoder('windows-1252').decode(bytes); }
+    ROTATION_UPLOAD.payload = {html:html, fileName:file.name, manualMatches:{}};
+    rotationUploadMessage_(file.name + ' is ready. Preview the update to check resident matches.', false);
+  } catch (e) { rotationUploadMessage_('Could not read the file. Choose it again. ' + (e.message || e), true); }
+  finally { rotationUploadBusy_(false); }
+}
+function renderRotationImportStatus_(status) {
+  var box = document.getElementById('rotation-upload-status'); if (!box) return;
+  box.textContent = status ? 'Last upload: ' + status.fileName + ' · ' + new Date(status.importedAt).toLocaleString() + ' · ' + status.matched + ' residents updated.' : 'Upload a new schedule whenever Amion changes.';
+}
+function renderRotationUploadPreview_(p) {
+  var escape = rotationEscape_;
+  function pct(t) { return t && t.complete ? rotationPct_(t.eligiblePct) : 'Incomplete'; }
+  var out = '<div class="rotation-import-summary"><strong>' + p.matched + ' residents will be updated</strong><span>' + p.preserved + ' preserved · ' + escape(p.year) + '</span></div>';
+  out += '<p class="sub">Eligible time shown for ' + escape(p.periodStart) + ' through ' + escape(p.periodEnd) + '. Review the matches, then apply. This preview expires in 10 minutes.</p>';
+  if (p.missing.length) {
+    out += '<details open><summary><strong>' + p.missing.length + ' residents need a match</strong></summary><p class="sub">Leave a resident unmatched to keep their current schedule. Select a name only when you have confirmed it is the same person, then preview again.</p><div class="rotation-import-scroll"><table class="roster-tbl"><thead><tr><th>Roster resident</th><th>Name in uploaded schedule</th></tr></thead><tbody>';
+    p.missing.forEach(function (r) {
+      out += '<tr><td>' + escape(r.name) + '<br><span class="sub">' + (r.hasSchedule ? 'Existing schedule will be preserved' : 'No existing schedule') + '</span></td><td><select aria-label="Match ' + escape(r.name) + '" data-rotation-match="' + escape(r.email) + '"><option value="">Keep current schedule</option>';
+      p.unmatchedSources.forEach(function (s) { out += '<option value="' + escape(s.id) + '">' + escape(s.name) + '</option>'; });
+      out += '</select></td></tr>';
+    });
+    out += '</tbody></table></div></details>';
+  }
+  if (p.unknownLabels.length) out += '<div class="msg warn" style="display:block"><strong>Classification needed:</strong> ' + p.unknownLabels.map(escape).join(', ') + '. These dates remain unknown. Review their categories in the workbook’s Rotation_Rules tab; incomplete percentages stay blank.</div>';
+  if (p.newRules.length) out += '<details><summary>' + p.newRules.length + ' new rotation labels</summary><ul>' + p.newRules.map(function (r) { return '<li>' + escape(r.label) + ' → ' + escape(r.category) + '</li>'; }).join('') + '</ul></details>';
+  out += '<details class="rotation-import-details"><summary>Review resident percentages and matches</summary><div class="rotation-import-scroll"><table class="roster-tbl"><thead><tr><th>Resident</th><th>Action / schedule name</th><th>Before</th><th>After</th><th>Unknown weekdays after</th></tr></thead><tbody>';
+  p.residents.forEach(function (r) { out += '<tr><td>' + escape(r.name) + '</td><td>' + escape(r.action) + (r.source ? '<br><span class="sub">' + escape(r.source) + '</span>' : '') + '</td><td>' + escape(pct(r.before)) + '</td><td>' + escape(pct(r.after)) + '</td><td>' + r.after.unknownDays + '</td></tr>'; });
+  out += '</tbody></table></div></details>';
+  if (p.unmatchedSources.length) out += '<details class="rotation-import-details"><summary>' + p.unmatchedSources.length + ' other schedule names will be ignored</summary><p class="sub">' + p.unmatchedSources.map(function (s) { return escape(s.name); }).join(' · ') + '</p></details>';
+  document.getElementById('rotation-upload-preview').innerHTML = out;
+  document.querySelectorAll('[data-rotation-match]').forEach(function (select) {
+    select.addEventListener('change', function () {
+      var email = select.getAttribute('data-rotation-match');
+      if (select.value) ROTATION_UPLOAD.payload.manualMatches[email] = select.value;
+      else delete ROTATION_UPLOAD.payload.manualMatches[email];
+      ROTATION_UPLOAD.preview.previewId = null;
+      rotationUploadMessage_('Resident matches changed. Click Preview update again before applying.', false);
+      rotationUploadBusy_(false);
+    });
+  });
+}
+async function previewRotationUploadUI() {
+  if (ROTATION_UPLOAD.busy || !ROTATION_UPLOAD.payload) return;
+  ROTATION_UPLOAD.preview = null; rotationUploadBusy_(true);
+  document.getElementById('rotation-apply-button').style.display = 'none';
+  rotationUploadMessage_('Checking the schedule and calculating the preview…', false);
+  try {
+    var p = await call('previewRotationUpload', TOKEN, ROTATION_UPLOAD.payload);
+    ROTATION_UPLOAD.preview = p; renderRotationUploadPreview_(p);
+    document.getElementById('rotation-apply-button').style.display = '';
+    rotationUploadMessage_('Preview ready. Review the results below, then apply the update.', false);
+  } catch (e) { document.getElementById('rotation-upload-preview').innerHTML = ''; rotationUploadMessage_(e.message || String(e), true); }
+  finally { rotationUploadBusy_(false); }
+}
+async function applyRotationUploadUI() {
+  if (ROTATION_UPLOAD.busy || !ROTATION_UPLOAD.preview || !ROTATION_UPLOAD.preview.previewId) return;
+  rotationUploadBusy_(true); rotationUploadMessage_('Saving a backup, updating rotations, and recalculating…', false);
+  try {
+    var result = await call('applyRotationUpload', TOKEN, ROTATION_UPLOAD.preview.previewId, ROTATION_UPLOAD.payload);
+    ROTATION_UPLOAD.preview = null; ROTATION_UPLOAD.payload = null;
+    document.getElementById('rotation-upload-file').value = '';
+    document.getElementById('rotation-upload-preview').innerHTML = '';
+    document.getElementById('rotation-apply-button').style.display = 'none';
+    renderRotationImportStatus_(result);
+    rotationUploadMessage_('Schedule updated: ' + result.matched + ' residents recalculated; ' + result.preserved + ' preserved. Refreshing the tally…', false);
+    var refreshed = await loadAdmin();
+    rotationUploadMessage_(refreshed ? 'Schedule updated and recalculated. Check the tally or Rotation_Eligibility tab for the refreshed percentages.' : 'The schedule was saved and recalculated, but the tally could not reload. Reload the tracker to see the new percentages.', !refreshed);
+  } catch (e) { rotationUploadMessage_((e.message || String(e)) + ' If the connection dropped, retry Apply; the same preview cannot import twice.', true); }
+  finally { rotationUploadBusy_(false); }
+}
+
+/* ============ ADMIN ============ */
+var ADMIN_LOADING = null, PRESENTER_CONFS = [], PRESENTER_POLLING = false;
+var PRESENTER_CODES = [], PRESENTER_OFFSET = 0, PRESENTER_CODE_TIMER = null, PRESENTER_CODE_LOADING = false;
+var PRESENTER_FEED_KEY = '', LAST_QR_CONF = '';
+var PRESENTER_FETCH_AT = 0, REVIEW_OBSERVER = null, REVIEW_LOADS = [], REVIEW_LOADING = 0;
+async function loadAdmin(force) {
+  if (ADMIN_LOADING && ADMIN_LOADING.token===TOKEN) return ADMIN_LOADING.promise;
+  if (force === false && ADMIN_DATA && Date.now()-ADMIN_CACHE_AT<30000) { renderAdmin(); return true; }
+  if (ADMIN_DATA) renderAdmin();
+  var label=document.getElementById('admin-freshness');if(label)label.textContent=ADMIN_DATA?'Refreshing… showing previous results':'Loading resident totals…';
+  var token=TOKEN,flight={token:token};
+  flight.promise=(async function(){
+    try {
+      var revision, data;
+      do {revision=ADMIN_REV;data=await call('getAdminData',token);if(TOKEN!==token||!ADMIN)return false;}while(revision!==ADMIN_REV);
+      ADMIN_DATA=data;ADMIN_CACHE_AT=Date.now();renderAdmin();return true;
+    }catch(e){
+      if(/sign in again|session expired|not authorized/i.test(e.message||'')){toast('Session expired — sign in again.');doLogout();return false;}
+      if(label)label.textContent=(ADMIN_DATA?'Showing previous results. ':'')+(e.message||'Could not refresh.');
+      return false;
+    }finally{if(ADMIN_LOADING===flight)ADMIN_LOADING=null;}
+  })();ADMIN_LOADING=flight;return flight.promise;
+}
+function renderAdminOverview_(){
+  var tally=ADMIN_DATA&&ADMIN_DATA.tally||[];
+  document.getElementById('metric-residents').textContent=tally.length;
+  document.getElementById('metric-credits').textContent=tally.reduce(function(n,r){return n+Number(r.total||0);},0).toLocaleString();
+  document.getElementById('metric-coverage').textContent=tally.filter(function(r){return r.rotationTime&&r.rotationTime.complete;}).length+'/'+tally.length;
+  document.getElementById('admin-freshness').textContent='Updated '+new Date(ADMIN_DATA.loadedAt||ADMIN_CACHE_AT||Date.now()).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  var review=document.getElementById('sec-review'),group=review&&review.closest('details');
+  if(group){var n=(ADMIN_DATA.flags||[]).length;group.querySelector('summary').textContent='Review queue · '+n+' pending';if(!group.dataset.initialized){group.open=n>0;group.dataset.initialized='1';}}
+  filterTally_();
+}
+function filterTally_(){
+  var input=document.getElementById('tally-search'), select=document.getElementById('tally-class');if(!input||!ADMIN_DATA)return;
+  var query=input.value.trim().toLowerCase(),group=select.value,visible=0;
+  document.querySelectorAll('#tally-out .tally-row').forEach(function(row,i){
+    var r=ADMIN_DATA.tally[i],hay=[r.first,r.last,r.email,r.house].join(' ').toLowerCase();
+    var show=(!query||hay.indexOf(query)>=0)&&(!group||String(r.pgy).trim()===group);
+    row.style.display=show?'':'none';if(row.nextElementSibling)row.nextElementSibling.style.display=show?'':'none';if(show)visible++;
+  });
+  document.getElementById('tally-visible').textContent=visible+' residents';
+}
+function polishAdminLayout_(){
+  var section=document.getElementById('v-admin'),grid=document.createElement('div'),main=document.createElement('div'),aside=document.createElement('div');
+  grid.className='admin-workspace';main.className='admin-main';aside.className='admin-tools';grid.appendChild(main);grid.appendChild(aside);
+  var cards=Array.from(section.children).filter(function(el){return el.classList.contains('card');});
+  cards.slice(1).forEach(function(card){
+    if(card.id==='sec-tally'||card.id==='sec-rotations'){main.appendChild(card);return;}
+    var details=document.createElement('details'),summary=document.createElement('summary');details.className='tool-group';
+    var heading=card.querySelector('.eyebrow');summary.textContent=heading?heading.textContent.trim():'PEAC settings';
+    details.appendChild(summary);details.appendChild(card);aside.appendChild(details);
+    if(card.id==='sec-schedule')details.open=true;
+  });
+  main.insertBefore(document.getElementById('sec-tally'),main.firstChild);section.appendChild(grid);
+}
+async function loadPresenterCodes_(){
+  if(PRESENTER_CODE_LOADING||!presenterConf||navigator.onLine===false||Date.now()-PRESENTER_FETCH_AT<15000)return;
+  PRESENTER_CODE_LOADING=true;PRESENTER_FETCH_AT=Date.now();var id=presenterConf,start=Date.now();
+  try{var out=await call('presenterCodes',TOKEN,id);if(id!==presenterConf)return;PRESENTER_CODES=out.codes;PRESENTER_OFFSET=out.serverNow-(start+Date.now())/2;paintBufferedCode_();}
+  catch(e){/* Existing unexpired codes remain available during a network interruption. */}
+  finally{PRESENTER_CODE_LOADING=false;}
+}
+function paintBufferedCode_(){
+  if(document.hidden||!presenterConf)return;
+  var now=Date.now()+PRESENTER_OFFSET,slot=PRESENTER_CODES.find(function(x){return x.start<=now&&x.end>now;});
+  if(!slot){
+    loadPresenterCodes_();
+    Array.prototype.forEach.call(document.getElementById('p-code').children,function(el){el.textContent='·';});
+    document.getElementById('p-secs').textContent='—';presenterStatus('reconnect','Reconnect to load room codes');return;
+  }
+  paintCode_(slot.code,slot.end-now,slot.end-slot.start);
+  if(navigator.onLine===false)presenterStatus('reconnect','Offline · room codes available');
+  if(PRESENTER_CODES[PRESENTER_CODES.length-1].end-now<120000)loadPresenterCodes_();
+}
+function paintCode_(code,msLeft,windowMs){
+  var holder=document.getElementById('p-code');
+  code.split('').forEach(function(ch,i){if(holder.children[i].textContent!==ch)holder.children[i].textContent=ch;});lastCode=code;
+  document.getElementById('p-ring').style.strokeDashoffset=(194.8*(1-Math.max(0,msLeft)/windowMs)).toFixed(1);
+  document.getElementById('p-secs').textContent=Math.ceil(Math.max(0,msLeft)/1000);
+  if(LAST_QR_CONF!==presenterConf&&window.QRCode&&BOOT&&BOOT.webAppUrl){
+    var box=document.getElementById('qrbox');box.innerHTML='';
+    new QRCode(box,{text:BOOT.webAppUrl+(BOOT.webAppUrl.indexOf('?')<0?'?':'&')+'conf='+encodeURIComponent(presenterConf),width:145,height:145,colorDark:'#203F37',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});LAST_QR_CONF=presenterConf;
+  }
+}
+async function pollPresenter(){
+  if(PRESENTER_POLLING||!presenterConf||document.hidden||navigator.onLine===false)return;
+  PRESENTER_POLLING=true;var id=presenterConf;
+  try{await pollPresenterOnce_(id);}finally{PRESENTER_POLLING=false;}
+}
+function lazyReviewImage_(img,cell,url){
+  img.alt='Tap to view screenshot';
+  img._reviewLoad=function(){
+    return call('qPhoto',TOKEN,url).then(function(r){
+      if(!img.isConnected)return;
+      if(r&&r.ok){img.src='data:'+r.mediaType+';base64,'+r.b64;img.style.opacity='1';}
+      else{cell.textContent='Open screenshot ↗';cell.classList.add('shot-fallback');}
+    }).catch(function(){if(img.isConnected){cell.textContent='Open screenshot ↗';cell.classList.add('shot-fallback');}});
+  };
+  if(!('IntersectionObserver' in window))return;
+  if(!REVIEW_OBSERVER)REVIEW_OBSERVER=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){REVIEW_OBSERVER.unobserve(e.target);REVIEW_LOADS.push(e.target);drainReviewImages_();}});},{rootMargin:'100px'});
+  REVIEW_OBSERVER.observe(img);
+}
+function drainReviewImages_(){
+  while(REVIEW_LOADING<2&&REVIEW_LOADS.length){var img=REVIEW_LOADS.shift();if(!img.isConnected)continue;REVIEW_LOADING++;img._reviewLoad().finally(function(){REVIEW_LOADING--;drainReviewImages_();});}
+}
+
 function safeSection(name, fn){
   try { fn(); }
   catch(e){
@@ -2122,8 +2438,10 @@ function reportSectionErrors(){
     '<br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="ADMIN_DATA=null;loadAdmin()">Reload admin data</button>';
 }
 function renderAdmin(){
+  if(REVIEW_OBSERVER)REVIEW_OBSERVER.disconnect();REVIEW_LOADS=[];
   window.__adminSectionErrors = [];
   var D = ADMIN_DATA;
+  safeSection("rotation upload", function(){ renderRotationImportStatus_(D.rotationImport); });
 
   /* schedule — one week at a time */
   var wkEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6);
@@ -2310,10 +2628,7 @@ function renderAdmin(){
         img.className = "review-shot"; img.alt = "screenshot " + (i + 1); img.style.opacity = ".35";
         cell.appendChild(img);
         gallery.appendChild(cell);
-        call('qPhoto', TOKEN, url).then(function(r){        // auto-loads a small thumbnail on render
-          if (r && r.ok){ img.src = "data:" + r.mediaType + ";base64," + r.b64; img.style.opacity = "1"; }
-          else { cell.removeChild(img); cell.textContent = "open screenshot " + (photos.length>1 ? (i+1) : "") + " ↗"; cell.classList.add("shot-fallback"); }
-        }).catch(function(){ cell.removeChild(img); cell.textContent = "open screenshot " + (photos.length>1 ? (i+1) : "") + " ↗"; cell.classList.add("shot-fallback"); });
+        lazyReviewImage_(img,cell,url);
       });
       d.appendChild(gallery);
     }
@@ -2328,6 +2643,7 @@ function renderAdmin(){
   });
 
   renderTally();
+  renderAdminOverview_();
 }
 function editRow(row, c){
   row.innerHTML = "";
@@ -3100,18 +3416,47 @@ function classLabelJS(pgy){
   var n = map[s] != null ? map[s] : parseInt(s,10);
   return (n>=1 && n<=8) ? "PGY-"+n : (raw || "Other");
 }
+function rotationEscape_(value){
+  return String(value == null ? '' : value).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function rotationPct_(value){ return value == null ? '—' : Number(value).toFixed(1) + '%'; }
+function rotationCell_(time){
+  if (!time) return '<span style="color:var(--faint)">—</span>';
+  var detail = time.eligibleDays + ' eligible; ' + time.nfDays + ' NF; ' + time.icuDays +
+    ' ICU; ' + time.vacationDays + ' vacation; ' + time.unknownDays + ' unclassified weekdays. ' + time.start + ' to ' + time.end;
+  if (!time.totalDays) return '<span title="No weekdays in the reporting period">—</span>';
+  if (!time.complete) return '<span title="' + rotationEscape_(detail) + '" style="color:var(--muted)">'
+    + (time.knownDays ? 'Incomplete' : 'No schedule') + '</span>';
+  return '<span class="rotation-meter" title="' + rotationEscape_(detail) + '">' + rotationPct_(time.eligiblePct) + '<i><b style="width:' + Math.max(0,Math.min(100,time.eligiblePct)) + '%"></b></i></span>';
+}
+function rotationSummaryHTML_(time, printView){
+  if (!time) return '<p style="font-size:12px;color:#6A7480">Rotation time will appear after the updated backend is deployed.</p>';
+  var style = 'font-size:12px;line-height:1.6;color:#1C2530;';
+  var headline = time.complete ? rotationPct_(time.eligiblePct) + ' conference-eligible time'
+    : (time.totalDays ? 'Rotation schedule incomplete' : 'No weekdays in this period');
+  return '<div style="' + style + '"><strong>' + headline + '</strong><br>'
+    + rotationEscape_(time.start) + ' through ' + rotationEscape_(time.end) + ' · Monday–Friday<br>'
+    + time.eligibleDays + ' eligible · ' + time.nfDays + ' NF · ' + time.icuDays + ' ICU · '
+    + time.vacationDays + ' vacation'
+    + (time.unknownDays ? ' · <strong>' + time.unknownDays + ' unclassified</strong>' : '')
+    + '<br><span style="color:#6A7480">Schedule coverage: ' + time.knownDays + '/' + time.totalDays + ' weekdays ('
+    + rotationPct_(time.coveragePct) + ').'
+    + (time.complete ? ' Excused time: ' + rotationPct_(time.excusedPct) + '.' : ' Percentages are withheld until the period is fully classified.')
+    + ' This describes rotation time, not attendance. Holidays are included.</span></div>';
+}
+
 function renderTally(){
   var rows = ADMIN_DATA.tally;
   var prelim = prelimSet_();
   var na = '<span style="color:var(--faint)">N/A</span>';
-  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th title="Share of conferences offered while this resident was on night float, ICU, or vacation">Unprot.</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
+  var html = '<table class="roster-tbl"><tr><th style="width:18px"></th><th>Class</th><th>Resident</th><th>House</th><th>Conf credits</th><th title="Eligible Monday–Friday days divided by all weekdays in the academic-year period. NF, ICU and vacation are excused. Missing coverage is flagged.">Eligible time</th><th>Amb ½-Day</th><th>JH/PEAC</th><th>AHD Half-Days</th><th>AHD %</th></tr>';
   var lastPgy = null;
   rows.forEach(function(r, i){
     var pct = (r.ahdPct == null) ? '<span style="color:var(--faint)">—</span>'
       : '<span class="' + (r.ahdPct >= 50 ? 'st-ok' : 'st-m') + '">' + r.ahdPct + '%</span>';
-    // Unprotected time — amber above 25% so a low conference total reads fairly.
-    var up = (r.unprotPct == null) ? '<span style="color:var(--faint)">—</span>'
-      : '<span' + (r.unprotPct >= 25 ? ' class="st-m"' : '') + ' title="' + (r.unprotected||0) + ' of ' + (r.offeredAll||0) + ' offered sessions during NF/ICU/vacation">' + r.unprotPct + '%</span>';
+    var up = rotationCell_(r.rotationTime);
     var showClass = (String(r.pgy) !== String(lastPgy));
     var isPrelim = prelim[String(r.email).toLowerCase()];
     var modCells = '<td class="mono">' + (isPrelim ? na : (r.amb||0)) + '</td><td class="mono">' + (isPrelim ? na : (r.peac||0)) + '</td>';
@@ -3125,7 +3470,7 @@ function renderTally(){
     html += '<tr id="tr-detail-' + i + '" class="hide"><td></td><td colspan="9" id="tr-detail-body-' + i + '" style="background:var(--panel-2)"></td></tr>';
     lastPgy = r.pgy;
   });
-  html += '</table>';
+  html += '</table><p class="sub" style="margin-top:8px">Eligible time = weekdays outside NF, ICU and vacation ÷ all weekdays in the reporting period. Incomplete schedules are flagged. This is separate from attendance.</p>';
   var houseTotals = {};
   rows.forEach(function(r){ if (r.house) houseTotals[r.house] = (houseTotals[r.house]||0) + r.total; });
   html += '<div style="margin-top:10px">' + Object.keys(houseTotals).map(function(h){
@@ -3203,15 +3548,7 @@ function reportHTML_(rp, meta){
         '<td><b>Optional (bonus)</b></td><td>' + rp.peacOpt + '</td></tr></table>' +
       '<p style="font-size:10.5px;color:#777;margin:4px 0 0">Each required module is one conference credit; each optional module is a bonus credit.</p>';
 
-  // Unprotected rotations note
-  var excusedSection = rp.hasRotations
-    ? '<h2>Time on unprotected rotations</h2>'
-      + '<table class="meta"><tr><td><b>Conferences offered during NF / ICU / vacation</b></td>'
-      + '<td><b>' + (rp.offeredSessions ? Math.round(100 * rp.excusedTotal / rp.offeredSessions) : 0) + '%</b>'
-      + ' &nbsp;<span style="color:#777">(' + rp.excusedTotal + ' of ' + rp.offeredSessions + ' offered)</span></td></tr>'
-      + '<tr><td><b>Breakdown</b></td><td>Night Float ' + ex.NF + ' &middot; ICU ' + ex.ICU + ' &middot; Vacation ' + ex.Vacation + '</td></tr></table>'
-      + '<p style="font-size:10.5px;color:#777;margin:4px 0 0">Conference attendance is not protected on these rotations. Read the totals above with this share in mind; the adjusted rates already exclude these sessions.</p>'
-    : '<p style="font-size:11px;color:#999;margin:12px 0 0;font-style:italic">Load the Rotations sheet to show attendance adjusted for night float, ICU, and vacation.</p>';
+  var excusedSection = '<h2>Conference-eligible rotation time</h2>' + rotationSummaryHTML_(rp.rotationTime, true);
 
   return '<section class="rpt">' +
     '<div class="rpt-h"><div class="rpt-prog">University of Arizona &mdash; Tucson &middot; Internal Medicine Residency</div>' +
@@ -3222,7 +3559,7 @@ function reportHTML_(rp, meta){
     '<h2>Conference log (' + (rp.conferences?rp.conferences.length:0) + ')</h2>' +
     (rows ? '<table class="list"><thead><tr><th>Date</th><th>Conference</th><th>Credit</th></tr></thead><tbody>' + rows + '</tbody></table>'
           : '<p class="none">No conferences recorded yet.</p>') +
-    '<div class="rpt-f">Generated ' + meta.generated + ' from the Conference Tracker. AHD: all three hours = one completed half-day. Adjusted rates exclude conferences during night float, ICU, and vacation.</div>' +
+    '<div class="rpt-f">Generated ' + meta.generated + ' from the Conference Tracker. AHD: all three hours = one completed half-day. Rotation time uses weekdays; attendance rates remain separate. Adjusted rates exclude NF, ICU and vacation and require complete schedule coverage.</div>' +
     '</section>';
 }
 function openPrint_(reports, meta){
@@ -3346,6 +3683,7 @@ function nightlyPreview(){
     'To send one manually right now, open the Sheet &rarr; Extensions &rarr; Apps Script &rarr; run <span class="mono">morningReport()</span>.</div>';
 }
 
+polishAdminLayout_();
 boot();
 
 </script>
