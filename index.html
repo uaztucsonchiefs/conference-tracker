@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-tracker-build="OCT06-DESK1">
+<html lang="en" data-tracker-build="OCT9-LIVE">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -348,6 +348,33 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
 @media(min-width:1100px){.wrap.admin-wide{max-width:1580px;padding-left:28px;padding-right:28px}}
 @media(max-width:1050px){.attendance-workspace,.conference-workspace{grid-template-columns:minmax(0,1fr)}.quick-credit{order:0}.peac-workspace{grid-template-columns:170px minmax(0,1fr)}.peac-controls{grid-template-columns:1fr 100px}.peac-controls select:last-child{grid-column:1/-1}.peac-intro{grid-template-columns:1fr}.settings-workspace{grid-template-columns:1fr}}
 @media(max-width:600px){.admin-heading h2{font-size:26px}.admin-nav button{flex:0 0 auto;font-size:11px}.workspace-status{gap:8px;flex-wrap:wrap}.admin-actions .btn{font-size:11px}.peac-workspace{grid-template-columns:1fr}.clinic-weeks{padding:13px;margin-bottom:0}#peac-weeks{display:flex;gap:6px;overflow:auto}.clinic-week-button{min-width:145px;margin:0}.peac-intro{padding:19px}.peac-controls{grid-template-columns:1fr 110px}.module-titles{grid-template-columns:1fr}.attendance-workspace{gap:12px}.overview-stat{padding:13px 10px}.overview-stat strong{font-size:23px}.overview-stat .metric-label{font-size:9px}.form-pair{gap:8px}.selection-toolbar .text-button{font-size:10px}.admin-pane #sec-tally,.quick-credit{padding:18px}.workspace-status #admin-freshness{max-width:220px}.peac-matrix-card{padding:18px}.admin-metrics{gap:7px}}
+
+.health-line{display:flex;gap:14px;justify-content:space-between;padding:9px 0;border-bottom:1px solid #e1e5df;font-size:11px}.health-line span{overflow-wrap:anywhere;text-align:right;max-width:65%}.account-row{display:block;padding:7px 0}.ni-batch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:9px 0;font-size:11px}#ni-preview{margin-top:12px}#ops-handoff-form .check-line{margin:9px 0}#work-items .flag-item{content-visibility:auto;contain-intrinsic-size:auto 150px}#work-items .text-button{margin-right:14px}.admin-pane[hidden]{display:none!important}@media(max-width:700px){.health-line{flex-direction:column;gap:3px}.health-line span{text-align:left;max-width:100%}}
+.credit-mode-switch{display:flex;gap:5px;padding:4px;margin:14px 0;background:#E9EEE6;border-radius:10px}
+.credit-mode-switch button{flex:1;border:0;border-radius:7px;padding:10px 8px;font:600 12px var(--body,system-ui);background:transparent;color:#526354;cursor:pointer}
+.credit-mode-switch button[aria-pressed="true"]{background:#fff;color:#203F37;box-shadow:0 1px 4px #203f3714}
+.credit-mode-switch button:disabled{cursor:wait;opacity:.6}
+#credit-by-conference[hidden],#credit-by-resident[hidden],#resident-credit-dates[hidden]{display:none!important}
+.resident-credit-summary{padding:11px 12px;border-radius:9px;background:#F0F5EB;color:#3C5744;font-size:12px;line-height:1.6;margin-top:13px;overflow-wrap:anywhere}
+.resident-credit-recorded{font-size:11px;display:flex;align-items:center;gap:8px;margin:13px 0}
+.quick-credit .resident-credit-recorded input,.quick-credit #resident-credit-review input{width:17px;min-height:0;height:17px;margin:0;flex-shrink:0;accent-color:#356A52}
+#resident-credit-list{max-height:420px}
+#resident-credit-list .resident-name{min-width:0;overflow-wrap:anywhere}
+#resident-credit-list .entry-status{max-width:100px;text-align:center;line-height:1.4}
+#resident-credit-review .check-line{display:flex;align-items:flex-start;gap:8px;margin:13px 0;line-height:1.6}
+#tally-out .resident-credit-shortcut{display:block;padding:3px 0;font-size:10px;margin-top:3px}
+.resident-credit-conflict{color:#95632E}
+
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap}.admin-actions .btn{min-height:42px}
+.attendance-workspace{grid-template-columns:minmax(0,1fr) minmax(400px,1.13fr)}
+.admin-pane #tally-out{max-height:440px}.admin-pane #sec-tally{padding:18px}.admin-pane #tally-out .roster-tbl td{padding:10px 7px;font-size:12px}.admin-pane #tally-out .roster-tbl th{font-size:10px}
+.quick-credit{border-top:4px solid #356A52}.activity-filters{display:grid;grid-template-columns:minmax(220px,1fr) 230px auto;gap:10px;align-items:center;margin:15px 0}
+.activity-item{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px 0;border-bottom:1px solid var(--line);font-size:13px}.activity-item>div{min-width:0;overflow-wrap:anywhere}.activity-item p{margin:5px 0}.activity-item small{display:block;color:#56695E;font-size:11px;line-height:1.6}.activity-item>.context-note{max-width:220px;text-align:right}
+.activity-status{display:inline-block;font-size:10px;font-weight:600;padding:3px 7px;border-radius:10px;background:#E9F1E5;color:#315942;margin-left:9px}.activity-status.reversed{background:#F0EAE3;color:#79583B}
+#activity-review .check-line{display:flex;gap:9px;align-items:center;margin-top:12px}#activity-review input[type=checkbox]{width:18px;height:18px;margin:0}#activity-more[hidden]{display:none!important}
+.login-destination{margin:16px 0 5px}.login-destination .fld{margin-top:0}#lg-submit:disabled{cursor:wait}
+@media(max-width:1050px){.attendance-workspace{grid-template-columns:minmax(0,1fr)}.attendance-workspace>.quick-credit{grid-row:1}.activity-filters{grid-template-columns:minmax(0,1fr) 200px}.activity-filters button{grid-column:1/-1}}
+@media(max-width:600px){.admin-actions{width:100%}.admin-actions .btn{flex:1 1 130px}.activity-filters{grid-template-columns:1fr}.activity-item{align-items:flex-start;flex-direction:column;gap:8px}.activity-item>.context-note{text-align:left;max-width:none}.activity-status{margin-left:6px}}
 </style>
 </head>
 <body>
@@ -568,7 +595,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
   <div class="card" id="pe-gate">
     <div class="eyebrow">Clinic week modules</div>
     <h2>Johns Hopkins PEAC</h2>
-    <p class="sub">Each clinic week your group completes an assigned PEAC module (required), with an optional second module worth <strong>one conference credit</strong> if finished during your clinic week. Enter your program email to see your assignments.</p>
+    <p class="sub">Upload completion screenshots for required and optional modules, just like conference Q-credit. Each recorded module earns one credit under the current program rules; chiefs review the proof.</p>
     <label class="fld">Your email</label>
     <input type="email" id="pe-email" placeholder="you@arizona.edu" inputmode="email">
     <div class="msg err" id="pe-gate-err">No roster match for that email.</div>
@@ -588,7 +615,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     <div class="card" id="pe-req-card">
       <div class="eyebrow">Required module · mandatory</div>
       <h3 id="pe-req-title">—</h3>
-      <p class="sub" style="margin-top:4px">Required for your clinic week. Late submissions are accepted but marked late. This one doesn't earn a conference credit.</p>
+      <p class="sub" style="margin-top:4px">Required for your clinic week. One conference credit is recorded on submission; chiefs review the proof. Late submissions are accepted and marked late.</p>
       <a class="dl-link hide" id="pe-req-link" href="#" target="_blank" rel="noopener">Open module ↗</a>
       <div class="msg ok" id="pe-req-done" style="margin-top:10px">—</div>
       <div id="pe-req-form">
@@ -607,7 +634,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     <div class="card" id="pe-opt-card">
       <div class="eyebrow" style="color:var(--sky)">Optional module · +1 conference credit</div>
       <h3 id="pe-opt-title">—</h3>
-      <p class="sub" style="margin-top:4px" id="pe-opt-blurb">Optional. Worth one conference credit if submitted during your clinic week by your deadline.</p>
+      <p class="sub" style="margin-top:4px" id="pe-opt-blurb">Optional module · one additional credit. Upload completion proof for chief review.</p>
       <a class="dl-link hide" id="pe-opt-link" href="#" target="_blank" rel="noopener">Open module ↗</a>
       <div class="msg ok" id="pe-opt-done" style="margin-top:10px">—</div>
       <div id="pe-opt-form">
@@ -643,13 +670,13 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     <h2 style="text-align:center">Sign in</h2>
     <p class="sub" style="text-align:center">The Presenter and Admin areas are restricted to chiefs and faculty. Residents never need an account — check-in stays open to everyone.</p>
     <label class="fld">Email</label>
-    <input type="email" id="lg-email" placeholder="you@arizona.edu" autocomplete="off" autocorrect="off" autocapitalize="none">
+    <input type="email" id="lg-email" placeholder="you@arizona.edu" autocomplete="username" autocorrect="off" autocapitalize="none">
     <label class="fld">Password</label>
-    <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="new-password">
-    <div class="msg err" id="lg-err">Incorrect email or password.</div>
+    <input type="password" id="lg-pass" placeholder="••••••••" autocomplete="current-password">
+    <div class="login-destination"><label class="fld" for="lg-destination">After sign-in, open</label><select id="lg-destination"><option value="presenter">Conference codes</option><option value="credit">Credit residents</option><option value="add">Add a conference</option><option value="attendance">Attendance totals</option></select></div><div class="msg err" id="lg-err">Incorrect email or password.</div>
     <label class="attest" style="margin-top:12px"><input type="checkbox" id="lg-remember" checked><span>Keep me signed in on this device for 30 days (on by default). <strong>Uncheck this on a shared or public computer</strong> — like a podium PC — so the next person can't reach the chief tools.</span></label>
     <div style="margin-top:13px">
-      <button class="btn btn-primary" onclick="doLogin()">Sign in</button>
+      <button id="lg-submit" class="btn btn-primary" onclick="doLogin()">Sign in</button>
     </div>
   </div>
 </section>
@@ -666,7 +693,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     </div>
     <p class="sub" style="margin-bottom:10px"><strong>1.</strong> Tap your session &#160;·&#160; <strong>2.</strong> Project this screen. The code rotates by itself. Check-in is open all day for today's conferences — this screen just displays the code.</p>
     <div id="p-today"></div>
-    <button class="btn btn-ghost btn-sm" onclick="document.getElementById('p-all').classList.toggle('hide')">Other dates…</button>
+    <button class="btn btn-ghost btn-sm" onclick="togglePresenterDates_()">Other dates…</button>
     <div class="hide" id="p-all" style="margin-top:8px">
       <label class="fld">All conferences</label>
       <select id="p-select" onchange="presenterPick()"></select>
@@ -695,14 +722,14 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
 </section>
 
 <!-- ==================== ADMIN ==================== -->
-<section class="view" id="v-admin"><div class="admin-heading"><div><div class="eyebrow">Chiefs &amp; program staff</div><h2>Conference workspace</h2><p class="sub">Attendance, schedules and module credit in one place.</p></div><div class="admin-actions"><button class="btn btn-ghost btn-sm" onclick="go({dataset:{v:'presenter'}})">Start a conference ↗</button><button class="btn btn-primary btn-sm" onclick="openAddConference_()">+ Add conference</button></div></div>
+<section class="view" id="v-admin"><div class="admin-heading"><div><div class="eyebrow">Chiefs &amp; program staff</div><h2>Conference workspace</h2><p class="sub">Attendance, schedules and module credit in one place.</p></div><div class="admin-actions"><button class="btn btn-ghost btn-sm" onclick="go({dataset:{v:'presenter'}})">Conference codes</button><button class="btn btn-primary btn-sm" onclick="openQuickCredit_()">+ Credit residents</button><button class="btn btn-ghost btn-sm" onclick="openAddConference_()">+ Add conference</button></div></div>
 <div class="workspace-status"><span class="chip ok">SIGNED IN</span><span id="admin-freshness" role="status">Loading totals…</span><button class="text-button" onclick="loadAdmin(true)">Refresh data</button><button class="text-button signout" onclick="doLogout()">Sign out</button></div>
 <div class="admin-nav" id="admin-nav" aria-label="Chief workspace sections">
-<button type="button" data-pane="attendance" onclick="selectAdminPane_('attendance')">Attendance</button><button type="button" data-pane="conferences" onclick="selectAdminPane_('conferences')">Conferences</button><button type="button" data-pane="peac" onclick="selectAdminPane_('peac')">PEAC modules</button><button type="button" data-pane="review" onclick="selectAdminPane_('review')">Review <span id="review-badge">0</span></button><button type="button" data-pane="settings" onclick="selectAdminPane_('settings')">Settings &amp; handoff</button>
-</div>
+<button type="button" data-pane="attendance" onclick="selectAdminPane_('attendance')">Attendance</button><button type="button" data-pane="conferences" onclick="selectAdminPane_('conferences')">Conferences</button><button type="button" data-pane="peac" onclick="selectAdminPane_('peac')">PEAC modules</button><button type="button" data-pane="review" onclick="selectAdminPane_('review')">Work queue <span id="review-badge">—</span></button><button type="button" data-pane="settings" onclick="selectAdminPane_('settings')">Settings &amp; handoff</button>
+<button type="button" data-pane="activity" onclick="selectAdminPane_('activity')">Activity &amp; corrections</button></div>
 <div class="msg err" id="admin-section-err" role="status"></div>
 <section id="admin-pane-attendance" class="admin-pane" aria-label="Attendance">
-<div class="admin-metrics"><div class="overview-stat"><div class="metric-label">Active residents</div><strong id="metric-residents">—</strong></div><div class="overview-stat"><div class="metric-label">Conference credits · year to date</div><strong id="metric-credits">—</strong></div><div class="overview-stat"><div class="metric-label">Complete rotation schedules</div><strong id="metric-coverage">—</strong></div></div>
+
 <div class="attendance-workspace"><div id="sec-tally" class="card">
     <div class="eyebrow">Program attendance</div><h3>Attendance totals</h3>
     <p class="sub">Year-to-date credits, AHD attendance and eligible rotation time. Select a resident to see their attendance or print a report.</p>
@@ -723,18 +750,45 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
         <div class="s">WEEKLY HOUSE TOTALS PUSH<br>MON 06:00 · SHARED CHIEFS ACCOUNT</div>
       </button>
     </div><div id="pom-out"></div></details></div><div id="sec-award" class="card quick-credit">
-<div class="eyebrow">Add attendance</div><h3>Credit residents</h3><p class="sub">Choose a recent conference, then select the residents who attended. Existing entries are shown and protected.</p>
-<fieldset id="credit-fields">
+<div class="eyebrow">Add attendance</div><h3>Credit residents</h3>
+
+
+<div aria-label="Choose how to award attendance" role="group" class="credit-mode-switch"><button type="button" id="credit-mode-conference" aria-pressed="true" onclick="setCreditMode_('conference')">By conference</button><button type="button" id="credit-mode-resident" aria-pressed="false" onclick="setCreditMode_('resident')">By resident</button></div><div id="credit-by-conference"><p class="sub">Choose a recent conference, then select the residents who attended. Existing entries are shown and protected.</p><fieldset id="credit-fields">
 <div class="form-pair"><div><label class="fld" for="credit-range">Show conferences</label><select id="credit-range" onchange="renderCreditConferences_(true)"><option value="14">Past 2 weeks</option><option value="60">Past 2 months</option><option value="all">Full academic year</option></select></div><div><label class="fld" for="credit-conf-search">Find a conference</label><input id="credit-conf-search" type="search" placeholder="Title, type or date" oninput="renderCreditConferences_(true)"></div></div>
 <label class="fld" for="bulk-conf">Conference</label><select id="bulk-conf" onchange="creditConferenceChanged_()"></select><p id="credit-context" class="context-note"></p>
 <label class="fld" for="bulk-action">Record as</label><select id="bulk-action" onchange="creditActionChanged_()"><option value="Manual Credit">Attended · award credit</option><option value="Q-Credit">Q-credit · questions verified</option><option value="Excused">Excused · no credit</option></select>
 <div class="form-pair roster-filters"><input id="credit-search" type="search" placeholder="Search residents…" aria-label="Search residents to credit" oninput="filterCreditRoster_()"><select id="credit-class" aria-label="Filter credit list by class" onchange="filterCreditRoster_()"><option value="">All classes</option><option value="1">PGY-1</option><option value="2">PGY-2</option><option value="3">PGY-3</option><option value="99">Chiefs / other</option></select></div>
 <div class="selection-toolbar"><span id="credit-count" role="status">Choose a conference</span><button class="text-button" type="button" onclick="creditSelectVisible_(true)">Select visible</button><button class="text-button" type="button" onclick="creditClear_()">Clear</button></div>
 <div id="bulk-roster" class="resident-picker" aria-live="polite"></div>
-<details class="paste-list"><summary>Paste a list of names or emails</summary><textarea id="bulk-paste" rows="3" aria-label="Names or emails to match" placeholder="One name or program email per line"></textarea><button class="btn btn-ghost btn-sm" type="button" onclick="bulkMatch()">Match list</button><p id="bulk-unmatched" class="context-note" role="status"></p></details>
+<details class="paste-list"><summary>Paste a list of names or emails</summary><textarea id="bulk-paste" rows="3" aria-label="Names or emails to match" placeholder="One name or program email per line"></textarea><button class="btn btn-ghost btn-sm" type="button" onclick="bulkMatch()">Match list</button><p id="bulk-unmatched" class="context-note" role="status"></p></details><details class="paste-list"><summary>Dictate resident names</summary><p class="sub">Browser dictation may use an online speech service. Use full names and say “next resident” between names. Nothing is credited until you review and save.</p><button class="btn btn-ghost btn-sm" id="voice-start" type="button" onclick="startDictation_()">Dictate names</button><label class="fld" for="voice-transcript">Editable transcript · also accepts keyboard dictation</label><textarea id="voice-transcript" rows="3" placeholder="One resident per line"></textarea><button class="btn btn-ghost btn-sm" type="button" onclick="matchDictatedNames_()">Match names to roster</button><p id="voice-status" class="context-note" role="status"></p></details>
 <button id="credit-review-button" class="btn btn-primary full-width" type="button" disabled onclick="reviewCredit_()">Review selected residents</button>
-</fieldset>
-<div id="credit-review" class="save-review" hidden></div><div id="bulk-ok" class="msg" role="status" aria-live="polite"></div>
+</fieldset><div id="credit-review" class="save-review" hidden></div><div id="bulk-ok" class="msg" role="status" aria-live="polite"></div></div><div id="credit-by-resident" hidden>
+  <p class="sub">Choose one resident, then check the conferences they attended. Existing entries are protected. PEAC module credit stays in the PEAC tab.</p>
+  <fieldset id="resident-credit-fields">
+    <label class="fld" for="resident-credit-search">Find a resident</label>
+    <input id="resident-credit-search" type="search" placeholder="Name or program email" oninput="renderResidentCreditPicker_()">
+    <label class="fld" for="resident-credit-person">Resident</label>
+    <select id="resident-credit-person" onchange="residentCreditPersonChanged_()"><option value="">Choose a resident…</option></select>
+    <div id="resident-credit-summary" class="resident-credit-summary" role="status">Select a resident to see their conference history.</div>
+    <div class="form-pair">
+      <div><label class="fld" for="resident-credit-range">Date range</label><select id="resident-credit-range" onchange="residentCreditRangeChanged_()"><option value="60">Past 2 months</option><option value="all">Full academic year</option><option value="custom">Custom dates</option></select></div>
+      <div><label class="fld" for="resident-credit-type">Conference type</label><select id="resident-credit-type" onchange="renderResidentCreditList_()"><option value="">All types</option></select></div>
+    </div>
+    <div class="form-pair" id="resident-credit-dates" hidden>
+      <div><label class="fld" for="resident-credit-from">From</label><input id="resident-credit-from" type="date" onchange="renderResidentCreditList_()"></div>
+      <div><label class="fld" for="resident-credit-to">Through</label><input id="resident-credit-to" type="date" onchange="renderResidentCreditList_()"></div>
+    </div>
+    <label class="fld" for="resident-credit-conference-search">Find conferences</label>
+    <input id="resident-credit-conference-search" type="search" placeholder="Title, site, or date" oninput="renderResidentCreditList_()">
+    <label class="check-line resident-credit-recorded"><input id="resident-credit-show-recorded" type="checkbox" onchange="renderResidentCreditList_()">Show recorded and unavailable conferences</label>
+    <div class="selection-toolbar"><span id="resident-credit-count" role="status">0 selected</span><button class="text-button" type="button" onclick="residentCreditSelectVisible_()">Select visible</button><button class="text-button" type="button" onclick="clearResidentCreditSelection_()">Clear</button><button class="text-button" type="button" onclick="loadResidentCredit_(true)">Refresh list</button></div>
+    <div id="resident-credit-list" class="resident-picker" aria-label="Conferences for the selected resident"></div>
+    <p class="context-note">Each AHD hour is listed separately. Select only the hours you verified. Changing residents clears the selection.</p>
+    <button id="resident-credit-review-button" class="btn btn-primary full-width" type="button" disabled onclick="reviewResidentCredit_()">Review selected conferences</button>
+  </fieldset>
+  <div id="resident-credit-review" class="save-review" hidden></div>
+  <div id="resident-credit-result" class="msg" role="status" aria-live="polite"></div>
+</div>
 </div></div></section>
 <section id="admin-pane-conferences" class="admin-pane" hidden aria-label="Conferences"><div class="conference-workspace"><div id="sec-schedule" class="card">
     <div class="eyebrow">Schedule</div>
@@ -836,15 +890,8 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
 <div id="peac-award-roster" class="matrix-scroll"></div><button id="peac-review-button" class="btn btn-primary" type="button" disabled onclick="reviewPeac_()">Review module awards</button></fieldset><div id="peac-review" class="save-review" hidden></div><div id="peac-award-out" role="status" aria-live="polite"></div>
 <details class="quiet-details"><summary>How module credit works</summary><p class="sub">One required and one optional credit per resident per block. Only mark completions you have verified. Clinic weeks come from the workbook’s PEAC group assignments; prelim exclusions carry forward. Switching blocks or weeks clears unsaved selections.</p></details>
 </div></div></section>
-<section id="admin-pane-review" class="admin-pane" hidden aria-label="Review"><div id="sec-review" class="card">
-    <div class="eyebrow" style="color:var(--adobe)">Review queue <span id="flags-count-lbl" style="color:var(--brick)"></span></div>
-    <p class="sub" style="margin-bottom:10px">Q-credit submissions and any flagged check-ins land here — each shows its uploaded screenshot(s) as a thumbnail (tap to open full size). <strong>Approve</strong> keeps credit; <strong>Deny</strong> removes it. Submissions whose screenshot looks reused (dated well before submission) are flagged and held back from bulk approve.</p>
-    <button class="btn btn-ghost" style="margin-bottom:6px" onclick="bulkApproveUI()">Approve all Q-credit submissions</button>
-    <button class="btn btn-ghost" style="margin-bottom:6px" onclick="loadPhotoProofReview()">Photo Proof submissions</button>
-    <div id="photo-proof-out"></div>
-    <div id="a-flags"></div>
-    <p class="sub hide" id="a-noflags" style="text-align:center;padding:6px 0">No entries awaiting review.</p>
-  </div><div id="sec-ahd" class="card">
+<section id="admin-pane-review" class="admin-pane" hidden aria-label="Review"><div id="sec-review" class="card"><div class="eyebrow">Coordinator work queue</div><div class="panel-title"><h3>Needs attention</h3><button class="text-button" onclick="ensureOpsSection_('review',true)">Refresh queue</button></div><p class="sub">Review proof, resolve missing attendance, fill NI identifiers and follow up on export or job failures.</p><div class="form-pair"><select id="work-type" aria-label="Filter work queue" onchange="renderWorkQueue_()"><option value="">All types</option><option value="offline">Offline check-ins</option><option value="conference">Conference proof / flags</option><option value="peac">PEAC completion proof</option><option value="ahd">Partial AHD attendance</option><option value="mapping">NI identifiers</option><option value="ni">NI import failures</option><option value="job">Scheduled job failures</option></select><input id="work-search" type="search" placeholder="Search names, dates or details" oninput="renderWorkQueue_()"></div><div id="work-summary" class="context-note" role="status"></div><div id="work-items"></div><button class="text-button" id="work-more" hidden onclick="OPS.workLimit+=50;renderWorkQueue_()">Show 50 more</button>
+</div><div id="sec-ahd" class="card">
     <div class="eyebrow" style="color:var(--adobe)">AHD attendance check</div>
     <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate. Cancelled and deleted AHDs never count toward the total, and neither do 7/2/2026 or the last two weeks of the year.</p>
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadAhdCheck()">Scan for partial AHD attendance</button>
@@ -875,7 +922,11 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     <button class="btn btn-ghost" style="margin-top:10px" onclick="loadDeviceIntegrity()">Scan for shared-device check-ins</button>
     <div id="dev-out"></div>
   </div></details></section>
-<section id="admin-pane-settings" class="admin-pane" hidden aria-label="Settings and handoff"><div class="settings-workspace"><div><div class="card"><div class="eyebrow">For the next chief</div><h3>Three everyday workflows</h3><ol class="handoff-list"><li><strong>Run a conference.</strong> Choose “Start a conference”, select the session and show its QR and room code. Residents can use the same tracker link all year.</li><li><strong>Fix missing attendance.</strong> In Attendance, pick the conference, select residents and review the names before saving.</li><li><strong>Enter module completions.</strong> In PEAC, choose the block and clinic week, then mark Required or Optional beside each resident.</li></ol><p class="sub">NI exports are available when requested. Routine check-ins and manual credits are recorded here without a separate NI upload.</p><details class="quiet-details"><summary>If a check-in or QR stops working</summary><p class="sub">Try the tracker link directly. Confirm the correct date and conference in Presenter. If the backend cannot respond, previously prepared devices can save code check-ins locally; delayed entries need review. Use Attendance to record verified attendance after service returns. Do not clear browser storage while saved check-ins are pending.</p></details><div id="admin-diag" class="context-note"></div></div><div id="sec-rotations" class="card">
+<section id="admin-pane-settings" class="admin-pane" hidden aria-label="Settings and handoff"><div class="settings-workspace ops-settings">
+<div>
+<div class="card" id="sec-health"><div class="panel-title"><div><div class="eyebrow">System health</div><h3>Is everything working?</h3></div><button class="text-button" onclick="ensureOpsSection_('settings',true)">Refresh</button></div><div id="ops-health">Loading health…</div><p class="context-note">Health reflects server checks and recorded job runs. A successful deployment still needs a real-device check-in test.</p></div>
+<div class="card" id="sec-handoff"><div class="eyebrow">Program handoff</div><h3>Ready for the next chief</h3><p class="sub">Record program access and verify it with the incoming chief. Saving this checklist does not transfer account ownership.</p><div id="ops-handoff-form"></div><button class="btn btn-primary" id="handoff-save" onclick="saveHandoffUI_()">Save handoff checklist</button><div id="handoff-result" role="status"></div><details class="quiet-details"><summary>Install or transfer scheduled jobs</summary><p class="sub">Sign into Apps Script with the program-managed account that should own the jobs. Run <strong>installProgramTriggers</strong> once and authorize it. The outgoing owner should remove their old project triggers from their own account. Apps Script only lists the current account’s triggers, so both owners must check before handoff. This also enables immediate totals-cache invalidation after workbook edits.</p><p class="sub">Weekly NI preparation runs only if enabled here; it saves a file, and does not submit anything to NI.</p></details></div>
+<div id="sec-rotations" class="card">
     <div class="eyebrow">Rotation schedule</div>
     <h3 style="margin:6px 0 9px">Upload Amion &amp; recalculate</h3>
     <p class="sub">In Amion, open the full <strong>2026–27 Block Schedule</strong> with all residents and weeks visible. Save the page as <strong>Webpage, HTML only</strong>, then choose the file here.</p>
@@ -890,13 +941,18 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     <div id="rotation-upload-message" class="msg" role="status" aria-live="polite" style="display:none"></div>
     <div id="rotation-upload-preview"></div>
     <p class="sub" style="margin-top:14px"><a href="https://docs.google.com/spreadsheets/d/1lBY4gBSEXVqKuis5hLAqe_opa_uJ2NCIIjnfLC11g9o/edit" target="_blank" rel="noopener">Open workbook</a> to adjust categories in <strong>Rotation_Rules</strong>. Changes recalculate the workbook; reload the tracker to refresh its display.</p>
-  </div></div><div><div class="card" style="padding:11px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px">
+  </div>
+</div>
+<div>
+<div class="card" id="sec-ni-weekly"><div class="eyebrow">New Innovations</div><h3>Weekly attendance export</h3><p class="sub">Prepare one file for your confirmed NI import process. Downloading or attaching a file does not import its attendance into NI. A weekly staff reference is available even before an NI import format is configured.</p><div class="form-pair"><div><label class="fld" for="ni-from">From</label><input id="ni-from" type="date"></div><div><label class="fld" for="ni-to">Through</label><input id="ni-to" type="date"></div></div><button class="btn btn-ghost" id="ni-preview-btn" onclick="previewNIUI_()">Preview verified attendance</button><div id="ni-preview" role="status"></div><div id="ni-history"></div><details class="quiet-details"><summary>Import outcome</summary><p class="sub">Only mark Accepted after confirming that attendance appears in NI. These are staff-recorded outcomes; there is no automatic NI connection.</p><label class="fld" for="ni-outcome-batch">Export</label><select id="ni-outcome-batch"></select><label class="fld" for="ni-outcome-status">Result</label><select id="ni-outcome-status"><option value="Accepted">Accepted</option><option value="Rejected">Rejected</option><option value="Partial">Partial</option><option value="Ready">Ready</option></select><label class="fld" for="ni-receipt">NI result or confirmation reference</label><input id="ni-receipt" placeholder="What you verified in NI"><label class="fld" for="ni-note">Notes</label><textarea id="ni-note" rows="2"></textarea><button class="btn btn-ghost" onclick="saveNIOutcomeUI_()">Record result</button></details><details class="quiet-details"><summary>Export configuration</summary><p class="sub">Ask your NI team for a supported attendance-import specification. Match the workbook’s Export_Config columns and status codes to it, then test a small file. This confirmation does not enable an NI interface.</p><label class="check-line"><input id="ni-confirmed" type="checkbox">The configured file format has been confirmed and tested with our NI team.</label><label class="check-line"><input id="ni-weekly" type="checkbox">Prepare the previous week’s file on Mondays at about 7 AM Arizona time.</label><button class="btn btn-ghost" onclick="configureNIUI_()">Save export settings</button><p class="sub">Scheduled preparation requires installProgramTriggers. Missing IDs stop preparation and appear in the work queue.</p></details><div id="ni-result" role="status"></div></div>
+<div class="card" id="sec-accounts"><div class="eyebrow">Admin accounts</div><h3>Program staff access</h3><div id="ops-accounts"></div><label class="fld" for="account-email">Staff email</label><input type="email" id="account-email"><label class="fld" for="account-password">New password · at least 8 characters</label><input type="password" id="account-password" autocomplete="new-password" placeholder="Leave blank to keep the current password"><label class="check-line"><input id="account-enabled" type="checkbox" checked>Account enabled</label><button id="account-save" class="btn btn-ghost" onclick="saveAccountUI_()">Save account</button><p class="sub">Accounts have full chief/admin access. Changing a password or disabling an account invalidates its previous sessions. The original chief sign-in configuration remains in private Code.gs.</p><div id="account-result" role="status"></div></div>
+<div class="card" style="padding:11px 14px;margin-bottom:13px;display:flex;align-items:center;gap:10px">
     <div>
       <div style="font-weight:700;font-size:12px">Resident PEAC self-submission tab</div>
       <div class="sub" style="margin:0">Off = residents can't self-submit modules (Rosie adds them manually). The Amb/PEAC columns and manual award stay on either way.</div>
     </div>
     <button class="btn btn-ghost btn-sm" id="mod-toggle" style="margin-left:auto" onclick="toggleModules()">—</button>
-  </div><details class="advanced-tools"><summary>Optional exports &amp; reports</summary><div id="sec-exports" class="card">
+  </div><details class="advanced-tools"><summary>Other reports &amp; per-conference exports</summary><div id="sec-exports" class="card">
     <div class="eyebrow">Exports</div>
     <label class="fld">Conference</label>
     <select id="exp-conf"></select>
@@ -925,7 +981,18 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     </div>
     <button class="btn btn-ghost" style="margin-top:12px" onclick="nightlyPreview()">How do I send one manually?</button>
     <div id="ne-out"></div>
-  </div></details><details class="advanced-tools"><summary>Account &amp; shared devices</summary><p class="sub">Sign out after using a podium computer. Use the button below only when you need to end all saved chief sessions.</p><button class="btn btn-ghost" onclick="signOutEverywhere()">Sign out all devices</button></details></div></div></section>
+  </div></details><details class="advanced-tools"><summary>Shared-device recovery</summary><p class="sub">Sign out on podium computers. Do not clear browser data when offline check-ins are waiting to sync.</p><button class="btn btn-ghost" onclick="signOutEverywhere()">Sign out all devices</button><div id="admin-diag" class="context-note"></div></details>
+</div></div>
+</section><section id="admin-pane-activity" class="admin-pane" hidden aria-label="Recent activity and corrections">
+  <div class="card"><div class="panel-title"><div><div class="eyebrow">Recent activity</div><h3>Credit and correction history</h3><p class="sub">See recorded awards and the staff member who recorded or reviewed them. Reverse mistaken staff awards with a reason.</p></div><button class="btn btn-ghost btn-sm" onclick="loadCreditHistory_(true)">Refresh</button></div>
+    <div class="activity-filters"><input id="activity-search" type="search" aria-label="Search activity" placeholder="Resident, conference, date, or staff email" onkeydown="if(event.key==='Enter')loadCreditHistory_(true)"><select id="activity-scope" aria-label="Activity scope" onchange="loadCreditHistory_(true)"><option value="staff">Staff-recorded / reviewed</option><option value="all">All attendance entries</option></select><button class="btn btn-ghost btn-sm" onclick="loadCreditHistory_(true)">Search</button></div>
+    <div id="activity-status" class="context-note" role="status"></div><div id="activity-result" class="msg" role="status"></div>
+    <div id="activity-review" class="save-review" hidden></div><div id="activity-list"></div>
+    <button id="activity-more" class="btn btn-ghost btn-sm" hidden onclick="loadCreditHistory_(false,true)">Load earlier entries</button>
+  </div>
+  <div class="card"><div class="eyebrow">Correction history</div><h3>Reversals and unfinished corrections</h3><p class="sub">Original attendance rows remain in the workbook. Reversals record the original status, original staff member, reason, and who completed the correction. NI corrections must be verified separately if attendance was already entered there.</p><div id="correction-list"></div></div>
+</section>
+
 </section>
 
 
@@ -952,15 +1019,15 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "OCT06-DESK1";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "OCT9-LIVE";   // bump on each deploy; shown in the footer to confirm which build is live
 /* ==================== CONNECTION + LOCAL CHECK-INS ====================== */
 var RPC_PENDING = Object.create(null), ADMIN_CACHE_AT = 0, ADMIN_REV = 0;
 var PUBLIC_BOOT_AT = 0, PUBLIC_BOOT_STALE = true, QUEUE_BUSY = false, QUEUE_DB = null;
 var WORKER_READY = false, WORKER_UPDATE = false, WORKER_ERROR = '', QUEUE_STORAGE_READY = false, SHELL_SAVED = document.documentElement.hasAttribute('data-offline-shell');
-var READ_ACTIONS = ['bootstrap','residentStart','lookupResident','getAdminData','getConferences','getRoster','getConferenceAttendance','getPeacWorkspace','getReviewQueue','myCredits','residentDetail','presenterState','presenterCodes','validateSession','peacContext','qPhoto'];
+var READ_ACTIONS = ['bootstrap','residentStart','lookupResident','getAdminData','getConferences','getRoster','getConferenceAttendance','getPeacWorkspace','ahdPartialReport','getReviewQueue','myCredits','residentDetail','presenterState','presenterCodes','validateSession','peacContext','qPhoto'];
 function connectionError_(message) { var e = new Error(message || 'Connection unavailable. Try again when you have service.'); e.transient = true; return e; }
 function call(fn) {
-  var args = Array.prototype.slice.call(arguments, 1), read = READ_ACTIONS.indexOf(fn) >= 0;
+  var args = Array.prototype.slice.call(arguments, 1), read = READ_ACTIONS.indexOf(fn) >= 0 || OPS_READS.indexOf(fn) >= 0;
   if (navigator.onLine === false) return Promise.reject(connectionError_('You’re offline. This action needs a connection.'));
   var key = fn + ':' + JSON.stringify(args);
   if (read && RPC_PENDING[key]) return RPC_PENDING[key];
@@ -970,7 +1037,7 @@ function call(fn) {
     if (read && e.transient && navigator.onLine !== false) return rpcAttempt_(fn, args, timeout);
     throw e;
   }).then(function(result){
-    if (!read) { ADMIN_CACHE_AT = 0; ADMIN_REV++; PUBLIC_BOOT_AT = 0; }
+    if (!read) { invalidateOpsClient_(); ADMIN_CACHE_AT = 0; ADMIN_REV++; PUBLIC_BOOT_AT = 0; }
     return result;
   }).finally(function(){ if (read) delete RPC_PENDING[key]; });
   if (read) RPC_PENDING[key] = promise;
@@ -1011,10 +1078,7 @@ function cachedPublicBoot_() {
     PUBLIC_BOOT_AT=saved.at; PUBLIC_BOOT_STALE=true; return data;
   } catch(ignore){return null;}
 }
-async function refreshPublicBoot_(force,token) {
-  if (!force && BOOT && !PUBLIC_BOOT_STALE && Date.now()-PUBLIC_BOOT_AT<30000) return BOOT;
-  var data=await call('bootstrap',token||null); BOOT=data; storePublicBoot_(data); return data;
-}
+
 function saveResidentProfile_(email,hit) {
   try { localStorage.setItem('trk_resident_profile_v2',JSON.stringify({email:email,hit:hit,at:Date.now(),api:API_URL})); } catch(ignore) {}
 }
@@ -1302,28 +1366,7 @@ function go(btn){
   if (v!=="presenter") stopPresenterPolling();
   window.scrollTo({top:0});
 }
-async function doLogin(){
-  var em = document.getElementById("lg-email").value.trim().toLowerCase();
-  var pw = document.getElementById("lg-pass").value;
-  var remember = document.getElementById("lg-remember").checked;
-  try{
-    var r = await call('adminLogin', em, pw, remember, TOKEN || null);
-    if (r.ok){
-      TOKEN = r.token; ADMIN = true;
-      if (remember){ localStorage.setItem('trk_token', TOKEN); sessionStorage.removeItem('trk_token'); }
-      else { sessionStorage.setItem('trk_token', TOKEN); localStorage.removeItem('trk_token'); }
-      document.getElementById("lg-err").style.display = "none";
-      document.getElementById("lg-pass").value = "";
-      go({dataset:{v:"admin"}});
-    } else {
-      var err = document.getElementById("lg-err");
-      err.textContent = r.locked
-        ? "Too many attempts — this email is locked for 15 minutes."
-        : "Incorrect email or password.";
-      err.style.display = "block";
-    }
-  }catch(e){ document.getElementById("lg-err").style.display = "block"; }
-}
+
 function doLogout(){
   if (TOKEN){ call('logout', TOKEN).catch(function(){}); }   // revoke server-side too
   clearWorkspaceSession_();
@@ -1346,7 +1389,7 @@ document.addEventListener("keydown", function(e){
 /* ============ BOOTSTRAP ============ */
 var PENDING_CONF = null;   // conference preselected by a scanned QR (?conf=...)
 async function boot(){
-  document.getElementById('build-stamp').textContent='BUILD '+APP_VERSION;
+  document.getElementById('build-stamp').textContent='BUILD '+APP_VERSION;ui_('lg-destination').value=staffDestination_();
   try{PENDING_CONF=new URLSearchParams(location.search).get('conf')||null;}catch(ignore){}
   if(!PENDING_CONF&&typeof google!=='undefined'&&google.script&&google.script.url)try{google.script.url.getLocation(function(loc){PENDING_CONF=loc.parameter&&loc.parameter.conf||null;});}catch(ignore){}
   var savedEmail=recalledEmail();if(savedEmail){document.getElementById('r-email').value=savedEmail;document.getElementById('q-email').value=savedEmail;}
@@ -1919,11 +1962,11 @@ function peacRenderModule(kind, m, c){
   var form = document.getElementById(p+"-form");
   if (kind==='optional'){
     var blurb = document.getElementById("pe-opt-blurb");
-    if (blurb) blurb.textContent = "Optional module — worth one bonus conference credit.";
+    if (blurb) blurb.textContent = "Optional module — one additional credit, with completion proof reviewed by chiefs.";
   }
   if (!m.title){ if (form) form.classList.add("hide"); if (done) done.style.display="none"; return; }
   if (m.done){
-    done.textContent = kind==='required' ? "Credited ✓" : "Credited ✓ · +1 bonus";
+    done.textContent = m.pending ? "Credit recorded · proof awaiting chief review" : "Credited ✓";
     done.style.display = "block";
     if (form) form.classList.add("hide");
   } else {
@@ -1976,39 +2019,7 @@ function peacFilePicked(inp, kind){
     });
   });
 }
-async function peacSend(kind){
-  var p = kind==='required' ? 'pe-req' : 'pe-opt';
-  var err = document.getElementById(p+"-err");
-  var ready = peacImgs[kind].filter(function(im){ return !im.pending && im.b64; });
-  var anyPending = peacImgs[kind].some(function(im){ return im.pending; });
-  if (!document.getElementById(p+"-attest").checked || !ready.length){
-    err.textContent = (ready.length===0 && anyPending)
-      ? "Your screenshot is still preparing — give it a second, then tap Submit again."
-      : "Attach at least one screenshot and confirm the attestation.";
-    err.style.display = "block"; return;
-  }
-  if (anyPending){ err.textContent = "One or more screenshots are still preparing — give it a second."; err.style.display="block"; return; }
-  err.style.display = "none";
-  var res;
-  try{
-    res = await call('peacSubmit', { email: peacCtx._email, kind: kind, block: peacCtx.block,
-      images: ready.map(function(im){ return { b64: im.b64, mediaType: im.mediaType }; }),
-      deviceId: deviceId() });
-  }catch(e){ err.textContent = e.message; err.style.display="block"; return; }
-  if (!res.ok){
-    err.textContent = res.reason==="dupe" ? "You've already been credited for this module."
-      : res.reason==="noimage" ? "No screenshot was received — please re-attach and try again."
-      : res.reason==="nogroup" ? "This isn't set up for you (prelims don't have ambulatory modules)."
-      : "No roster match for that email.";
-    err.style.display = "block"; return;
-  }
-  notify(kind==='required'
-    ? (res.onTime ? "Required module recorded — on time. Nice work!" : "Required module recorded — credited (marked late).")
-    : (res.onTime ? "Optional module recorded — +1 conference credit!" : "Optional module recorded — credited (marked late)."));
-  peacImgs[kind] = [];
-  try{ peacCtx = await call('peacContext', peacCtx._email, peacCtx.block); peacCtx._email = document.getElementById("pe-email").value.trim().toLowerCase(); }catch(e){}
-  peacRender();
-}
+
 function peacReset(){
   peacCtx = null;
   peacImgs = { required: [], optional: [] };
@@ -2019,43 +2030,10 @@ function peacReset(){
 }
 
 /* ============ PRESENTER ============ */
-async function renderTodayButtons(){
-  try{ await refreshPublicBoot_(false); }catch(e){}
-  var holder = document.getElementById("p-today");
-  holder.innerHTML = "";
-  var confs = (BOOT.todayConfs||[]).filter(function(c){ return c.time !== "—" && c.status !== "Cancelled"; });
-  if (!confs.length){
-    holder.innerHTML = '<p class="sub" style="padding:8px 0">Nothing scheduled today. Pick a session from "Other dates…" below.</p>';
-  }
-  confs.forEach(function(c){
-    var b = document.createElement("button");
-    b.className = "sess-btn" + (c.id===presenterConf ? " on" : "");
-    b.innerHTML = '<div class="st">' + confLabel(c.type, c.title) + (siteTag(c.site) ? ' · ' + siteTag(c.site) : '') + '</div><div class="sm">' + c.time + (c.live ? " · IN SESSION" : "") + '</div>';
-    b.onclick = function(){ pickSession(c.id); };
-    holder.appendChild(b);
-  });
-  fillAllSelect();
-}
-async function fillAllSelect(){
-  try{var loaded=await call('getConferences',TOKEN);PRESENTER_CONFS=loaded.conferences;}catch(e){if(!PRESENTER_CONFS.length)return;}
-  var sel = document.getElementById("p-select");
-  sel.innerHTML = "";
-  PRESENTER_CONFS.filter(function(c){ return inWindow(c.date, 21, 28) && c.status !== "Cancelled"; }).forEach(function(c){
-    var o = document.createElement("option");
-    o.value = c.id; o.textContent = c.date + " · " + c.type + " — " + c.title;
-    if (c.id===presenterConf) o.selected = true;
-    sel.appendChild(o);
-  });
-}
+
+
 function presenterPick(){ pickSession(document.getElementById("p-select").value); }
-async function pickSession(id){
-  presenterConf = id; PRESENTER_CODES=[];PRESENTER_FEED_KEY="";LAST_QR_CONF="";PRESENTER_FETCH_AT=0;
-  lastCode = "";   // force QR + code refresh with the newly selected session
-  try{ await call('openConference', TOKEN, id); }
-  catch(e){ toast(e.message); return; }
-  renderTodayButtons();
-  startPresenterPolling();
-}
+
 var lastCode = "", ringAnim = null;
 async function pClose(){
   if (!presenterConf) return;
@@ -2104,47 +2082,7 @@ function stopPresenterPolling(){
 }
 var presenterAuthLost = false;
 var pollMisses = 0;
-async function pollPresenterOnce_(expectedConf){
-  if (!presenterConf) return;
-  var st;
-  try{
-    st = await call('presenterState', TOKEN, presenterConf);
-  }catch(e){
-    // A genuine session loss can't be fixed by retrying — prompt re-login.
-    if (/sign in|session expired/i.test(e.message || "")){
-      presenterAuthLost = true;
-      stopPresenterPolling();
-      presenterStatus("expired", "Session expired — sign in again");
-      return;
-    }
-    // Transient blip / cold start / phone asleep: DON'T stop the loop. Show a
-    // quiet "reconnecting" note and let the next 4s tick recover on its own.
-    pollMisses++;
-    presenterStatus("reconnect", "Reconnecting…");
-    return;
-  }
-  if(expectedConf!==presenterConf)return;
-  if (pollMisses){ pollMisses = 0; }
-  presenterStatus("live", "● live");
-  var c = (PRESENTER_CONFS.length ? PRESENTER_CONFS : (ADMIN_DATA ? ADMIN_DATA.conferences : [])).filter(function(x){ return x.id===presenterConf; })[0];
-  if (c){
-    document.getElementById("p-title").textContent = c.type + " — " + c.title;
-    document.getElementById("p-meta").textContent = c.date + " · " + c.time;
-  }
-  if(!PRESENTER_CODES.length)paintCode_(st.code,st.msLeft,st.windowMs);
-  var feedKey=expectedConf+JSON.stringify(st.recent);
-  if(feedKey===PRESENTER_FEED_KEY)return;PRESENTER_FEED_KEY=feedKey;
-  var ul = document.getElementById("p-feed");
-  var savedScroll = ul.scrollTop;                 // keep the presenter's place across polls
-  ul.innerHTML = "";
-  st.recent.forEach(function(l){
-    var li = document.createElement("li");
-    li.innerHTML = '<span class="dot' + (l.flagged?' flag':'') + '"></span><span class="who">' + l.name + '</span><span class="cls">' + classLabelJS(l.pgy) + '</span><span class="tm">' + l.time + '</span>';
-    ul.appendChild(li);
-  });
-  ul.scrollTop = savedScroll;
-  document.getElementById("p-count").textContent = "· " + st.count + " recorded";
-}
+
 
 /* ============ ROTATION SCHEDULE UPLOAD ============ */
 var ROTATION_UPLOAD = {payload:null, preview:null, busy:false};
@@ -2251,34 +2189,11 @@ var ADMIN_LOADING = null, PRESENTER_CONFS = [], PRESENTER_POLLING = false;
 var PRESENTER_CODES = [], PRESENTER_OFFSET = 0, PRESENTER_CODE_TIMER = null, PRESENTER_CODE_LOADING = false;
 var PRESENTER_FEED_KEY = '', LAST_QR_CONF = '';
 var PRESENTER_FETCH_AT = 0, REVIEW_OBSERVER = null, REVIEW_LOADS = [], REVIEW_LOADING = 0;
-async function loadAdmin(force) {
-  if (ADMIN_LOADING && ADMIN_LOADING.token===TOKEN) return ADMIN_LOADING.promise;
-  if (force === false && ADMIN_DATA && Date.now()-ADMIN_CACHE_AT<30000) { renderAdmin(); return true; }
-  if (ADMIN_DATA) renderAdmin();
-  var label=document.getElementById('admin-freshness');if(label)label.textContent=ADMIN_DATA?'Refreshing… showing previous results':'Loading resident totals…';
-  var token=TOKEN,flight={token:token};
-  flight.promise=(async function(){
-    try {
-      var revision, data;
-      do {revision=ADMIN_REV;data=await call('getAdminData',token);if(TOKEN!==token||!ADMIN)return false;}while(revision!==ADMIN_REV);
-      ADMIN_DATA=data;ADMIN_CACHE_AT=Date.now();renderAdmin();return true;
-    }catch(e){
-      if(/sign in again|session expired|not authorized/i.test(e.message||'')){toast('Session expired — sign in again.');doLogout();return false;}
-      if(label)label.textContent=(ADMIN_DATA?'Showing previous results. ':'')+(e.message||'Could not refresh.');
-      return false;
-    }finally{if(ADMIN_LOADING===flight)ADMIN_LOADING=null;}
-  })();ADMIN_LOADING=flight;return flight.promise;
-}
 
 
 
-async function loadPresenterCodes_(){
-  if(PRESENTER_CODE_LOADING||!presenterConf||navigator.onLine===false||Date.now()-PRESENTER_FETCH_AT<15000)return;
-  PRESENTER_CODE_LOADING=true;PRESENTER_FETCH_AT=Date.now();var id=presenterConf,start=Date.now();
-  try{var out=await call('presenterCodes',TOKEN,id);if(id!==presenterConf)return;PRESENTER_CODES=out.codes;PRESENTER_OFFSET=out.serverNow-(start+Date.now())/2;paintBufferedCode_();}
-  catch(e){/* Existing unexpired codes remain available during a network interruption. */}
-  finally{PRESENTER_CODE_LOADING=false;}
-}
+
+
 function paintBufferedCode_(){
   if(document.hidden||!presenterConf)return;
   var now=Date.now()+PRESENTER_OFFSET,slot=PRESENTER_CODES.find(function(x){return x.start<=now&&x.end>now;});
@@ -2552,51 +2467,8 @@ async function peacResolveUI(logId, approve){
   notify(approve ? "Approved." : "Denied.");
   loadPeacReview();
 }
-async function loadAhdCheck(){
-  var out = document.getElementById("ahd-out");
-  out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning attendance…</p>';
-  var r;
-  try{ r = await call('ahdPartialReport', TOKEN); }
-  catch(e){ out.innerHTML = ""; toast(e.message); return; }
-  if (!r || !r.ok){ out.innerHTML = ""; toast("Couldn't run the AHD check."); return; }
-  if (!r.partials.length){
-    out.innerHTML = '<div class="msg ok" style="display:block">No partial AHD attendance found across ' + r.datesChecked + ' half-day(s). Everyone either attended all three hours or none.</div>';
-    return;
-  }
-  out.innerHTML = '<div class="eyebrow" style="margin-top:14px">' + r.partials.length + ' partial attendance(s) across ' + r.datesChecked + ' half-day(s)</div>' +
-    '<p class="sub">Tick the hour(s) the resident actually attended but forgot to scan, then <strong>Approve</strong> to credit them — three hours makes a complete half-day. <strong>Deny</strong> leaves it as is; the hours already attended still count as conference attendance.</p>';
-  r.partials.forEach(function(p){
-    var d = document.createElement("div");
-    d.className = "flag-item";
-    var hours = p.missing.map(function(m){
-      return '<label class="check-line" style="padding:5px 2px"><input type="checkbox" checked data-conf="' + m.confId + '"> Credit ' + m.label + ' (missed scan)</label>';
-    }).join("");
-    d.innerHTML =
-      '<div class="fr"><span class="who">' + p.name + '</span><span class="chip warn" style="font-size:9px;padding:3px 8px">' + classLabelJS(p.pgy) + '</span>' +
-      '<span class="mono" style="margin-left:auto;font-size:9.5px;color:var(--faint)">' + p.date + '</span></div>' +
-      '<div class="why">Attended ' + p.attended.join(" + ") + ' · missing ' + p.missing.map(function(m){ return m.label; }).join(" + ") + '</div>' +
-      '<div class="ahd-hours" style="margin:4px 0 2px">' + hours + '</div>';
-    var q = document.createElement("div"); q.className = "qbtns";
-    var approve = document.createElement("button"); approve.className = "qbtn ok"; approve.textContent = "Approve — credit selected";
-    approve.onclick = function(){
-      var picked = Array.prototype.map.call(d.querySelectorAll('.ahd-hours input:checked'), function(cb){ return cb.dataset.conf; });
-      if (!picked.length){ toast("Tick at least one hour, or use Deny."); return; }
-      ahdFixUI(p.email, picked, d);
-    };
-    var deny = document.createElement("button"); deny.className = "qbtn no"; deny.textContent = "Deny — keep as conference credit";
-    deny.onclick = function(){ d.style.opacity = "0.5"; d.querySelectorAll("button,input").forEach(function(el){ el.disabled = true; }); };
-    q.appendChild(approve); q.appendChild(deny); d.appendChild(q);
-    out.appendChild(d);
-  });
-}
-async function ahdFixUI(email, confIds, card){
-  var r;
-  try{ r = await call('ahdFixCredit', TOKEN, email, confIds); }
-  catch(e){ toast(e.message); return; }
-  toast("Credited " + r.credited + " hour(s).");
-  if (card){ card.style.opacity = "0.5"; card.querySelectorAll("button,input").forEach(function(el){ el.disabled = true; });
-    var done = document.createElement("div"); done.className = "why"; done.style.color = "var(--saguaro-d)"; done.textContent = "✓ Credited — half-day complete if all three hours are now in."; card.appendChild(done); }
-}
+
+
 async function scanAhdDupes(){
   var out = document.getElementById("ahd-dup-out");
   out.innerHTML = '<p class="sub" style="margin-top:10px">Scanning AHD listings…</p>';
@@ -3090,7 +2962,7 @@ function renderTally(){
   html += '<div style="margin-top:10px">' + Object.keys(houseTotals).map(function(h){
     return '<span class="house-chip">' + h + ' <b>' + houseTotals[h].toFixed(0) + '</b></span>';
   }).join("") + '</div>';
-  document.getElementById("tally-out").innerHTML = html;
+  document.getElementById("tally-out").innerHTML = html;addResidentCreditShortcuts_();
 }
 async function toggleResidentDetail(i){
   var row = document.getElementById("tr-detail-"+i), caret = document.getElementById("tr-caret-"+i);
@@ -3306,38 +3178,14 @@ function shortDate_(day){if(!day)return '—';return new Date(day+'T12:00:00').t
 function adminToday_(){return ADMIN_DATA&&ADMIN_DATA.today||phoenixDay_();}
 function formMessage_(id,text,error){var el=ui_(id);el.textContent=text;el.className='msg '+(error?'err':'ok');el.style.display='block';}
 function polishAdminLayout_(){selectAdminPane_(ADMIN_PANE,false);}
-function selectAdminPane_(pane,load){
-  if(['attendance','conferences','peac','review','settings'].indexOf(pane)<0)pane='attendance';ADMIN_PANE=pane;
-  document.querySelectorAll('.admin-pane').forEach(function(el){el.hidden=el.id!=='admin-pane-'+pane;});
-  document.querySelectorAll('#admin-nav [data-pane]').forEach(function(el){var on=el.dataset.pane===pane;el.classList.toggle('active',on);el.setAttribute('aria-current',on?'page':'false');});
-  if(!ADMIN_DATA||load===false)return;
-  if(pane==='conferences')renderSchedulePanel_();
-  if(pane==='review')renderFlagPanel_();
-  if(pane==='settings')renderExportList_();
-  if(pane==='peac')loadPeacWorkspace_(false);
-}
+
 function jumpTo(id){
   var pane=id==='sec-peac-award'||id==='sec-peac'?'peac':id==='sec-schedule'||id==='sec-add'?'conferences':/review|ahd|cleanup|integrity/.test(id)?'review':/rotations|exports/.test(id)?'settings':'attendance';
   selectAdminPane_(pane);var el=ui_(id);if(el){var details=el.closest('details');if(details)details.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});}
 }
 function openAddConference_(){selectAdminPane_('conferences');ui_('sec-add').scrollIntoView({behavior:'smooth',block:'start'});ui_('add-title').focus();}
-function renderAdmin(){
-  window.__adminSectionErrors=[];
-  safeSection('attendance totals',renderTally);safeSection('overview',renderAdminOverview_);
-  safeSection('conference list',function(){renderCreditConferences_(false);});
-  safeSection('module blocks',renderPeacBlockOptions_);
-  safeSection('rotation schedule',function(){renderRotationImportStatus_(ADMIN_DATA.rotationImport);});
-  selectAdminPane_(ADMIN_PANE);reportSectionErrors();
-}
-function renderAdminOverview_(){
-  var tally=ADMIN_DATA.tally||[];
-  ui_('metric-residents').textContent=tally.length;ui_('metric-credits').textContent=tally.reduce(function(n,r){return n+Number(r.total||0);},0).toLocaleString([],{maximumFractionDigits:2});
-  ui_('metric-coverage').textContent=tally.filter(function(r){return r.rotationTime&&r.rotationTime.complete;}).length+'/'+tally.length;
-  ui_('admin-freshness').textContent='Updated '+new Date(ADMIN_DATA.loadedAt||ADMIN_CACHE_AT||Date.now()).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
-  ui_('review-badge').textContent=(ADMIN_DATA.flags||[]).length;
-  ui_('admin-diag').textContent='Page '+APP_VERSION+' · Backend '+(ADMIN_DATA.backendVersion||'version unavailable');
-  filterTally_();
-}
+
+
 function filterTally_(){
   if(!ADMIN_DATA)return;var q=ui_('tally-search').value.trim().toLowerCase(),group=ui_('tally-class').value,n=0;
   document.querySelectorAll('#tally-out .tally-row').forEach(function(row,i){var r=ADMIN_DATA.tally[i],show=(!q||[r.first,r.last,r.email,r.house].join(' ').toLowerCase().includes(q))&&(!group||String(classSortKey(r.pgy))===group);row.style.display=show?'':'none';if(row.nextElementSibling)row.nextElementSibling.style.display=show?'':'none';if(show)n++;});ui_('tally-visible').textContent=n+' of '+ADMIN_DATA.tally.length+' residents';
@@ -3356,6 +3204,7 @@ function renderCreditConferences_(filtered){
 }
 function creditContext_(){var c=(ADMIN_DATA.conferences||[]).find(function(c){return c.id===CREDIT.conf;});ui_('credit-context').textContent=c?(c.date+' · '+c.type+' · '+(c.qEligible?'Q-credit requires verified questions.':c.type==='AHD'?'AHD totals follow the existing three-hour rule.':Number(c.credit||0)+' conference credit(s) each.')):'';}
 async function creditConferenceChanged_(){
+  stopDictation_();
   if(CREDIT.busy)return;CREDIT.conf=ui_('bulk-conf').value;CREDIT.selected={};CREDIT.review=null;CREDIT.entries=null;ui_('credit-review').hidden=true;
   var conf=CREDIT.conf,sequence=++CREDIT.sequence,token=TOKEN,c=(ADMIN_DATA.conferences||[]).find(function(x){return x.id===conf;});
   ui_('bulk-action').value=c&&c.qEligible?'Q-Credit':'Manual Credit';creditContext_();renderCreditRoster_();if(!conf)return;
@@ -3395,7 +3244,7 @@ async function bulkAward(){
   catch(e){if(token===TOKEN)formMessage_('bulk-ok',e.message+' Your selection is retained. Retrying will not add duplicate entries.',true);}
   finally{CREDIT.busy=false;ui_('credit-fields').disabled=false;var b=ui_('credit-save-button');if(b){b.disabled=false;b.textContent='Confirm & save';}if(token===TOKEN&&!CREDIT.review){creditConferenceChanged_();loadAdmin(true);}}
 }
-function openConferenceCredit_(id){selectAdminPane_('attendance');ui_('credit-range').value='all';CREDIT.conf=id;CREDIT.entries=null;renderCreditConferences_(false);ui_('sec-award').scrollIntoView({behavior:'smooth',block:'start'});ui_('credit-search').focus();}
+function openConferenceCredit_(id){setCreditMode_('conference');selectAdminPane_('attendance');ui_('credit-range').value='all';CREDIT.conf=id;CREDIT.entries=null;renderCreditConferences_(false);ui_('sec-award').scrollIntoView({behavior:'smooth',block:'start'});ui_('credit-search').focus();}
 function renderPeacBlockOptions_(){
   var sel=ui_('peac-award-block'),keep=PEAC_UI.block||Number(sel.value)||ADMIN_DATA.currentPeacBlock||1;sel.innerHTML='';(ADMIN_DATA.peacBlocks||[]).forEach(function(b){var o=document.createElement('option');o.value=b.block;o.textContent='Block '+b.block+(b.from?' · '+shortDate_(b.from):'')+' — '+b.req;sel.appendChild(o);});sel.value=String(keep);
 }
@@ -3452,7 +3301,55 @@ async function addConference(){
   catch(e){if(token===TOKEN)formMessage_('add-ok',e.message+' Your form is retained; you can safely retry.',true);}
   finally{ADD_BUSY=false;ui_('add-fields').disabled=false;ui_('add-save-button').textContent='Save conference';}
 }
-function clearWorkspaceSession_(){CREDIT.sequence++;CREDIT.conf='';CREDIT.entries=null;CREDIT.selected={};CREDIT.review=null;PEAC_UI.sequence++;PEAC_UI.data=null;PEAC_UI.selected={};PEAC_UI.review=null;PEAC_UI.at=0;ui_('bulk-roster').innerHTML='';ui_('peac-award-roster').innerHTML='';ui_('peac-weeks').innerHTML='';ui_('credit-review').hidden=true;ui_('peac-review').hidden=true;}
+function clearWorkspaceSession_(){resetFastStaff_();resetCreditHistory_();clearResidentCreditState_(true);stopDictation_();OPS.sections={};OPS.conferencesAt=0;OPS.niPreview=null;ui_('work-items').innerHTML='';ui_('ops-handoff-form').innerHTML='';AHD_SCAN.sequence++;AHD_SCAN.rows=[];AHD_SCAN.token=null;ahdBusy_(false);ui_('ahd-out').innerHTML='';CREDIT.sequence++;CREDIT.conf='';CREDIT.entries=null;CREDIT.selected={};CREDIT.review=null;PEAC_UI.sequence++;PEAC_UI.data=null;PEAC_UI.selected={};PEAC_UI.review=null;PEAC_UI.at=0;ui_('bulk-roster').innerHTML='';ui_('peac-award-roster').innerHTML='';ui_('peac-weeks').innerHTML='';ui_('credit-review').hidden=true;ui_('peac-review').hidden=true;}
+
+var AHD_SCAN={rows:[],busy:false,sequence:0,token:null};
+function ahdBusy_(busy){
+  AHD_SCAN.busy=busy;Array.from(ui_('sec-ahd').querySelectorAll('button,input')).forEach(function(el){el.disabled=busy||el.dataset.resolved==='true';});
+}
+async function loadAhdCheck(){
+  if(AHD_SCAN.busy)return;var token=TOKEN,seq=++AHD_SCAN.sequence,out=ui_('ahd-out');AHD_SCAN.rows=[];AHD_SCAN.token=token;ahdBusy_(true);
+  out.textContent='Scanning attendance…';
+  try{
+    var r=await call('ahdPartialReport',token);if(token!==TOKEN||!ADMIN||seq!==AHD_SCAN.sequence)return;
+    if(!r||!r.ok)throw new Error('Could not scan AHD attendance.');out.innerHTML='';
+    if(!r.partials.length){out.textContent='No partial AHD attendance found across '+r.datesChecked+' half-day(s).';return;}
+    var summary=document.createElement('p');summary.className='sub';summary.textContent=r.partials.length+' partial attendance entries across '+r.datesChecked+' half-days. Approve only hours residents actually attended. Untick unverified hours or dismiss a row before using Approve all.';out.appendChild(summary);
+    var all=document.createElement('button');all.id='ahd-approve-all';all.className='btn';all.textContent='Approve all AHD partial credits';all.onclick=function(){reviewAhdAll_();};out.appendChild(all);
+    var review=document.createElement('div');review.id='ahd-batch-review';review.hidden=true;review.style.display='none';review.className='msg';out.appendChild(review);
+    r.partials.forEach(function(p){
+      var card=document.createElement('div');card.className='flag-item';var heading=document.createElement('div');heading.className='who';heading.textContent=p.name+' · '+classLabelJS(p.pgy)+' · '+p.date;card.appendChild(heading);
+      var detail=document.createElement('p');detail.className='sub';detail.textContent='Recorded: '+p.attended.join(' + ');card.appendChild(detail);
+      var row={email:p.email,name:p.name,date:p.date,card:card,inputs:[],labels:{},resolved:false};
+      p.missing.forEach(function(m){var label=document.createElement('label');label.className='check-line';var cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.dataset.conf=m.confId;row.labels[m.confId]=m.label;cb.onchange=function(){review.hidden=true;review.style.display='none';};label.appendChild(cb);label.appendChild(document.createTextNode(' Credit '+m.label+' (verified missed scan)'));card.appendChild(label);row.inputs.push(cb);});
+      var actions=document.createElement('div');actions.className='qbtns';var approve=document.createElement('button');approve.className='qbtn ok';approve.textContent='Approve selected hours';approve.onclick=function(){var item=ahdPicked_(row);if(!item.confIds.length){toast('Select at least one verified hour.');return;}saveAhdBatch_([item]);};
+      var deny=document.createElement('button');deny.className='qbtn no';deny.textContent='Leave unchanged';deny.onclick=function(){row.resolved=true;card.style.opacity='.5';Array.from(card.querySelectorAll('button,input')).forEach(function(el){el.dataset.resolved='true';el.disabled=true;});review.hidden=true;review.style.display='none';};actions.appendChild(approve);actions.appendChild(deny);card.appendChild(actions);out.appendChild(card);AHD_SCAN.rows.push(row);
+    });
+  }catch(e){if(token===TOKEN&&seq===AHD_SCAN.sequence){out.textContent=e.message||'Could not scan. Try again.';toast(e.message);}}
+  finally{if(token===TOKEN&&seq===AHD_SCAN.sequence)ahdBusy_(false);}
+}
+function ahdPicked_(row){return {email:row.email,confIds:row.inputs.filter(function(cb){return cb.checked&&!cb.disabled;}).map(function(cb){return cb.dataset.conf;})};}
+function reviewAhdAll_(){
+  if(AHD_SCAN.busy||AHD_SCAN.token!==TOKEN)return;var selected=AHD_SCAN.rows.filter(function(r){return !r.resolved;}).map(function(row){return {row:row,item:ahdPicked_(row)};}).filter(function(x){return x.item.confIds.length;});
+  if(!selected.length){toast('No verified hours selected.');return;}
+  var panel=ui_('ahd-batch-review');panel.innerHTML='';panel.hidden=false;panel.style.display='block';
+  var count=selected.reduce(function(n,x){return n+x.item.confIds.length;},0),names={};selected.forEach(function(x){names[x.item.email]=true;});
+  var title=document.createElement('strong');title.textContent='Review '+count+' missing hour(s) for '+Object.keys(names).length+' resident(s) across '+selected.length+' resident/date entries';panel.appendChild(title);
+  var list=document.createElement('ul');list.style.cssText='max-height:220px;overflow:auto';selected.forEach(function(x){var li=document.createElement('li');li.textContent=x.row.name+' · '+x.row.date+' · '+x.item.confIds.map(function(id){return x.row.labels[id];}).join(' + ');list.appendChild(li);});panel.appendChild(list);
+  var note=document.createElement('p');note.textContent='By approving, you confirm these residents actually attended the selected hours. Only these listed hours will receive manual credit.';panel.appendChild(note);
+  var save=document.createElement('button');save.className='btn';save.textContent='Confirm & approve '+count+' hour(s)';save.onclick=function(){saveAhdBatch_(selected.map(function(x){return x.item;}));};panel.appendChild(save);
+  var cancel=document.createElement('button');cancel.className='btn btn-ghost';cancel.textContent='Cancel';cancel.onclick=function(){panel.hidden=true;panel.style.display='';};panel.appendChild(cancel);
+}
+async function saveAhdBatch_(items){
+  if(AHD_SCAN.busy||AHD_SCAN.token!==TOKEN)return;var token=TOKEN;ahdBusy_(true);
+  try{
+    var r=await call('ahdApproveBatch',token,items);if(token!==TOKEN||!ADMIN)return;if(!r||!r.ok)throw new Error('Could not approve the selected hours.');
+    ADMIN_CACHE_AT=0;toast('Credited '+r.credited+' hour(s). '+(r.blocked?r.blocked+' existing pending/excused records left unchanged for review.':r.skipped?r.skipped+' already recorded hour(s) skipped.':''));
+    ahdBusy_(false);await Promise.all([loadAhdCheck(),loadAdmin()]);
+  }catch(e){if(token===TOKEN)toast((e.message||'Save failed')+' Your selections are retained; retry safely.');}
+  finally{if(token===TOKEN)ahdBusy_(false);}
+}
+async function ahdFixUI(email,confIds){return saveAhdBatch_([{email:email,confIds:confIds}]);}
 
 function renderSchedulePanel_(){
   var D=ADMIN_DATA;
@@ -3559,58 +3456,464 @@ function renderExportList_(){var D=ADMIN_DATA;
 
 
 }
-function renderFlagPanel_(){var D=ADMIN_DATA;
-  /* flags — original rendering */
-  var holder = document.getElementById("a-flags");
-  if (!holder) return;
-  holder.innerHTML = "";
-  var flags = D.flags || [];
-  var flbl = document.getElementById("flags-count-lbl");
-  if (flbl) flbl.textContent = "(" + flags.length + " pending)";
-  var nf = document.getElementById("a-noflags");
-  if (nf){
-    nf.classList.toggle("hide", flags.length>0);
-    // Be explicit: this queue only holds FLAGGED items. With AI screenshot
-    // verification off, Q-credit posts straight through and is never flagged,
-    // so an empty queue here is normal — not a broken panel.
-    nf.textContent = flags.length ? "" :
-      "Nothing awaiting review. Q-credit submissions only appear here if they were flagged (reused screenshot, shared device). With AI verification off they post directly, so this staying empty is normal.";
-  }
-  flags.forEach(function(f){
-    var d = document.createElement("div");
-    d.className = "flag-item";
-    d.innerHTML =
-      '<div class="fr"><span class="who">' + f.name + '</span><span class="chip warn" style="font-size:9px;padding:3px 8px">PGY-' + f.pgy + '</span>' +
-      '<span class="mono" style="margin-left:auto;font-size:9.5px;color:var(--faint)">' + f.confId + ' · ' + f.time + '</span></div>' +
-      '<div class="why">' + f.flags + '</div>';
 
-    var photos = f.photos || [];
-    if (photos.length){
-      var gallery = document.createElement("div"); gallery.className = "review-shots";
-      photos.forEach(function(url, i){
-        var cell = document.createElement("a");        // the thumbnail itself links to the full-res Drive view
-        cell.href = url; cell.target = "_blank"; cell.rel = "noopener";
-        cell.className = "shot-link"; cell.title = "Open full screenshot in Drive";
-        var img = document.createElement("img");
-        img.className = "review-shot"; img.alt = "screenshot " + (i + 1); img.style.opacity = ".35";
-        cell.appendChild(img);
-        gallery.appendChild(cell);
-        lazyReviewImage_(img,cell,url);
-      });
-      d.appendChild(gallery);
-    }
-
-    var q = document.createElement("div"); q.className = "qbtns";
-    var a = document.createElement("button"); a.className="qbtn ok"; a.textContent="Approve credit";
-    a.onclick = function(){ resolveFlagUI(f.logId, true); };
-    var n = document.createElement("button"); n.className="qbtn no"; n.textContent="Deny credit";
-    n.onclick = function(){ resolveFlagUI(f.logId, false); };
-    q.appendChild(a); q.appendChild(n); d.appendChild(q);
-    holder.appendChild(d);
-  });
-
-
+/* Each pane loads its own data. Cache invalidation does not force hidden panes to load. */
+var OPS={sections:{},conferencesAt:0,conferenceFlight:null,attendanceFlight:null,workLimit:50,niPreview:null,niBusy:false,peacSending:false};
+var OPS_READS=['getCreditTools','getCreditActivity','getResidentCreditWorkspace','getConferenceSchedule','getPeacPanel','getWorkQueue','getAdminSettings','getSystemHealth','getHandoff','getAdminAccounts','niExportPreview','niExportHistory','downloadNIExport','downloadWeeklyStaffReport'];
+function invalidateOpsClient_(){STAFF_FAST.toolsAt=0;CREDIT_HISTORY.at=0;STAFF_FAST.otherDatesLoadedAt=0;RESIDENT_CREDIT.at=0;Object.keys(OPS.sections).forEach(function(k){OPS.sections[k].at=0;});OPS.conferencesAt=0;OPS.niPreview=null;}
+function sectionNotice_(message){var el=ui_('admin-section-err');el.textContent=message;el.style.display=message?'block':'none';}
+function selectAdminPane_(pane,load){
+  if(['attendance','conferences','peac','review','settings','activity'].indexOf(pane)<0)pane='attendance';if(pane!=='attendance')stopDictation_();ADMIN_PANE=pane;document.querySelectorAll('.admin-pane').forEach(function(el){el.hidden=el.id!=='admin-pane-'+pane;});document.querySelectorAll('#admin-nav [data-pane]').forEach(function(el){el.classList.toggle('active',el.dataset.pane===pane);el.setAttribute('aria-current',el.dataset.pane===pane?'page':'false');});
+  if(load===false||!ADMIN||!TOKEN)return;loadAdmin(false);
 }
+async function ensureConferenceList_(force){
+  if(OPS.conferenceFlight&&OPS.conferenceToken===TOKEN)return OPS.conferenceFlight;if(!force&&OPS.conferencesAt&&Date.now()-OPS.conferencesAt<60000)return;
+  var token=TOKEN;OPS.conferenceToken=token;OPS.conferenceFlight=(async function(){try{var rev,data;do{rev=ADMIN_REV;data=await call('getConferences',token);if(TOKEN!==token||!ADMIN)return;}while(rev!==ADMIN_REV);ADMIN_DATA=ADMIN_DATA||{};ADMIN_DATA.conferences=data.conferences||[];OPS.conferencesAt=Date.now();}finally{if(OPS.conferenceToken===token)OPS.conferenceFlight=null;}})();return OPS.conferenceFlight;
+}
+
+async function ensureOpsSection_(pane,force){
+  var section=OPS.sections[pane]||(OPS.sections[pane]={at:0,data:null,flight:null});if(section.flight)return section.flight;if(!force&&section.data&&Date.now()-section.at<30000){renderOpsSection_(pane);return true;}
+  var actions={conferences:'getConferenceSchedule',peac:'getPeacPanel',review:'getWorkQueue',settings:'getAdminSettings'},action=actions[pane],token=TOKEN;if(!action)return false;
+  ui_('admin-freshness').textContent='Loading '+(pane==='review'?'work queue':pane)+'…';
+  section.flight=(async function(){try{var rev,data;do{rev=ADMIN_REV;data=await call(action,token);if(token!==TOKEN||!ADMIN)return false;}while(rev!==ADMIN_REV);section.data=data;section.at=Date.now();sectionNotice_('');if(ADMIN_PANE===pane)renderOpsSection_(pane);if(pane==='review')ui_('review-badge').textContent=data.items.length;return true;}catch(e){if(token===TOKEN)sectionNotice_(e.message+' Use Refresh to retry.');return false;}finally{section.flight=null;}})();return section.flight;
+}
+async function loadAdmin(force){if(!ADMIN||!TOKEN)return false;ADMIN_DATA=ADMIN_DATA||{conferences:[]};return ADMIN_PANE==='activity'?loadCreditHistory_(force===true):ADMIN_PANE==='attendance'?loadAttendancePane_(force===true):ensureOpsSection_(ADMIN_PANE,force===true);}
+function renderAdmin(){
+  if(!ADMIN_DATA)return;sectionNotice_('');if(ADMIN_PANE==='attendance'&&ADMIN_DATA.tally){renderTally();renderAdminOverview_();renderCreditTools_();}else renderOpsSection_(ADMIN_PANE);
+}
+function renderAdminOverview_(){ui_('admin-freshness').textContent='Totals calculated '+new Date(ADMIN_DATA.loadedAt||Date.now()).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+(ADMIN_DATA.cache&&ADMIN_DATA.cache.hit?' · cached for up to 60 seconds':'');filterTally_();}
+function renderOpsSection_(pane){
+  var s=OPS.sections[pane];if(!s||!s.data)return;var data=s.data;ADMIN_DATA=ADMIN_DATA||{};ui_('admin-freshness').textContent='Updated '+new Date(s.at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  if(pane==='conferences'){ADMIN_DATA.conferences=data.conferences||[];OPS.conferencesAt=s.at;renderSchedulePanel_();}
+  if(pane==='peac'){ADMIN_DATA.peacBlocks=data.blocks;ADMIN_DATA.currentPeacBlock=data.currentBlock;renderPeacBlockOptions_();loadPeacWorkspace_(false);}
+  if(pane==='review')renderWorkQueue_();
+  if(pane==='settings'){renderSettingsOps_(data);}
+}
+function renderFlagPanel_(){renderWorkQueue_();}
+function workButton_(label,fn){var b=document.createElement('button');b.className='text-button';b.textContent=label;b.onclick=fn;return b;}
+function renderWorkQueue_(){
+  var data=OPS.sections.review&&OPS.sections.review.data;if(!data)return;var type=ui_('work-type').value,q=ui_('work-search').value.trim().toLowerCase(),items=data.items.filter(function(x){return (!type||x.type===type)&&(!q||[x.name,x.date,x.detail].join(' ').toLowerCase().includes(q));}),out=ui_('work-items');out.innerHTML='';ui_('work-summary').textContent=items.length+' matching items · '+data.items.length+' total'+(!data.niConfigured?' · NI import format not yet confirmed':'');ui_('work-more').hidden=items.length<=OPS.workLimit;
+  items.slice(0,OPS.workLimit).forEach(function(item){var card=document.createElement('div');card.className='flag-item';var head=document.createElement('strong');head.textContent=item.name+' · '+item.type;card.appendChild(head);var text=document.createElement('p');text.className='sub';text.textContent=(item.date?item.date+' · ':'')+item.detail;card.appendChild(text);
+    if(item.photos&&item.photos.length)card.appendChild(workButton_('View '+item.photos.length+' screenshot(s)',function(){this.disabled=true;var gallery=document.createElement('div');gallery.className='review-shots';item.photos.forEach(function(url){var a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';var img=document.createElement('img');img.className='review-shot';img.alt='Completion proof';a.appendChild(img);gallery.appendChild(a);lazyReviewImage_(img,a,url);});card.appendChild(gallery);}));
+    if(item.action==='flag'||item.action==='peac'){card.appendChild(workButton_('Approve',function(){resolveWorkItem_(item,true,card);}));card.appendChild(workButton_('Deny credit',function(){if(confirm('Deny this credit for '+item.name+'?'))resolveWorkItem_(item,false,card);}));}
+    else if(item.action==='ahd')card.appendChild(workButton_('Review missing hours',function(){loadAhdCheck();ui_('sec-ahd').scrollIntoView({behavior:'smooth'});}));
+    else if(item.action==='mapping'){var input=document.createElement('input');input.placeholder='Confirmed NI identifier';input.setAttribute('aria-label','NI identifier for '+item.name);card.appendChild(input);card.appendChild(workButton_('Save identifier',async function(){this.disabled=true;try{await call('saveNIMapping',TOKEN,item.mapping.type,item.mapping.key,input.value);await ensureOpsSection_('review',true);}catch(e){toast(e.message);this.disabled=false;}}));}
+    else card.appendChild(workButton_('Open '+(item.action==='ni'?'NI exports':'system health'),function(){selectAdminPane_('settings');}));out.appendChild(card);
+  });if(!items.length)out.textContent='No matching items need attention.';
+}
+async function resolveWorkItem_(item,approve,card){var token=TOKEN;Array.from(card.querySelectorAll('button')).forEach(function(b){b.disabled=true;});try{await call(item.action==='peac'?'peacResolve':'resolveFlag',token,item.id,approve);if(token!==TOKEN)return;PEAC_UI.at=0;await ensureOpsSection_('review',true);}catch(e){toast(e.message);Array.from(card.querySelectorAll('button')).forEach(function(b){b.disabled=false;});}}
+function renderSettingsOps_(data){
+  var h=data.health;ui_('admin-diag').textContent='Page '+APP_VERSION+' · Backend '+h.backendVersion;
+  var html='<div class="health-line"><strong>'+(h.backendVersion===APP_VERSION?'Builds match':'Update needed: builds differ')+'</strong><span>'+html_(APP_VERSION+' / '+h.backendVersion)+'</span></div><div class="health-line"><strong>'+(navigator.onLine===false?'Device offline':'Backend reachable')+'</strong><span>Checked '+html_(new Date(h.serverTime).toLocaleTimeString())+'</span></div>';
+  h.expectedJobs.forEach(function(name){var j=h.jobs[name];html+='<div class="health-line"><strong>'+html_(name)+'</strong><span>'+html_(j?(j.status+' · '+j.at+(j.message?' · '+j.message:'')):'No recorded run')+'</span></div>';});html+='<p class="sub">Trigger installer: '+html_(h.triggerInstall?h.triggerInstall.account+' · '+h.triggerInstall.at:'Not recorded — run installProgramTriggers from the intended owner’s Apps Script account.')+'</p>';html+='<p class="sub">NI: '+(h.automaticNITransfer?'Connected':'No automatic transfer configured')+' · '+(h.niWeeklyEnabled?'weekly file preparation enabled':'weekly file preparation off')+'</p>';ui_('ops-health').innerHTML=html;
+  var form=ui_('ops-handoff-form');if(!form.children.length){var fields={programContact:'Program contact email',incomingChief:'Incoming chief email',repositoryUrl:'GitHub repository URL',projectUrl:'Vercel project URL',appsScriptUrl:'Apps Script editor URL'};Object.keys(fields).forEach(function(k){var label=document.createElement('label');label.className='fld';label.htmlFor='handoff-'+k;label.textContent=fields[k];var input=document.createElement('input');input.id='handoff-'+k;input.value=data.handoff[k]||'';form.appendChild(label);form.appendChild(input);});var checks={spreadsheet:'Incoming chief can edit the workbook',appsScript:'Program account can edit and deploy Apps Script',github:'Program team owns or can administer the GitHub repository',vercel:'Program team can deploy and manage the Vercel project',triggers:'Program account owns jobs; outgoing account’s duplicate jobs removed',backup:'Incoming chief can find and open the backups',loginTest:'Incoming chief completed a real login and test workflow'};Object.keys(checks).forEach(function(k){var label=document.createElement('label');label.className='check-line';var cb=document.createElement('input');cb.type='checkbox';cb.id='handoff-check-'+k;cb.checked=!!data.handoff.checks[k];label.appendChild(cb);label.appendChild(document.createTextNode(checks[k]));form.appendChild(label);});}
+  renderRotationImportStatus_(data.rotationImport);MODULES_ON=!!data.modulesEnabled;applyModulesFlag();renderNIHistory_(data.exports);ui_('ni-confirmed').checked=!!h.niFormatConfirmed;ui_('ni-weekly').checked=!!h.niWeeklyEnabled;
+  ui_('ops-accounts').innerHTML='';data.accounts.forEach(function(a){var b=workButton_(a.email+' · '+(a.enabled?'enabled':'disabled'),function(){ui_('account-email').value=a.email;ui_('account-enabled').checked=a.enabled;ui_('account-password').value='';});b.classList.add('account-row');ui_('ops-accounts').appendChild(b);});
+  if(!ui_('ni-from').value){var mon=mondayOf(new Date(adminToday_()+'T12:00:00')),end=new Date(mon);end.setDate(end.getDate()-1);var start=new Date(mon);start.setDate(start.getDate()-7);ui_('ni-from').value=iso(start);ui_('ni-to').value=iso(end);}
+  ensureConferenceList_(false).then(function(){if(ADMIN_PANE==='settings')renderExportList_();}).catch(function(e){toast(e.message);});
+}
+function renderNIHistory_(rows){var out=ui_('ni-history'),sel=ui_('ni-outcome-batch');out.innerHTML='<h4>Export history</h4>';sel.innerHTML='';rows.forEach(function(r){var item=document.createElement('div');item.className='ni-batch';var info=document.createElement('span');info.textContent=r.from+' → '+r.to+' · '+r.rows+' rows · '+(r.status==='Accepted'?'Accepted (staff-confirmed)':r.status);item.appendChild(info);item.appendChild(workButton_('Download',async function(){try{var d=await call('downloadNIExport',TOKEN,r.id);downloadCsv(d.filename,d.csv);}catch(e){toast(e.message);}}));out.appendChild(item);var option=document.createElement('option');option.value=r.id;option.textContent=r.from+' → '+r.to+' · '+r.status;sel.appendChild(option);});if(!rows.length)out.appendChild(document.createTextNode('No prepared exports yet.'));}
+async function previewNIUI_(){if(OPS.niBusy)return;OPS.niBusy=true;ui_('ni-preview-btn').disabled=true;OPS.niPreview=null;try{var p=await call('niExportPreview',TOKEN,ui_('ni-from').value,ui_('ni-to').value);OPS.niPreview=p;var out=ui_('ni-preview');out.innerHTML='<p>'+p.rows+' verified attendance rows · '+p.held+' unverified/excused rows held · '+p.missing.length+' missing identifiers</p><p class="sub">'+p.excludedModules+' module entries excluded: this export covers scheduled conferences. '+p.previouslyAccepted+' rows were previously marked accepted; '+p.changes+' have changed; '+p.removals+' require removal/correction in NI.</p>';
+ if(p.rows)out.appendChild(workButton_('Download weekly staff reference',async function(){try{var r=await call('downloadWeeklyStaffReport',TOKEN,p.from,p.to);downloadCsv(r.filename,r.csv);}catch(e){toast(e.message);}}));
+ if(p.missing.length)out.appendChild(workButton_('Open missing-ID work queue',function(){ui_('work-type').value='mapping';selectAdminPane_('review');}));
+ if(p.removals){out.appendChild(workButton_('Record NI corrections already verified',async function(){var receipt=prompt('Describe the corrections/removals you have already verified in NI. This records your confirmation; it does not change NI.');if(!receipt)return;try{await call('recordNIReconciliation',TOKEN,p,receipt);await previewNIUI_();}catch(e){toast(e.message);}}));}
+ if(!p.configured){var note=document.createElement('p');note.textContent='Confirm and test the NI import format under Export configuration first.';out.appendChild(note);}
+ if(p.previouslyAccepted){var note=document.createElement('p');note.textContent='This period overlaps a previously accepted export. Confirm your NI import supports updates without duplicates before reimporting.';out.appendChild(note);}
+ if(p.configured&&!p.missing.length&&!p.removals&&p.rows)out.appendChild(workButton_('Prepare & download this export',createNIUI_));
+ }catch(e){formMessage_('ni-result',e.message,true);}finally{OPS.niBusy=false;ui_('ni-preview-btn').disabled=false;}}
+async function createNIUI_(){if(OPS.niBusy||!OPS.niPreview)return;var p=OPS.niPreview;OPS.niBusy=true;try{var r=await call('createNIExport',TOKEN,{from:p.from,to:p.to,fingerprint:p.fingerprint});downloadCsv(r.filename,r.csv);formMessage_('ni-result','File prepared. Import only through a supported NI workflow, then record the verified result.');await ensureOpsSection_('settings',true);}catch(e){formMessage_('ni-result',e.message,true);}finally{OPS.niBusy=false;}}
+async function saveNIOutcomeUI_(){if(OPS.niBusy)return;OPS.niBusy=true;try{await call('recordNIOutcome',TOKEN,ui_('ni-outcome-batch').value,ui_('ni-outcome-status').value,ui_('ni-receipt').value,ui_('ni-note').value);formMessage_('ni-result','Staff-confirmed result recorded.');await ensureOpsSection_('settings',true);}catch(e){formMessage_('ni-result',e.message,true);}finally{OPS.niBusy=false;}}
+async function configureNIUI_(){try{await call('configureNI',TOKEN,ui_('ni-confirmed').checked,ui_('ni-weekly').checked);formMessage_('ni-result','Export settings saved. No data was sent to NI.');await ensureOpsSection_('settings',true);}catch(e){formMessage_('ni-result',e.message,true);}}
+async function saveHandoffUI_(){var data={checks:{}};['programContact','incomingChief','repositoryUrl','projectUrl','appsScriptUrl'].forEach(function(k){data[k]=ui_('handoff-'+k).value;});['spreadsheet','appsScript','github','vercel','triggers','backup','loginTest'].forEach(function(k){data.checks[k]=ui_('handoff-check-'+k).checked;});ui_('handoff-save').disabled=true;try{await call('saveHandoff',TOKEN,data);formMessage_('handoff-result','Checklist saved. Access and ownership remain as verified by program staff.');}catch(e){formMessage_('handoff-result',e.message,true);}finally{ui_('handoff-save').disabled=false;}}
+async function saveAccountUI_(){ui_('account-save').disabled=true;try{await call('saveAdminAccount',TOKEN,ui_('account-email').value,ui_('account-password').value,ui_('account-enabled').checked);ui_('account-password').value='';formMessage_('account-result','Account saved. Previous sessions for that account are invalidated.');await ensureOpsSection_('settings',true);}catch(e){formMessage_('account-result',e.message,true);}finally{ui_('account-save').disabled=false;}}
+async function peacSend(kind){
+  if(OPS.peacSending)return;var p=kind==='required'?'pe-req':'pe-opt',err=ui_(p+'-err'),ready=peacImgs[kind].filter(function(im){return !im.pending&&im.b64;});
+  if(!ui_(p+'-attest').checked||!ready.length||peacImgs[kind].some(function(im){return im.pending;})){err.textContent='Attach a prepared screenshot and confirm completion before submitting.';err.style.display='block';return;}
+  if(ready.length>4){err.textContent='Use at most four screenshots per module.';err.style.display='block';return;}
+  var email=peacCtx._email,block=peacCtx.block;OPS.peacSending=true;document.querySelectorAll('#v-peac button,#v-peac select,#v-peac input').forEach(function(e){e.disabled=true;});err.style.display='none';
+  try{var r=await call('peacSubmit',{email:email,kind:kind,block:block,images:ready.map(function(im){return {b64:im.b64,mediaType:im.mediaType};}),deviceId:deviceId()});if(!r.ok)throw new Error(({disabled:'PEAC uploads are currently off. Contact a chief.',nogroup:'Your clinic group is not configured, or modules do not apply to you.',noblock:'Select a current or prior module block.',nomodule:'This module is not offered.',noimage:'Attach a screenshot.',roster:'Check your program email.'})[r.reason]||'Could not submit the module.');notify(r.already?'Module already recorded.':'Module credit recorded · proof awaiting chief review.');peacImgs[kind]=[];peacCtx=await call('peacContext',email,block);peacCtx._email=email;peacRender();}
+  catch(e){err.textContent=e.message+' Your screenshots are retained unless the submission was confirmed. Retry safely.';err.style.display='block';}
+  finally{OPS.peacSending=false;document.querySelectorAll('#v-peac button,#v-peac select,#v-peac input').forEach(function(e){e.disabled=false;});}
+}
+
+var VOICE={recognizer:null,token:0,conf:null};
+function speechText_(s){return String(s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9@.]+/g,' ').replace(/\s+/g,' ').trim();}
+function stopDictation_(){VOICE.token++;if(VOICE.recognizer){var r=VOICE.recognizer;VOICE.recognizer=null;try{r.abort();}catch(e){}}var b=ui_('voice-start');if(b)b.textContent='Dictate names';var s=ui_('voice-status');if(s)s.textContent='Review the transcript, then match it to the roster.';}
+function startDictation_(){
+ if(VOICE.recognizer){stopDictation_();return;}var Speech=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Speech){ui_('voice-status').textContent='Browser dictation is unavailable. Use your phone keyboard microphone or type names below.';ui_('voice-transcript').focus();return;}if(!CREDIT.conf||!CREDIT.entries){toast('Choose a conference and wait for attendance to load first.');return;}
+ var seq=++VOICE.token,r=new Speech();VOICE.recognizer=r;VOICE.conf=CREDIT.conf;r.lang='en-US';r.continuous=true;r.interimResults=false;
+ r.onresult=function(event){if(seq!==VOICE.token||CREDIT.conf!==VOICE.conf||!ADMIN)return;var pieces=[];for(var i=event.resultIndex;i<event.results.length;i++)if(event.results[i].isFinal)pieces.push(event.results[i][0].transcript.trim());if(pieces.length){var el=ui_('voice-transcript');el.value+=(el.value?'\n':'')+pieces.join('\n');}};
+ r.onerror=function(e){if(seq!==VOICE.token)return;stopDictation_();ui_('voice-status').textContent=e.error==='not-allowed'?'Microphone permission was denied. Type names or use your keyboard microphone.':'Dictation stopped ('+e.error+'). Your transcript is kept; you can type corrections.';};
+ r.onend=function(){if(seq!==VOICE.token)return;VOICE.recognizer=null;ui_('voice-start').textContent='Dictate names';ui_('voice-status').textContent='Recording stopped. Review the transcript and match names.';};
+ try{r.start();ui_('voice-start').textContent='Stop dictation';ui_('voice-status').textContent='Listening… say full names, with “next resident” between names.';}catch(e){stopDictation_();ui_('voice-status').textContent='Could not start the microphone. Type names or use keyboard dictation.';}
+}
+function matchDictatedNames_(){
+ stopDictation_();if(!CREDIT.entries){toast('Load a conference first.');return;}var text=ui_('voice-transcript').value,roster=ADMIN_DATA.roster||[],matches=0,already=0,unmatched=[],ambiguous=[],seen={};
+ var lines=text.replace(/\b(next resident|new line|semicolon)\b/gi,'\n').split(/[\n;]+/).filter(function(s){return s.trim();});
+ function candidates(s){var q=speechText_(s);return roster.filter(function(r){return [r.email,r.first+' '+r.last,r.last+' '+r.first,r.last].some(function(n){return speechText_(n)===q;});});}
+ var chunks=[];lines.forEach(function(s){if(candidates(s).length)chunks.push(s);else s.split(/,|\band\b/gi).forEach(function(x){if(x.trim())chunks.push(x);});});
+ chunks.forEach(function(raw){var s=raw.trim().replace(/[.!?]+$/,''),list=candidates(s);if(list.length!==1){(list.length?ambiguous:unmatched).push(s);return;}var r=list[0],email=r.email.toLowerCase();if(seen[email])return;seen[email]=true;if(CREDIT.entries[email]){already++;return;}CREDIT.selected[email]=r.email;matches++;});
+ creditInvalidateReview_();renderCreditRoster_();ui_('voice-status').textContent=matches+' residents selected'+(already?' · '+already+' already recorded':'')+(ambiguous.length?' · Ambiguous—use full name: '+ambiguous.join('; '):'')+(unmatched.length?' · No exact match—edit or use search: '+unmatched.join('; '):'')+'. Review the selected roster before saving.';
+}
+
+document.addEventListener('visibilitychange',function(){if(document.hidden)stopDictation_();});window.addEventListener('pagehide',stopDictation_);
+
+/* A resident-first draft is in memory only; the final save is always authenticated. */
+var RESIDENT_CREDIT={mode:'conference',email:'',data:null,selected:{},review:null,sequence:0,busy:false,loading:false,at:0,revision:-1,flight:null};
+function setCreditMode_(mode){
+  if(CREDIT.busy||RESIDENT_CREDIT.busy)return;
+  RESIDENT_CREDIT.mode=mode==='resident'?'resident':'conference';
+  stopDictation_();renderCreditTools_();
+}
+function renderCreditTools_(){
+  var resident=RESIDENT_CREDIT.mode==='resident';
+  ui_('credit-by-resident').hidden=!resident;ui_('credit-by-conference').hidden=resident;
+  ui_('credit-mode-resident').setAttribute('aria-pressed',String(resident));
+  ui_('credit-mode-conference').setAttribute('aria-pressed',String(!resident));
+  if(resident){renderResidentCreditPicker_();loadResidentCredit_(false);}
+  else renderCreditConferences_(false);
+}
+function renderResidentCreditPicker_(){
+  if(!ADMIN_DATA||RESIDENT_CREDIT.busy)return;
+  var q=ui_('resident-credit-search').value.trim().toLowerCase(),sel=ui_('resident-credit-person');
+  var all=(ADMIN_DATA.roster||[]).slice().sort(function(a,b){return classSortKey(a.pgy)-classSortKey(b.pgy)||(a.last+', '+a.first).localeCompare(b.last+', '+b.first);});
+  var list=all.filter(function(r){return !q||[r.first,r.last,r.email].join(' ').toLowerCase().includes(q);});
+  var keep=all.find(function(r){return r.email.toLowerCase()===RESIDENT_CREDIT.email;});
+  if(keep&&!list.some(function(r){return r.email.toLowerCase()===RESIDENT_CREDIT.email;}))list.unshift(keep);
+  sel.innerHTML='';var placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=list.length?'Choose a resident…':'No matching residents';sel.appendChild(placeholder);
+  list.forEach(function(r){var option=document.createElement('option');option.value=r.email.toLowerCase();option.textContent=r.last+', '+r.first+' · '+classLabelJS(r.pgy);sel.appendChild(option);});
+  sel.value=RESIDENT_CREDIT.email;
+  if(!keep&&RESIDENT_CREDIT.email){clearResidentCreditState_(false);sel.value='';formMessage_('resident-credit-result','The selected resident is no longer in the active roster. Choose a resident again.',true);}
+}
+function clearResidentCreditState_(resetMode){
+  RESIDENT_CREDIT.sequence++;RESIDENT_CREDIT.email='';RESIDENT_CREDIT.data=null;RESIDENT_CREDIT.selected={};RESIDENT_CREDIT.review=null;RESIDENT_CREDIT.loading=false;RESIDENT_CREDIT.busy=false;RESIDENT_CREDIT.at=0;RESIDENT_CREDIT.flight=null;
+  if(resetMode){
+    RESIDENT_CREDIT.mode='conference';ui_('resident-credit-person').innerHTML='<option value="">Choose a resident…</option>';
+    ui_('resident-credit-search').value='';ui_('resident-credit-conference-search').value='';
+    ui_('resident-credit-type').innerHTML='<option value="">All types</option>';
+  }
+  ui_('resident-credit-person').value='';ui_('resident-credit-review').hidden=true;ui_('resident-credit-review').innerHTML='';ui_('resident-credit-result').textContent='';ui_('resident-credit-result').style.display='none';
+  residentCreditBusy_(false);renderResidentCreditList_();
+}
+async function residentCreditPersonChanged_(){
+  if(RESIDENT_CREDIT.busy)return;
+  var email=ui_('resident-credit-person').value;
+  if(email===RESIDENT_CREDIT.email)return loadResidentCredit_(false);
+  clearResidentCreditState_(false);RESIDENT_CREDIT.email=email;ui_('resident-credit-person').value=email;
+  return loadResidentCredit_(true);
+}
+async function openResidentCredit_(email){
+  if(CREDIT.busy||RESIDENT_CREDIT.busy){toast('Wait for the current credit save to finish.');return;}
+  selectAdminPane_('attendance',false);RESIDENT_CREDIT.mode='resident';
+  ui_('resident-credit-search').value='';renderResidentCreditPicker_();ui_('resident-credit-person').value=String(email).toLowerCase();
+  var loading=residentCreditPersonChanged_();renderCreditTools_();
+  ui_('sec-award').scrollIntoView({behavior:'smooth',block:'start'});ui_('resident-credit-person').focus();
+  return loading;
+}
+async function loadResidentCredit_(force){
+  if(!TOKEN||!ADMIN||RESIDENT_CREDIT.busy)return false;
+  if(!RESIDENT_CREDIT.email){renderResidentCreditList_();return false;}
+  if(RESIDENT_CREDIT.flight&&RESIDENT_CREDIT.flightEmail===RESIDENT_CREDIT.email&&RESIDENT_CREDIT.flightToken===TOKEN)return RESIDENT_CREDIT.flight;
+  if(!force&&RESIDENT_CREDIT.data&&RESIDENT_CREDIT.revision===ADMIN_REV&&Date.now()-RESIDENT_CREDIT.at<30000){renderResidentCreditList_();return true;}
+  var token=TOKEN,email=RESIDENT_CREDIT.email,sequence=++RESIDENT_CREDIT.sequence;
+  RESIDENT_CREDIT.loading=true;RESIDENT_CREDIT.flightEmail=email;RESIDENT_CREDIT.flightToken=token;invalidateResidentCreditReview_();renderResidentCreditList_();
+  RESIDENT_CREDIT.flight=(async function(){
+    try{
+      var data,revision;
+      do{revision=ADMIN_REV;data=await call('getResidentCreditWorkspace',token,email);if(token!==TOKEN||sequence!==RESIDENT_CREDIT.sequence)return false;}while(revision!==ADMIN_REV);
+      if(!data||!data.ok||!data.resident||data.resident.email.toLowerCase()!==email)throw new Error('The resident list could not be loaded. Refresh and try again.');
+      RESIDENT_CREDIT.data=data;RESIDENT_CREDIT.at=Date.now();RESIDENT_CREDIT.revision=revision;
+      var valid={};data.conferences.forEach(function(c){if(c.selectable&&RESIDENT_CREDIT.selected[c.id])valid[c.id]=true;});RESIDENT_CREDIT.selected=valid;
+      var sel=ui_('resident-credit-type'),keep=sel.value;sel.innerHTML='<option value="">All types</option>';
+      var types=Array.from(new Set(data.conferences.map(function(c){return c.type;}))).sort();
+      types.forEach(function(type){var o=document.createElement('option');o.value=type;o.textContent=type;sel.appendChild(o);});sel.value=types.indexOf(keep)>=0?keep:'';
+      if(!ui_('resident-credit-from').value)ui_('resident-credit-from').value=data.academicStart;
+      if(!ui_('resident-credit-to').value)ui_('resident-credit-to').value=data.today;
+      ['resident-credit-from','resident-credit-to'].forEach(function(id){ui_(id).min=data.academicStart;ui_(id).max=data.today;});
+      return true;
+    }catch(e){if(token===TOKEN&&sequence===RESIDENT_CREDIT.sequence){RESIDENT_CREDIT.data=null;formMessage_('resident-credit-result',e.message+' Use Refresh list to retry.',true);}return false;}
+    finally{if(sequence===RESIDENT_CREDIT.sequence){RESIDENT_CREDIT.loading=false;RESIDENT_CREDIT.flight=null;renderResidentCreditList_();}}
+  })();return RESIDENT_CREDIT.flight;
+}
+function residentCreditRangeChanged_(){ui_('resident-credit-dates').hidden=ui_('resident-credit-range').value!=='custom';renderResidentCreditList_();}
+function residentCreditFiltered_(){
+  var data=RESIDENT_CREDIT.data;if(!data)return {rows:[],error:''};
+  var range=ui_('resident-credit-range').value,from=data.academicStart,to=data.today;
+  if(range==='60'){var date=new Date(data.today+'T12:00:00');date.setDate(date.getDate()-60);from=iso(date);}
+  if(range==='custom'){from=ui_('resident-credit-from').value;to=ui_('resident-credit-to').value;if(!from||!to||from>to)return {rows:[],error:'Enter a valid start and end date.'};}
+  var q=ui_('resident-credit-conference-search').value.trim().toLowerCase(),type=ui_('resident-credit-type').value,all=ui_('resident-credit-show-recorded').checked;
+  return {error:'',rows:data.conferences.filter(function(c){return c.date>=from&&c.date<=to&&(!type||c.type===type)&&(all||c.selectable)&&(!q||[c.title,c.type,c.site,c.date].join(' ').toLowerCase().includes(q));})};
+}
+function residentCreditSelected_(){return (RESIDENT_CREDIT.data&&RESIDENT_CREDIT.data.conferences||[]).filter(function(c){return RESIDENT_CREDIT.selected[c.id]&&c.selectable;});}
+function renderResidentCreditList_(){
+  var out=ui_('resident-credit-list'),data=RESIDENT_CREDIT.data;out.innerHTML='';
+  if(RESIDENT_CREDIT.loading){out.innerHTML='<div class="empty-note">Checking conference history…</div>';ui_('resident-credit-summary').textContent='Loading the selected resident’s attendance…';residentCreditCount_();return;}
+  if(!data){out.innerHTML='<div class="empty-note">'+(RESIDENT_CREDIT.email?'Use Refresh list to load attendance.':'Choose a resident above to begin.')+'</div>';ui_('resident-credit-summary').textContent='Select a resident to see their conference history.';residentCreditCount_();return;}
+  var r=data.resident,tally=(ADMIN_DATA.tally||[]).find(function(x){return x.email.toLowerCase()===r.email.toLowerCase();});
+  ui_('resident-credit-summary').textContent=r.first+' '+r.last+' · '+classLabelJS(r.pgy)+(tally?' · '+Number(tally.total||0)+' total conference credits':'')+' · history checked '+new Date(data.loadedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+  var filtered=residentCreditFiltered_();
+  filtered.rows.forEach(function(c){
+    var line=document.createElement('label');line.className='resident-choice'+(!c.selectable?' recorded':'');line.dataset.confId=c.id;
+    var cb=document.createElement('input');cb.type='checkbox';cb.value=c.id;cb.checked=!!RESIDENT_CREDIT.selected[c.id];cb.disabled=!c.selectable||RESIDENT_CREDIT.busy;cb.setAttribute('aria-label',c.date+' · '+c.title+(c.site?' · '+c.site:''));
+    cb.onchange=function(){residentCreditToggle_(c,cb.checked);};line.appendChild(cb);
+    var name=document.createElement('span');name.className='resident-name';name.textContent=c.title||c.type;
+    var detail=document.createElement('small');detail.textContent=c.date+' · '+c.type+(c.site?' · '+c.site:'')+(c.time?' · '+c.time:'');name.appendChild(detail);line.appendChild(name);
+    var status=document.createElement('span');status.className='entry-status'+(c.entry&&!c.entry.credited||c.qEligible?' pending':'');
+    status.textContent=c.entry?(c.entry.credited?'Recorded':c.entry.status):c.blockedReason||(c.qEligible?'Verify Q-credit':'Available');line.appendChild(status);out.appendChild(line);
+  });
+  if(!filtered.rows.length){var empty=document.createElement('div');empty.className='empty-note';empty.textContent=filtered.error||'No matching conferences. Try a wider date range or show recorded entries.';out.appendChild(empty);}
+  residentCreditCount_();
+}
+function residentCreditCount_(){
+  var selected=residentCreditSelected_(),visible=residentCreditFiltered_().rows,ids=new Set(visible.map(function(c){return c.id;})),hidden=selected.filter(function(c){return !ids.has(c.id);}).length;
+  ui_('resident-credit-count').textContent=selected.length+' selected'+(hidden?' · '+hidden+' outside current filters':'')+' · '+visible.filter(function(c){return c.selectable;}).length+' available here';
+  var b=ui_('resident-credit-review-button');b.disabled=!selected.length||RESIDENT_CREDIT.busy||RESIDENT_CREDIT.loading||!RESIDENT_CREDIT.data;b.textContent='Review '+selected.length+' selected conference'+(selected.length===1?'':'s');
+}
+function invalidateResidentCreditReview_(){RESIDENT_CREDIT.review=null;ui_('resident-credit-review').hidden=true;}
+function residentCreditToggle_(conf,checked){
+  if(RESIDENT_CREDIT.busy||RESIDENT_CREDIT.loading||!conf.selectable)return;
+  if(checked){
+    if(residentCreditSelected_().some(function(c){return c.slotKey===conf.slotKey&&c.id!==conf.id;})){toast('Another listing of this AHD hour is already selected.');renderResidentCreditList_();return;}
+    if(residentCreditSelected_().length>=200){toast('Save up to 200 conferences at a time.');renderResidentCreditList_();return;}
+    RESIDENT_CREDIT.selected[conf.id]=true;
+  }else delete RESIDENT_CREDIT.selected[conf.id];
+  invalidateResidentCreditReview_();residentCreditCount_();
+}
+function residentCreditSelectVisible_(){
+  if(RESIDENT_CREDIT.busy||RESIDENT_CREDIT.loading)return;
+  var slots=new Set(residentCreditSelected_().map(function(c){return c.slotKey;})),count=residentCreditSelected_().length,limited=false;
+  residentCreditFiltered_().rows.forEach(function(c){if(!c.selectable||RESIDENT_CREDIT.selected[c.id]||slots.has(c.slotKey))return;if(count>=200){limited=true;return;}RESIDENT_CREDIT.selected[c.id]=true;slots.add(c.slotKey);count++;});
+  invalidateResidentCreditReview_();renderResidentCreditList_();if(limited)toast('Selected 200 conferences. Save this batch before selecting more.');
+}
+function clearResidentCreditSelection_(){if(RESIDENT_CREDIT.busy)return;RESIDENT_CREDIT.selected={};invalidateResidentCreditReview_();renderResidentCreditList_();}
+function reviewResidentCredit_(){
+  if(RESIDENT_CREDIT.loading||RESIDENT_CREDIT.busy)return;
+  var selected=residentCreditSelected_(),data=RESIDENT_CREDIT.data;if(!selected.length||!data)return;
+  RESIDENT_CREDIT.review={email:data.resident.email,items:selected.map(function(c){return {confId:c.id,selectionKey:c.selectionKey};}),requiresQuestions:selected.some(function(c){return c.qEligible;})};
+  var out=ui_('resident-credit-review');out.innerHTML='<h4>Credit '+html_(data.resident.first+' '+data.resident.last)+'</h4><p>'+selected.length+' conference entr'+(selected.length===1?'y':'ies')+' · '+html_(data.resident.email)+'</p><ul>'+selected.map(function(c){return '<li>'+html_(c.date+' · '+c.title+(c.site?' · '+c.site:'')+(c.time?' · '+c.time:'')+' · '+(c.qEligible?'Q-credit':'Attended'))+'</li>';}).join('')+'</ul>';
+  var check=document.createElement('label');check.className='check-line';check.innerHTML='<input id="resident-credit-attest" type="checkbox">I verified this resident’s attendance for these conferences'+(RESIDENT_CREDIT.review.requiresQuestions?' and completion of the question requirements for each Q-credit entry.':'.');out.appendChild(check);
+  var actions=document.createElement('div');actions.className='review-actions';actions.innerHTML='<button id="resident-credit-save" class="btn btn-primary" type="button" disabled onclick="saveResidentCredit_()">Confirm &amp; save</button><button class="btn btn-ghost" type="button" onclick="invalidateResidentCreditReview_()">Keep editing</button>';out.appendChild(actions);
+  ui_('resident-credit-attest').onchange=function(){ui_('resident-credit-save').disabled=!this.checked;};out.hidden=false;out.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function residentCreditBusy_(busy){
+  ui_('resident-credit-fields').disabled=busy;
+  ui_('credit-mode-conference').disabled=busy;ui_('credit-mode-resident').disabled=busy;
+  ui_('resident-credit-review').querySelectorAll('button,input').forEach(function(el){el.disabled=busy;});
+  var save=ui_('resident-credit-save');if(save){save.textContent=busy?'Saving…':'Confirm & save';save.disabled=busy||!ui_('resident-credit-attest').checked;}
+}
+async function saveResidentCredit_(){
+  if(RESIDENT_CREDIT.busy||!RESIDENT_CREDIT.review||!ui_('resident-credit-attest').checked)return;
+  var review=RESIDENT_CREDIT.review,token=TOKEN,sequence=RESIDENT_CREDIT.sequence,saved=false;
+  RESIDENT_CREDIT.busy=true;residentCreditBusy_(true);
+  try{
+    var result=await call('awardResidentConferences',token,{email:review.email,items:review.items,questionsVerified:review.requiresQuestions});
+    if(token!==TOKEN||sequence!==RESIDENT_CREDIT.sequence)return;
+    if(!result||!result.ok)throw new Error('Attendance could not be saved.');
+    RESIDENT_CREDIT.selected={};invalidateResidentCreditReview_();RESIDENT_CREDIT.at=0;CREDIT.entries=null;saved=true;
+    formMessage_('resident-credit-result',result.n+' conference entr'+(result.n===1?'y':'ies')+' saved'+(result.skipped?' · '+result.skipped+' already recorded or otherwise protected, so skipped':'')+'.');
+  }catch(e){if(token===TOKEN&&sequence===RESIDENT_CREDIT.sequence)formMessage_('resident-credit-result',e.message+' Your selection is retained. Retry safely; already recorded entries will be skipped.',true);}
+  finally{
+    if(token===TOKEN&&sequence===RESIDENT_CREDIT.sequence){RESIDENT_CREDIT.busy=false;residentCreditBusy_(false);residentCreditCount_();}
+  }
+  if(saved&&token===TOKEN){var results=await Promise.all([loadResidentCredit_(true),loadAdmin(true)]);if(results.some(function(ok){return !ok;}))formMessage_('resident-credit-result','Credits saved. The latest history or totals could not be refreshed; use Refresh data when your connection returns.',true);}
+}
+function addResidentCreditShortcuts_(){
+  document.querySelectorAll('#tally-out .tally-row').forEach(function(row,i){
+    var cell=row.querySelectorAll('td')[2],r=ADMIN_DATA.tally[i];if(!cell||!r)return;
+    var button=document.createElement('button');button.type='button';button.className='text-button resident-credit-shortcut';button.textContent='+ Add credit';button.setAttribute('aria-label','Add conference credit for '+r.first+' '+r.last);
+    button.onclick=function(event){event.stopPropagation();openResidentCredit_(r.email);};cell.appendChild(button);
+  });
+}
+
+var STAFF_FAST={loginBusy:false,entryFlight:null,entryToken:null,pickBusy:false,pickSequence:0,toolsFlight:null,toolsToken:null,toolsAt:0,otherDatesLoadedAt:0};
+function staffDestination_(){try{return localStorage.getItem('trk_staff_destination')||'presenter';}catch(ignore){return 'presenter';}}
+function openStaffDestination_(destination){
+  if(destination==='presenter'){go({dataset:{v:'presenter'}});return;}
+  ADMIN_PANE=destination==='add'?'conferences':'attendance';go({dataset:{v:'admin'}});
+  if(destination==='add')openAddConference_();else if(destination==='credit')openQuickCredit_();
+}
+async function doLogin(){
+  if(STAFF_FAST.loginBusy)return;
+  var email=ui_('lg-email').value.trim().toLowerCase(),password=ui_('lg-pass').value,remember=ui_('lg-remember').checked;
+  var destination=ui_('lg-destination').value||'presenter',button=ui_('lg-submit'),err=ui_('lg-err');
+  if(!email||!password){err.textContent='Enter your program email and password.';err.style.display='block';return;}
+  STAFF_FAST.loginBusy=true;button.disabled=true;button.textContent='Signing in…';err.style.display='none';
+  try{
+    var result=await call('adminLogin',email,password,remember,TOKEN||null,true);
+    if(!result.ok){err.textContent=result.locked?'Too many attempts — this email is locked for 15 minutes.':'Incorrect email or password.';err.style.display='block';return;}
+    clearWorkspaceSession_();TOKEN=result.token;ADMIN=true;ADMIN_DATA=null;ADMIN_CACHE_AT=0;
+    try{if(remember){localStorage.setItem('trk_token',TOKEN);sessionStorage.removeItem('trk_token');}else{sessionStorage.setItem('trk_token',TOKEN);localStorage.removeItem('trk_token');}localStorage.setItem('trk_staff_destination',destination);}catch(ignore){}
+    ui_('lg-pass').value='';
+    if(result.entry){BOOT=result.entry;storePublicBoot_(BOOT);applyConfigDefaults();MODULES_ON=!!BOOT.modulesEnabled;applyModulesFlag();}
+    openStaffDestination_(destination);
+  }catch(e){err.textContent=e.message||'Could not reach the tracker. Try again.';err.style.display='block';}
+  finally{STAFF_FAST.loginBusy=false;button.disabled=false;button.textContent='Sign in';}
+}
+async function refreshPublicBoot_(force,token){
+  token=token||TOKEN||null;
+  if(!force&&BOOT&&!PUBLIC_BOOT_STALE&&Date.now()-PUBLIC_BOOT_AT<30000)return BOOT;
+  if(STAFF_FAST.entryFlight&&STAFF_FAST.entryToken===token)return STAFF_FAST.entryFlight;
+  STAFF_FAST.entryToken=token;
+  var flight=(async function(){var data=await call('bootstrap',token);if((TOKEN||null)===token){BOOT=data;storePublicBoot_(data);}return data;})();
+  STAFF_FAST.entryFlight=flight;
+  try{return await flight;}finally{if(STAFF_FAST.entryFlight===flight)STAFF_FAST.entryFlight=null;}
+}
+function openQuickCredit_(){
+  selectAdminPane_('attendance');ui_('sec-award').scrollIntoView({behavior:'smooth',block:'start'});
+  (RESIDENT_CREDIT.mode==='resident'?ui_('resident-credit-search'):ui_('credit-search')).focus();
+}
+async function loadCreditTools_(force){
+  if(STAFF_FAST.toolsFlight&&STAFF_FAST.toolsToken===TOKEN)return STAFF_FAST.toolsFlight;
+  if(!force&&ADMIN_DATA&&ADMIN_DATA.roster&&Date.now()-STAFF_FAST.toolsAt<60000)return true;
+  var token=TOKEN;STAFF_FAST.toolsToken=token;
+  var flight=(async function(){var revision,data;do{revision=ADMIN_REV;data=await call('getCreditTools',token);if(token!==TOKEN||!ADMIN)return false;}while(revision!==ADMIN_REV);
+    ADMIN_DATA=Object.assign(ADMIN_DATA||{},data);STAFF_FAST.toolsAt=Date.now();OPS.conferencesAt=Date.now();
+    if(ADMIN_PANE==='attendance')renderCreditTools_();return true;
+  })();STAFF_FAST.toolsFlight=flight;
+  try{return await flight;}finally{if(STAFF_FAST.toolsFlight===flight)STAFF_FAST.toolsFlight=null;}
+}
+async function loadAttendancePane_(force){
+  if(OPS.attendanceFlight&&OPS.attendanceToken===TOKEN)return OPS.attendanceFlight;
+  if(!force&&ADMIN_DATA&&ADMIN_DATA.tally&&Date.now()-ADMIN_CACHE_AT<30000){renderAdmin();return true;}
+  var token=TOKEN;OPS.attendanceToken=token;ui_('admin-freshness').textContent='Loading attendance totals…';
+  OPS.attendanceFlight=(async function(){
+    var toolsReady=loadCreditTools_(force).catch(function(e){if(token===TOKEN)sectionNotice_(e.message+' Use Refresh data to retry.');return false;});
+    try{var revision,data;do{revision=ADMIN_REV;data=await call('getAdminData',token,!!force,true);if(token!==TOKEN||!ADMIN)return false;}while(revision!==ADMIN_REV);
+      ADMIN_DATA=Object.assign(ADMIN_DATA||{},data);ADMIN_CACHE_AT=Date.now();
+      if(ADMIN_PANE==='attendance'){renderTally();renderAdminOverview_();if(STAFF_FAST.toolsAt)renderCreditTools_();}
+      return await toolsReady;
+    }catch(e){if(token===TOKEN){sectionNotice_(e.message);ui_('admin-freshness').textContent='Totals unavailable · credit tools can still be used when loaded';}await toolsReady;return false;}
+    finally{if(OPS.attendanceToken===token)OPS.attendanceFlight=null;}
+  })();return OPS.attendanceFlight;
+}
+function paintTodaySessions_(){
+  var holder=ui_('p-today');holder.innerHTML='';
+  var conferences=(BOOT&&BOOT.todayConfs||[]).filter(function(c){return c.time!=='—'&&c.status!=='Cancelled'&&!c.photoProof;});
+  if(!conferences.length){holder.innerHTML='<p class="sub">No sessions listed for today. Choose Other dates or add a conference.</p>';return;}
+  conferences.forEach(function(c){var b=document.createElement('button');b.type='button';b.className='sess-btn'+(c.id===presenterConf?' on':'');b.disabled=STAFF_FAST.pickBusy;
+    b.innerHTML='<div class="st">'+html_(confLabel(c.type,c.title)+(siteTag(c.site)?' · '+siteTag(c.site):''))+'</div><div class="sm">'+html_(c.time+(c.live?' · IN SESSION':''))+'</div>';
+    b.onclick=function(){pickSession(c.id);};holder.appendChild(b);});
+}
+async function renderTodayButtons(){
+  paintTodaySessions_();
+  try{await refreshPublicBoot_(false);if(ADMIN&&ui_('v-presenter').classList.contains('on'))paintTodaySessions_();}
+  catch(e){presenterStatus('reconnect','Schedule could not refresh. Retry when connected.');}
+  if(presenterConf&&PRESENTER_CODES.length&&!presenterTimer)startPresenterPolling();
+}
+async function togglePresenterDates_(){
+  var box=ui_('p-all');box.classList.toggle('hide');if(!box.classList.contains('hide'))await fillAllSelect();
+}
+async function fillAllSelect(){
+  var token=TOKEN,sel=ui_('p-select');sel.disabled=true;
+  try{
+    if(ADMIN_DATA&&ADMIN_DATA.conferences&&Date.now()-OPS.conferencesAt<60000)PRESENTER_CONFS=ADMIN_DATA.conferences;
+    else if(!PRESENTER_CONFS.length||Date.now()-STAFF_FAST.otherDatesLoadedAt>60000){var data=await call('getConferences',token);if(token!==TOKEN)return;PRESENTER_CONFS=data.conferences||[];STAFF_FAST.otherDatesLoadedAt=Date.now();}
+    sel.innerHTML='<option value="">Choose a conference…</option>';
+    PRESENTER_CONFS.filter(function(c){return inWindow(c.date,21,28)&&c.status!=='Cancelled'&&!c.photoProof;}).forEach(function(c){var o=document.createElement('option');o.value=c.id;o.textContent=c.date+' · '+confLabel(c.type,c.title)+(siteTag(c.site)?' · '+siteTag(c.site):'');sel.appendChild(o);});
+    sel.value=presenterConf||'';
+  }catch(e){toast(e.message);}finally{sel.disabled=false;}
+}
+function clearPresenterDisplay_(message){
+  PRESENTER_CODES=[];lastCode='';LAST_QR_CONF='';ui_('qrbox').innerHTML='';
+  Array.from(ui_('p-code').children).forEach(function(n){n.textContent='·';});ui_('p-secs').textContent='—';
+  if(message)presenterStatus('reconnect',message);
+}
+async function pickSession(id){
+  if(!id||STAFF_FAST.pickBusy)return;
+  var token=TOKEN,sequence=++STAFF_FAST.pickSequence,start=Date.now();STAFF_FAST.pickBusy=true;
+  stopPresenterPolling();presenterConf=null;clearPresenterDisplay_('Opening session…');ui_('p-title').textContent='Opening conference…';ui_('p-feed').innerHTML='';ui_('p-count').textContent='';paintTodaySessions_();ui_('p-select').disabled=true;
+  try{
+    var result=await call('openConferenceQuick',token,id);
+    if(token!==TOKEN||sequence!==STAFF_FAST.pickSequence)return;
+    if(!result||!result.ok||!result.buffer)throw new Error('Update the backend to this release before using the quick code display.');
+    presenterConf=id;PRESENTER_CODES=result.buffer.codes;PRESENTER_OFFSET=result.buffer.serverNow-(start+Date.now())/2;PRESENTER_FETCH_AT=Date.now();PRESENTER_FEED_KEY='';
+    BOOT=BOOT||{};if(result.webAppUrl)BOOT.webAppUrl=result.webAppUrl;
+    var c=result.conference;ui_('p-title').textContent=confLabel(c.type,c.title);ui_('p-meta').textContent=c.date+' · '+c.time+(siteTag(c.site)?' · '+siteTag(c.site):'');
+    (BOOT.todayConfs||[]).forEach(function(x){if(x.id===id){x.live=true;x.status='Open';}});
+    paintBufferedCode_();presenterStatus('live','Room codes ready · loading check-ins…');
+    if(ui_('v-presenter').classList.contains('on'))startPresenterPolling();
+  }catch(e){if(token===TOKEN&&sequence===STAFF_FAST.pickSequence){clearPresenterDisplay_(e.message);ui_('p-title').textContent='Choose a session to retry';toast(e.message);}}
+  finally{if(sequence===STAFF_FAST.pickSequence){STAFF_FAST.pickBusy=false;ui_('p-select').disabled=false;paintTodaySessions_();}}
+}
+async function loadPresenterCodes_(){
+  if(PRESENTER_CODE_LOADING||!presenterConf||navigator.onLine===false||Date.now()-PRESENTER_FETCH_AT<15000)return;
+  PRESENTER_CODE_LOADING=true;PRESENTER_FETCH_AT=Date.now();var id=presenterConf,token=TOKEN,start=Date.now();
+  try{var data=await call('presenterCodes',token,id);if(id!==presenterConf||token!==TOKEN)return;PRESENTER_CODES=data.codes;PRESENTER_OFFSET=data.serverNow-(start+Date.now())/2;paintBufferedCode_();}
+  catch(e){if(id===presenterConf&&token===TOKEN&&/sign in|session expired|disabled|credentials changed|no longer open/i.test(e.message)){stopPresenterPolling();clearPresenterDisplay_(e.message);presenterConf=null;}}
+  finally{PRESENTER_CODE_LOADING=false;}
+}
+async function pollPresenterOnce_(expectedConf){
+  var token=TOKEN,st;
+  try{st=await call('presenterState',token,expectedConf);}
+  catch(e){if(token!==TOKEN||expectedConf!==presenterConf)return;
+    if(/sign in|session expired|disabled|credentials changed/i.test(e.message||'')){presenterAuthLost=true;stopPresenterPolling();clearPresenterDisplay_('Session expired — sign in again');presenterConf=null;}
+    else{pollMisses++;presenterStatus('reconnect','Check-in feed reconnecting · room codes continue while valid');}return;}
+  if(token!==TOKEN||expectedConf!==presenterConf||!ui_('v-presenter').classList.contains('on'))return;
+  if(st.active===false){stopPresenterPolling();clearPresenterDisplay_('Check-in display closed by staff. Choose a session to reopen.');presenterConf=null;return;}
+  pollMisses=0;presenterStatus('live','Live · check-ins updating');
+  if(!PRESENTER_CODES.length)paintCode_(st.code,st.msLeft,st.windowMs);
+  var key=expectedConf+JSON.stringify(st.recent);if(key===PRESENTER_FEED_KEY)return;PRESENTER_FEED_KEY=key;
+  var ul=ui_('p-feed'),scroll=ul.scrollTop;ul.innerHTML='';
+  (st.recent||[]).forEach(function(l){var li=document.createElement('li');li.innerHTML='<span class="dot'+(l.flagged?' flag':'')+'"></span><span class="who">'+html_(l.name)+'</span><span class="cls">'+html_(classLabelJS(l.pgy))+'</span><span class="tm">'+html_(l.time)+'</span>';ul.appendChild(li);});
+  ul.scrollTop=scroll;ui_('p-count').textContent='· '+st.count+' recorded';
+}
+function resetFastStaff_(){
+  STAFF_FAST.pickSequence++;STAFF_FAST.pickBusy=false;STAFF_FAST.toolsAt=0;STAFF_FAST.toolsFlight=null;STAFF_FAST.otherDatesLoadedAt=0;
+  presenterConf=null;PRESENTER_CONFS=[];stopPresenterPolling();clearPresenterDisplay_('');ui_('p-feed').innerHTML='';ui_('p-count').textContent='';ui_('p-title').textContent='—';ui_('p-meta').textContent='—';
+}
+
+var CREDIT_HISTORY={items:[],corrections:[],cursor:null,sequence:0,loading:false,busy:false,review:null,at:0,query:''};
+function historyDate_(value){var d=new Date(value);return isNaN(d.getTime())?String(value||''):d.toLocaleString([],{timeZone:'America/Phoenix',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}
+function resetCreditHistory_(){CREDIT_HISTORY.sequence++;CREDIT_HISTORY.items=[];CREDIT_HISTORY.corrections=[];CREDIT_HISTORY.cursor=null;CREDIT_HISTORY.loading=false;CREDIT_HISTORY.busy=false;CREDIT_HISTORY.review=null;CREDIT_HISTORY.at=0;ui_('activity-list').innerHTML='';ui_('correction-list').innerHTML='';ui_('activity-review').innerHTML='';ui_('activity-review').hidden=true;ui_('activity-result').style.display='none';}
+async function loadCreditHistory_(force,more){
+  if(!TOKEN||!ADMIN||CREDIT_HISTORY.busy||CREDIT_HISTORY.loading)return false;
+  var query=JSON.stringify([ui_('activity-search').value.trim(),ui_('activity-scope').value]);
+  if(!force&&!more&&query===CREDIT_HISTORY.query&&Date.now()-CREDIT_HISTORY.at<30000){renderCreditHistory_();return true;}
+  var token=TOKEN,sequence=++CREDIT_HISTORY.sequence;CREDIT_HISTORY.loading=true;ui_('activity-status').textContent='Loading recent activity…';ui_('activity-more').disabled=true;
+  try{var result=await call('getCreditActivity',token,{search:ui_('activity-search').value,scope:ui_('activity-scope').value,cursor:more?CREDIT_HISTORY.cursor:null});if(token!==TOKEN||sequence!==CREDIT_HISTORY.sequence)return false;
+    CREDIT_HISTORY.items=more?CREDIT_HISTORY.items.concat(result.items):result.items;CREDIT_HISTORY.corrections=result.corrections;CREDIT_HISTORY.cursor=result.nextCursor;CREDIT_HISTORY.query=query;CREDIT_HISTORY.at=Date.now();
+    renderCreditHistory_();return true;
+  }catch(e){if(token===TOKEN&&sequence===CREDIT_HISTORY.sequence)ui_('activity-status').textContent=e.message+' Use Refresh to retry.';return false;}
+  finally{if(sequence===CREDIT_HISTORY.sequence){CREDIT_HISTORY.loading=false;ui_('activity-more').disabled=false;}}
+}
+function renderCreditHistory_(){
+  var out=ui_('activity-list');out.innerHTML='';
+  CREDIT_HISTORY.items.forEach(function(item){var card=document.createElement('div');card.className='activity-item';var main=document.createElement('div');
+    main.innerHTML='<strong>'+html_(item.name)+'</strong><span class="activity-status '+(item.status==='No Credit'?'reversed':'')+'">'+html_(item.status)+'</span><p>'+html_((item.date?item.date+' · ':'')+item.title+(item.site?' · '+item.site:''))+'</p><small>'+html_(historyDate_(item.at)+' · '+item.source)+'</small><small>Recorded / reviewed by '+html_(item.actor)+'</small>';card.appendChild(main);
+    if(item.reversible){var b=document.createElement('button');b.className='btn btn-ghost btn-sm';b.textContent='Reverse credit';b.disabled=CREDIT_HISTORY.busy;b.onclick=function(){reviewCreditReversal_(item);};card.appendChild(b);}
+    else{var note=document.createElement('span');note.className='context-note';note.textContent=item.blockedReason;card.appendChild(note);}out.appendChild(card);
+  });
+  if(!CREDIT_HISTORY.items.length)out.innerHTML='<p class="sub">No matching entries in this portion of the history. Try another search or load earlier entries.</p>';
+  ui_('activity-status').textContent=CREDIT_HISTORY.items.length+' entries shown'+(CREDIT_HISTORY.cursor?' · earlier entries available':'');ui_('activity-more').hidden=!CREDIT_HISTORY.cursor;
+  var corrections=ui_('correction-list');corrections.innerHTML='';
+  CREDIT_HISTORY.corrections.forEach(function(item){var card=document.createElement('div');card.className='activity-item';var main=document.createElement('div');
+    main.innerHTML='<strong>'+html_(item.name+' · '+item.title)+'</strong><p>'+html_(item.reason)+'</p><small>'+html_(item.originalStatus+' originally recorded by '+(item.originalActor||'not recorded'))+'</small><small>'+html_((item.state==='Applied'?'Reversed':'Unfinished reversal')+' · '+historyDate_(item.at)+' · requested by '+item.actor+(item.completedBy?' · completed by '+item.completedBy:''))+'</small>';card.appendChild(main);
+    if(item.state!=='Applied'){var button=document.createElement('button');button.className='btn btn-primary btn-sm';button.textContent='Finish reversal';button.disabled=CREDIT_HISTORY.busy;button.onclick=function(){finishCreditCorrection_(item);};card.appendChild(button);}corrections.appendChild(card);
+  });if(!CREDIT_HISTORY.corrections.length)corrections.innerHTML='<p class="sub">No matching reversals recorded.</p>';
+}
+function reviewCreditReversal_(item){
+  if(CREDIT_HISTORY.busy)return;CREDIT_HISTORY.review={item:item,requestId:checkinId_(),reason:null};
+  var out=ui_('activity-review');out.innerHTML='<h4>Reverse this credit?</h4><p><strong>'+html_(item.name)+'</strong><br>'+html_((item.date?item.date+' · ':'')+item.title)+'<br>'+html_(item.status+' · recorded / reviewed by '+item.actor)+'</p><label class="fld" for="correction-reason">Reason for correction</label><textarea id="correction-reason" maxlength="500" rows="2" placeholder="For example: selected the wrong resident"></textarea><label class="check-line"><input id="correction-confirm" type="checkbox">I verified that this staff award should be removed.</label><p class="context-note">This removes the selected attendance credit and keeps its original record. A linked manual PEAC ledger entry stays credited if another valid award remains. Any NI entry needs separate reconciliation.</p><div class="review-actions"><button class="btn btn-primary" id="correction-save" disabled onclick="saveCreditReversal_()">Confirm reversal</button><button class="btn btn-ghost" id="correction-cancel" onclick="closeCreditReversal_()">Cancel</button></div>';
+  function ready(){ui_('correction-save').disabled=!ui_('correction-confirm').checked||ui_('correction-reason').value.trim().length<5;}
+  ui_('correction-confirm').onchange=ready;ui_('correction-reason').oninput=ready;out.hidden=false;out.scrollIntoView({behavior:'smooth',block:'start'});ui_('correction-reason').focus();
+}
+function closeCreditReversal_(){if(CREDIT_HISTORY.busy)return;CREDIT_HISTORY.review=null;ui_('activity-review').hidden=true;}
+async function saveCreditReversal_(){
+  var review=CREDIT_HISTORY.review;if(!review||CREDIT_HISTORY.busy||!ui_('correction-confirm').checked)return;
+  if(review.reason===null)review.reason=ui_('correction-reason').value.trim();if(review.reason.length<5)return;
+  var token=TOKEN;CREDIT_HISTORY.busy=true;ui_('correction-reason').readOnly=true;ui_('correction-save').disabled=true;ui_('correction-cancel').disabled=true;ui_('correction-save').textContent='Reversing…';
+  try{var result=await call('reverseCredit',token,{requestId:review.requestId,logId:review.item.id,selectionKey:review.item.selectionKey,reason:review.reason});if(token!==TOKEN)return;if(!result.ok)throw new Error('Correction could not be completed.');
+    CREDIT_HISTORY.review=null;ui_('activity-review').hidden=true;formMessage_('activity-result','Credit reversed for '+review.item.name+' · '+review.item.title+'. The original record and correction reason are retained.');CREDIT_HISTORY.at=0;
+  }catch(e){if(token===TOKEN)formMessage_('activity-result',e.message+' The same correction can be retried. If it remains unfinished, use Finish reversal in Correction history.',true);}
+  finally{if(token===TOKEN){CREDIT_HISTORY.busy=false;var b=ui_('correction-save');if(b){b.disabled=false;b.textContent='Confirm reversal';ui_('correction-cancel').disabled=false;}if(!CREDIT_HISTORY.review)await loadCreditHistory_(true);}}
+}
+async function finishCreditCorrection_(item){
+  if(CREDIT_HISTORY.busy)return;var token=TOKEN;CREDIT_HISTORY.busy=true;renderCreditHistory_();
+  try{await call('resumeCreditCorrection',token,item.id);if(token!==TOKEN)return;formMessage_('activity-result','Reversal completed for '+item.name+'.');}
+  catch(e){if(token===TOKEN)formMessage_('activity-result',e.message,true);}
+  finally{if(token===TOKEN){CREDIT_HISTORY.busy=false;await loadCreditHistory_(true);}}
+}
+
 // Navigation must not depend on an optional layout enhancement.
 renderTabs('resident');
 try{polishAdminLayout_();}catch(e){console.warn('Admin layout could not be enhanced.',e);}
