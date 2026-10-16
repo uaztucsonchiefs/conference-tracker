@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-tracker-build="OCT9-LIVE">
+<html lang="en" data-tracker-build="OCT14-REVIEW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -375,7 +375,10 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
 .login-destination{margin:16px 0 5px}.login-destination .fld{margin-top:0}#lg-submit:disabled{cursor:wait}
 @media(max-width:1050px){.attendance-workspace{grid-template-columns:minmax(0,1fr)}.attendance-workspace>.quick-credit{grid-row:1}.activity-filters{grid-template-columns:minmax(0,1fr) 200px}.activity-filters button{grid-column:1/-1}}
 @media(max-width:600px){.admin-actions{width:100%}.admin-actions .btn{flex:1 1 130px}.activity-filters{grid-template-columns:1fr}.activity-item{align-items:flex-start;flex-direction:column;gap:8px}.activity-item>.context-note{text-align:left;max-width:none}.activity-status{margin-left:6px}}
-</style>
+
+.review-group{margin:18px 0 24px}.review-group>.panel-title{border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:10px}.review-group h4{margin:0}.review-batch-list{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:9px;padding:10px;margin:12px 0}.review-batch-list .check-line{align-items:flex-start;margin:8px 0;font-size:12px;line-height:1.5}.review-warning{font-size:12px;color:var(--brick);padding:8px;background:#fff0e8;border-radius:6px}.proof-viewer{position:fixed;inset:0;z-index:10000;background:rgba(12,25,20,.94);padding:20px;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:12px}.proof-viewer[hidden]{display:none}.proof-viewer p{color:#fff}.proof-viewer img{max-width:100%;width:auto;max-height:none;background:#fff;border-radius:8px}.proof-viewer button{position:sticky;top:0;align-self:flex-end}.review-shots .review-shot{min-height:120px;object-fit:contain}.review-shots .shot-link{min-width:160px}#work-batch-result{margin:12px 0;color:var(--saguaro-d)}
+
+.entry-notice{padding:14px 18px;margin:12px 0;border:1px solid #d8b674;border-radius:14px;background:#fff8e8;color:#573f17;font-size:12px;line-height:1.5}.entry-notice[hidden]{display:none}.entry-notice p{margin:7px 0 12px}#qr-help{text-align:center}#presenter-checkin-link{display:block;text-align:center;margin:8px 0}#presenter-checkin-link[hidden]{display:none}</style>
 </head>
 <body>
 
@@ -409,7 +412,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
   </svg>
 </header>
 
-<div class="wrap" id="wrap">
+<div class="wrap" id="wrap"><div id="canonical-entry" class="entry-notice" hidden><strong>Open the current tracker</strong><p>Use the main check-in page for the latest version and offline access. If you have saved check-ins here, sync them before switching.</p><a id="canonical-entry-link" class="btn btn-primary btn-sm" target="_top" href="https://uaimconferencetracker.vercel.app/">Open current tracker</a></div><div id="deployment-notice" class="entry-notice" role="status" hidden></div>
 <section class="connection-card" aria-label="Connection and saved check-ins">
   <div class="connection-top"><span id="connection-pill" class="connection-pill">Connecting</span><span class="queue-count" id="queue-count" hidden></span><button type="button" id="app-update-button" hidden onclick="location.reload()">Reload update ↗</button></div>
   <p id="connection-detail" role="status" aria-live="polite">Preparing your conference workspace…</p>
@@ -433,7 +436,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
     </div>
     <div class="msg err" id="r-email-err">No roster match for that email. Check the spelling, or contact a chief resident.</div>
     <div style="margin-top:12px">
-      <button class="btn btn-primary" onclick="residentLookup()">Continue</button>
+      <button id="r-continue" class="btn btn-primary" onclick="residentLookup()">Continue</button>
       <button class="btn btn-ghost" style="margin-top:8px" onclick="creditsLookup()">Look up my conference credits</button>
     </div>
   </div>
@@ -472,7 +475,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
       <div style="flex:1;min-width:0">
         <div class="conf-name" id="r-conf-name">—</div>
         <div class="conf-meta" id="r-conf-meta">—</div>
-        <select id="r-conf-select" class="hide" style="margin-top:8px" onchange="renderLiveConf()"></select>
+        <select id="r-conf-select" class="hide" style="margin-top:8px" onchange="renderLiveConf()"></select><div class="resident-session-refresh"><button type="button" id="r-refresh-sessions" class="text-button" onclick="refreshResidentSessions_()">Refresh sessions</button><p id="r-session-status" class="context-note" role="status"></p></div>
       </div>
     </div>
 
@@ -711,7 +714,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
       </svg>
     </div>
 
-    <div class="qr-holder"><div id="qrbox"></div></div>
+    <div class="qr-holder"><div id="qrbox"></div></div><p id="qr-help" class="context-note"></p><a id="presenter-checkin-link" class="text-button" target="_blank" rel="noopener" hidden>Open check-in link</a>
     <p class="pres-meta">SCAN TO OPEN CHECK-IN · QR SELECTS THE SESSION<br>CODE ROTATES EVERY 30 SECONDS · UNIQUE PER CONFERENCE</p>
   </div>
 
@@ -890,7 +893,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
 <div id="peac-award-roster" class="matrix-scroll"></div><button id="peac-review-button" class="btn btn-primary" type="button" disabled onclick="reviewPeac_()">Review module awards</button></fieldset><div id="peac-review" class="save-review" hidden></div><div id="peac-award-out" role="status" aria-live="polite"></div>
 <details class="quiet-details"><summary>How module credit works</summary><p class="sub">One required and one optional credit per resident per block. Only mark completions you have verified. Clinic weeks come from the workbook’s PEAC group assignments; prelim exclusions carry forward. Switching blocks or weeks clears unsaved selections.</p></details>
 </div></div></section>
-<section id="admin-pane-review" class="admin-pane" hidden aria-label="Review"><div id="sec-review" class="card"><div class="eyebrow">Coordinator work queue</div><div class="panel-title"><h3>Needs attention</h3><button class="text-button" onclick="ensureOpsSection_('review',true)">Refresh queue</button></div><p class="sub">Review proof, resolve missing attendance, fill NI identifiers and follow up on export or job failures.</p><div class="form-pair"><select id="work-type" aria-label="Filter work queue" onchange="renderWorkQueue_()"><option value="">All types</option><option value="offline">Offline check-ins</option><option value="conference">Conference proof / flags</option><option value="peac">PEAC completion proof</option><option value="ahd">Partial AHD attendance</option><option value="mapping">NI identifiers</option><option value="ni">NI import failures</option><option value="job">Scheduled job failures</option></select><input id="work-search" type="search" placeholder="Search names, dates or details" oninput="renderWorkQueue_()"></div><div id="work-summary" class="context-note" role="status"></div><div id="work-items"></div><button class="text-button" id="work-more" hidden onclick="OPS.workLimit+=50;renderWorkQueue_()">Show 50 more</button>
+<section id="admin-pane-review" class="admin-pane" hidden aria-label="Review"><div id="sec-review" class="card"><div class="eyebrow">Coordinator work queue</div><div class="panel-title"><h3>Needs attention</h3><button class="text-button" onclick="resetReviewBatch_();ensureOpsSection_('review',true)">Refresh queue</button></div><p class="sub">Review proof, resolve missing attendance, fill NI identifiers and follow up on export or job failures.</p><div class="form-pair"><select id="work-type" aria-label="Filter work queue" onchange="resetReviewBatch_();renderWorkQueue_()"><option value="">All types</option><option value="offline">Offline check-ins</option><option value="qcredit">Q-credit submissions</option><option value="conference">Other flagged entries</option><option value="photo">Photo-proof submissions</option><option value="peac">PEAC completion proof</option><option value="ahd">Partial AHD attendance</option><option value="mapping">NI identifiers</option><option value="ni">NI import failures</option><option value="job">Scheduled job failures</option></select><input id="work-search" type="search" placeholder="Search names, dates or details" oninput="resetReviewBatch_();renderWorkQueue_()"></div><div id="work-summary" class="context-note" role="status"></div><div id="work-batch-review" class="save-review" hidden></div><p id="work-batch-result" role="status"></p><div id="work-items"></div><button class="text-button" id="work-more" hidden onclick="OPS.workLimit+=50;renderWorkQueue_()">Show 50 more</button>
 </div><div id="sec-ahd" class="card">
     <div class="eyebrow" style="color:var(--adobe)">AHD attendance check</div>
     <p class="sub">A half-day only counts when all <strong>three</strong> hours are checked in. Residents with 1–2 of 3 hours on an AHD date are usually a missed scan, not a real absence — review them here and credit the missing hour(s) if appropriate. Cancelled and deleted AHDs never count toward the total, and neither do 7/2/2026 or the last two weeks of the year.</p>
@@ -1019,7 +1022,7 @@ header{background:rgba(249,249,244,.97);backdrop-filter:none}
    Hosted on Vercel       -> fetches the Apps Script /exec URL as a JSON API.
    Set API_URL to your deployed /exec URL for Vercel hosting. */
 var API_URL = "https://script.google.com/macros/s/AKfycbxVZgKcY0zPh9EufKV3LlKgcyYmbE01xLeIoRZuslOEB9P4txFHLHLKqMvKaQmd_xXH/exec";
-var APP_VERSION = "OCT9-LIVE";   // bump on each deploy; shown in the footer to confirm which build is live
+var APP_VERSION = "OCT14-REVIEW";   // bump on each deploy; shown in the footer to confirm which build is live
 /* ==================== CONNECTION + LOCAL CHECK-INS ====================== */
 var RPC_PENDING = Object.create(null), ADMIN_CACHE_AT = 0, ADMIN_REV = 0;
 var PUBLIC_BOOT_AT = 0, PUBLIC_BOOT_STALE = true, QUEUE_BUSY = false, QUEUE_DB = null;
@@ -1031,7 +1034,7 @@ function call(fn) {
   if (navigator.onLine === false) return Promise.reject(connectionError_('You’re offline. This action needs a connection.'));
   var key = fn + ':' + JSON.stringify(args);
   if (read && RPC_PENDING[key]) return RPC_PENDING[key];
-  var timeout = /checkIn|syncOfflineCheckIn/.test(fn) ? 12000 : /Upload|Submit|Report|export|generate|import/i.test(fn) ? 150000 : 45000;
+  var timeout = /checkIn|syncOfflineCheckIn/.test(fn) ? 12000 : /Upload|Submit|Report|export|generate|import|ReviewBatch/i.test(fn) ? 150000 : 45000;
   var promise = rpcAttempt_(fn, args, timeout).catch(function(e){
     // Only reads retry automatically. A check-in retry uses its durable queue ID.
     if (read && e.transient && navigator.onLine !== false) return rpcAttempt_(fn, args, timeout);
@@ -1043,23 +1046,7 @@ function call(fn) {
   if (read) RPC_PENDING[key] = promise;
   return promise;
 }
-function rpcAttempt_(fn, args, timeout) {
-  return new Promise(function(resolve,reject){
-    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timer = setTimeout(function(){ if (controller) controller.abort(); reject(connectionError_('The server is taking too long to respond.')); }, timeout);
-    function ok(v){ clearTimeout(timer); resolve(v); }
-    function bad(e){ clearTimeout(timer); reject(e); }
-    if (typeof google !== 'undefined' && google.script && google.script.run) {
-      var runner = google.script.run.withSuccessHandler(ok).withFailureHandler(function(e){bad(new Error(e && e.message || 'Server error'));});
-      runner[fn].apply(runner,args); return;
-    }
-    fetch(API_URL, {method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store',
-      signal:controller ? controller.signal : undefined,body:JSON.stringify({action:fn,args:args})})
-      .then(function(r){ if (!r.ok) throw connectionError_('Server unavailable (HTTP ' + r.status + ').'); return r.text(); })
-      .then(function(txt){var env; try{env=JSON.parse(txt);}catch(e){throw connectionError_('The server returned an incomplete response.');}
-        if (!env.apiOk) throw new Error(env.error || 'Server error'); return env.data;}).then(ok,function(e){bad(e.name==='AbortError'||e instanceof TypeError ? connectionError_() : e);});
-  });
-}
+
 function phoenixDay_(){ return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Phoenix',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()); }
 function storePublicBoot_(data) {
   var copy = JSON.parse(JSON.stringify(data)); ['session','resident','found','first','last','pgy'].forEach(function(k){delete copy[k];});
@@ -1170,7 +1157,7 @@ async function renderQueue_() {
 async function exportSavedCheckins_() {
   try {var rows=await queueAll_(),url=URL.createObjectURL(new Blob([JSON.stringify(rows,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='conference-saved-checkins.json';a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);}catch(e){toast(e.message);}
 }
-function renderConnection_(){
+function renderConnection_(){renderDeploymentNotice_();
   var pill=document.getElementById('connection-pill');if(!pill)return;
   var offline=navigator.onLine===false; pill.classList.toggle('offline',offline||PUBLIC_BOOT_STALE);
   pill.textContent=offline?'Offline':PUBLIC_BOOT_STALE?'Saved schedule':'Connected';
@@ -1337,7 +1324,7 @@ async function toggleModules(){
   if (ADMIN_DATA) renderTally();
   toast(MODULES_ON ? "Modules enabled." : "Modules moved to the backburner.");
 }
-function renderTabs(active){
+function renderTabs(active){renderDeploymentNotice_();
   var t = document.getElementById("tabs");
   var defs = ADMIN
     ? [["resident","Check-In"],["peac","PEAC"],["presenter","Presenter"],["admin","Admin"]]
@@ -1391,7 +1378,7 @@ var PENDING_CONF = null;   // conference preselected by a scanned QR (?conf=...)
 async function boot(){
   document.getElementById('build-stamp').textContent='BUILD '+APP_VERSION;ui_('lg-destination').value=staffDestination_();
   try{PENDING_CONF=new URLSearchParams(location.search).get('conf')||null;}catch(ignore){}
-  if(!PENDING_CONF&&typeof google!=='undefined'&&google.script&&google.script.url)try{google.script.url.getLocation(function(loc){PENDING_CONF=loc.parameter&&loc.parameter.conf||null;});}catch(ignore){}
+  if(!PENDING_CONF&&typeof google!=='undefined'&&google.script&&google.script.url)try{google.script.url.getLocation(function(loc){PENDING_CONF=loc.parameter&&loc.parameter.conf||null;renderDeploymentNotice_();});}catch(ignore){}
   var savedEmail=recalledEmail();if(savedEmail){document.getElementById('r-email').value=savedEmail;document.getElementById('q-email').value=savedEmail;}
   BOOT=cachedPublicBoot_()||{todayConfs:[],liveConf:null,qEligible:[],webAppUrl:''};
   applyConfigDefaults();MODULES_ON=!!BOOT.modulesEnabled;applyModulesFlag();renderTabs('resident');qOptions();renderConnection_();
@@ -1444,48 +1431,7 @@ function applyConfigDefaults(){
 }
 
 /* ============ RESIDENT FLOW ============ */
-async function residentLookup(){
-  var em = document.getElementById("r-email").value.trim().toLowerCase();
-  var err = document.getElementById("r-email-err");
-  if (!em || em.indexOf("@")<1){ err.style.display="block"; return; }
-  var hit=cachedResidentProfile_(em);
-  try{
-    if(!hit || PUBLIC_BOOT_STALE || Date.now()-PUBLIC_BOOT_AT>60000){
-      var data=await call('residentStart',em);hit=data.resident;
-      BOOT=data;storePublicBoot_(data);
-      if(hit&&hit.found)saveResidentProfile_(em,hit);
-    }
-  }catch(e){
-    if(!e.transient){err.textContent=e.message;err.style.display='block';return;}
-    hit=hit||{found:true,first:em.split('@')[0],last:'',pgy:'—',unverified:true};
-    PUBLIC_BOOT_STALE=true;renderConnection_();
-  }
-  if (!hit || !hit.found){ err.textContent='No active roster match for that email. Check the spelling or contact a chief.';err.style.display="block"; return; }
-  err.style.display="none";
-  rememberEmail(em);
-  currentResident = {first:hit.first, last:hit.last, pgy:hit.pgy, email:em};
-  document.getElementById("r-avatar").textContent = (hit.first[0]||'?')+(hit.last[0]||'');
-  document.getElementById("r-name").textContent = hit.first+" "+hit.last;
-  document.getElementById("r-class").textContent = hit.unverified ? "ROSTER WILL BE VERIFIED WHEN CONNECTED" : "PGY-"+hit.pgy+" · ROSTER MATCH";
-  var sel = document.getElementById("r-conf-select");
-  var lcs = todaysCheckable();
-  sel.innerHTML = "";
-  lcs.forEach(function(c){
-    var o = document.createElement("option");
-    o.value = c.id;
-    o.textContent = confLabel(c.type, c.title) + (siteTag(c.site) ? " · " + siteTag(c.site) : "") + (c.live ? " · IN SESSION" : "");
-    sel.appendChild(o);
-  });
-  sel.classList.toggle("hide", lcs.length < 2);
-  // If the resident arrived via a session QR, preselect that session
-  if (PENDING_CONF && lcs.some(function(c){ return c.id === PENDING_CONF; })){
-    sel.value = PENDING_CONF;
-  }
-  renderLiveConf();
-  document.getElementById("r-step1").classList.add("hide");
-  document.getElementById("r-step2").classList.remove("hide");
-  var fb = document.querySelector(".code-box"); if (fb) fb.focus();
-}
+
 var boxes = document.querySelectorAll(".code-box");
 boxes.forEach(function(b,i){
   b.addEventListener("input", function(){
@@ -1502,12 +1448,7 @@ function todaysCheckable(){
   list.sort(function(a,b){ return (b.live?1:0) - (a.live?1:0); });
   return list;
 }
-function chosenLiveConf(){
-  var lcs = todaysCheckable();
-  if (!lcs.length) return null;
-  var sel = document.getElementById("r-conf-select");
-  return lcs.filter(function(c){ return c.id === sel.value; })[0] || lcs[0];
-}
+
 var chosenTrack = null;
 function renderTracks(lc){
   var wrap = document.getElementById("r-track-wrap");
@@ -1680,7 +1621,7 @@ function creditsBack(){
   document.getElementById("r-credits").classList.add("hide");
   document.getElementById("r-step1").classList.remove("hide");
 }
-function residentReset(){
+function residentReset(){resetResidentEntry_();
   currentResident = null;
   document.getElementById("r-email").value = recalledEmail();   // keep their email for next visit
   boxes.forEach(function(b){ b.value=""; });
@@ -1692,7 +1633,7 @@ function residentReset(){
 }
 /* "Not you?" — the remembered email identified the wrong person (mistype, or a
  * shared device), so forget it and let them type a different one. */
-function residentNotMe(){
+function residentNotMe(){resetResidentEntry_();
   forgetEmail();
   currentResident = null;
   boxes.forEach(function(b){ b.value=""; });
@@ -2211,29 +2152,14 @@ function paintCode_(code,msLeft,windowMs){
   code.split('').forEach(function(ch,i){if(holder.children[i].textContent!==ch)holder.children[i].textContent=ch;});lastCode=code;
   document.getElementById('p-ring').style.strokeDashoffset=(194.8*(1-Math.max(0,msLeft)/windowMs)).toFixed(1);
   document.getElementById('p-secs').textContent=Math.ceil(Math.max(0,msLeft)/1000);
-  if(LAST_QR_CONF!==presenterConf&&window.QRCode&&BOOT&&BOOT.webAppUrl){
-    var box=document.getElementById('qrbox');box.innerHTML='';
-    new QRCode(box,{text:BOOT.webAppUrl+(BOOT.webAppUrl.indexOf('?')<0?'?':'&')+'conf='+encodeURIComponent(presenterConf),width:145,height:145,colorDark:'#203F37',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});LAST_QR_CONF=presenterConf;
-  }
+  paintPresenterQr_();
 }
 async function pollPresenter(){
   if(PRESENTER_POLLING||!presenterConf||document.hidden||navigator.onLine===false)return;
   PRESENTER_POLLING=true;var id=presenterConf;
   try{await pollPresenterOnce_(id);}finally{PRESENTER_POLLING=false;}
 }
-function lazyReviewImage_(img,cell,url){
-  img.alt='Tap to view screenshot';
-  img._reviewLoad=function(){
-    return call('qPhoto',TOKEN,url).then(function(r){
-      if(!img.isConnected)return;
-      if(r&&r.ok){img.src='data:'+r.mediaType+';base64,'+r.b64;img.style.opacity='1';}
-      else{cell.textContent='Open screenshot ↗';cell.classList.add('shot-fallback');}
-    }).catch(function(){if(img.isConnected){cell.textContent='Open screenshot ↗';cell.classList.add('shot-fallback');}});
-  };
-  if(!('IntersectionObserver' in window))return;
-  if(!REVIEW_OBSERVER)REVIEW_OBSERVER=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){REVIEW_OBSERVER.unobserve(e.target);REVIEW_LOADS.push(e.target);drainReviewImages_();}});},{rootMargin:'100px'});
-  REVIEW_OBSERVER.observe(img);
-}
+
 function drainReviewImages_(){
   while(REVIEW_LOADING<2&&REVIEW_LOADS.length){var img=REVIEW_LOADS.shift();if(!img.isConnected)continue;REVIEW_LOADING++;img._reviewLoad().finally(function(){REVIEW_LOADING--;drainReviewImages_();});}
 }
@@ -3301,7 +3227,7 @@ async function addConference(){
   catch(e){if(token===TOKEN)formMessage_('add-ok',e.message+' Your form is retained; you can safely retry.',true);}
   finally{ADD_BUSY=false;ui_('add-fields').disabled=false;ui_('add-save-button').textContent='Save conference';}
 }
-function clearWorkspaceSession_(){resetFastStaff_();resetCreditHistory_();clearResidentCreditState_(true);stopDictation_();OPS.sections={};OPS.conferencesAt=0;OPS.niPreview=null;ui_('work-items').innerHTML='';ui_('ops-handoff-form').innerHTML='';AHD_SCAN.sequence++;AHD_SCAN.rows=[];AHD_SCAN.token=null;ahdBusy_(false);ui_('ahd-out').innerHTML='';CREDIT.sequence++;CREDIT.conf='';CREDIT.entries=null;CREDIT.selected={};CREDIT.review=null;PEAC_UI.sequence++;PEAC_UI.data=null;PEAC_UI.selected={};PEAC_UI.review=null;PEAC_UI.at=0;ui_('bulk-roster').innerHTML='';ui_('peac-award-roster').innerHTML='';ui_('peac-weeks').innerHTML='';ui_('credit-review').hidden=true;ui_('peac-review').hidden=true;}
+function clearWorkspaceSession_(){resetFastStaff_();resetCreditHistory_();resetReviewBatch_();closeReviewProof_();clearResidentCreditState_(true);stopDictation_();OPS.sections={};OPS.conferencesAt=0;OPS.niPreview=null;ui_('work-items').innerHTML='';ui_('ops-handoff-form').innerHTML='';AHD_SCAN.sequence++;AHD_SCAN.rows=[];AHD_SCAN.token=null;ahdBusy_(false);ui_('ahd-out').innerHTML='';CREDIT.sequence++;CREDIT.conf='';CREDIT.entries=null;CREDIT.selected={};CREDIT.review=null;PEAC_UI.sequence++;PEAC_UI.data=null;PEAC_UI.selected={};PEAC_UI.review=null;PEAC_UI.at=0;ui_('bulk-roster').innerHTML='';ui_('peac-award-roster').innerHTML='';ui_('peac-weeks').innerHTML='';ui_('credit-review').hidden=true;ui_('peac-review').hidden=true;}
 
 var AHD_SCAN={rows:[],busy:false,sequence:0,token:null};
 function ahdBusy_(busy){
@@ -3491,17 +3417,8 @@ function renderOpsSection_(pane){
 }
 function renderFlagPanel_(){renderWorkQueue_();}
 function workButton_(label,fn){var b=document.createElement('button');b.className='text-button';b.textContent=label;b.onclick=fn;return b;}
-function renderWorkQueue_(){
-  var data=OPS.sections.review&&OPS.sections.review.data;if(!data)return;var type=ui_('work-type').value,q=ui_('work-search').value.trim().toLowerCase(),items=data.items.filter(function(x){return (!type||x.type===type)&&(!q||[x.name,x.date,x.detail].join(' ').toLowerCase().includes(q));}),out=ui_('work-items');out.innerHTML='';ui_('work-summary').textContent=items.length+' matching items · '+data.items.length+' total'+(!data.niConfigured?' · NI import format not yet confirmed':'');ui_('work-more').hidden=items.length<=OPS.workLimit;
-  items.slice(0,OPS.workLimit).forEach(function(item){var card=document.createElement('div');card.className='flag-item';var head=document.createElement('strong');head.textContent=item.name+' · '+item.type;card.appendChild(head);var text=document.createElement('p');text.className='sub';text.textContent=(item.date?item.date+' · ':'')+item.detail;card.appendChild(text);
-    if(item.photos&&item.photos.length)card.appendChild(workButton_('View '+item.photos.length+' screenshot(s)',function(){this.disabled=true;var gallery=document.createElement('div');gallery.className='review-shots';item.photos.forEach(function(url){var a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';var img=document.createElement('img');img.className='review-shot';img.alt='Completion proof';a.appendChild(img);gallery.appendChild(a);lazyReviewImage_(img,a,url);});card.appendChild(gallery);}));
-    if(item.action==='flag'||item.action==='peac'){card.appendChild(workButton_('Approve',function(){resolveWorkItem_(item,true,card);}));card.appendChild(workButton_('Deny credit',function(){if(confirm('Deny this credit for '+item.name+'?'))resolveWorkItem_(item,false,card);}));}
-    else if(item.action==='ahd')card.appendChild(workButton_('Review missing hours',function(){loadAhdCheck();ui_('sec-ahd').scrollIntoView({behavior:'smooth'});}));
-    else if(item.action==='mapping'){var input=document.createElement('input');input.placeholder='Confirmed NI identifier';input.setAttribute('aria-label','NI identifier for '+item.name);card.appendChild(input);card.appendChild(workButton_('Save identifier',async function(){this.disabled=true;try{await call('saveNIMapping',TOKEN,item.mapping.type,item.mapping.key,input.value);await ensureOpsSection_('review',true);}catch(e){toast(e.message);this.disabled=false;}}));}
-    else card.appendChild(workButton_('Open '+(item.action==='ni'?'NI exports':'system health'),function(){selectAdminPane_('settings');}));out.appendChild(card);
-  });if(!items.length)out.textContent='No matching items need attention.';
-}
-async function resolveWorkItem_(item,approve,card){var token=TOKEN;Array.from(card.querySelectorAll('button')).forEach(function(b){b.disabled=true;});try{await call(item.action==='peac'?'peacResolve':'resolveFlag',token,item.id,approve);if(token!==TOKEN)return;PEAC_UI.at=0;await ensureOpsSection_('review',true);}catch(e){toast(e.message);Array.from(card.querySelectorAll('button')).forEach(function(b){b.disabled=false;});}}
+
+
 function renderSettingsOps_(data){
   var h=data.health;ui_('admin-diag').textContent='Page '+APP_VERSION+' · Backend '+h.backendVersion;
   var html='<div class="health-line"><strong>'+(h.backendVersion===APP_VERSION?'Builds match':'Update needed: builds differ')+'</strong><span>'+html_(APP_VERSION+' / '+h.backendVersion)+'</span></div><div class="health-line"><strong>'+(navigator.onLine===false?'Device offline':'Backend reachable')+'</strong><span>Checked '+html_(new Date(h.serverTime).toLocaleTimeString())+'</span></div>';
@@ -3754,7 +3671,7 @@ async function refreshPublicBoot_(force,token){
   if(!force&&BOOT&&!PUBLIC_BOOT_STALE&&Date.now()-PUBLIC_BOOT_AT<30000)return BOOT;
   if(STAFF_FAST.entryFlight&&STAFF_FAST.entryToken===token)return STAFF_FAST.entryFlight;
   STAFF_FAST.entryToken=token;
-  var flight=(async function(){var data=await call('bootstrap',token);if((TOKEN||null)===token){BOOT=data;storePublicBoot_(data);}return data;})();
+  var flight=(async function(){var data=await call('bootstrap',token);if(!data||!Array.isArray(data.todayConfs))throw connectionError_('The conference schedule response was incomplete. Please refresh sessions.');if((TOKEN||null)===token){BOOT=data;storePublicBoot_(data);}return data;})();
   STAFF_FAST.entryFlight=flight;
   try{return await flight;}finally{if(STAFF_FAST.entryFlight===flight)STAFF_FAST.entryFlight=null;}
 }
@@ -3813,7 +3730,7 @@ async function fillAllSelect(){
     sel.value=presenterConf||'';
   }catch(e){toast(e.message);}finally{sel.disabled=false;}
 }
-function clearPresenterDisplay_(message){
+function clearPresenterDisplay_(message){ui_('presenter-checkin-link').hidden=true;ui_('qr-help').textContent='';
   PRESENTER_CODES=[];lastCode='';LAST_QR_CONF='';ui_('qrbox').innerHTML='';
   Array.from(ui_('p-code').children).forEach(function(n){n.textContent='·';});ui_('p-secs').textContent='—';
   if(message)presenterStatus('reconnect',message);
@@ -3914,11 +3831,201 @@ async function finishCreditCorrection_(item){
   finally{if(token===TOKEN){CREDIT_HISTORY.busy=false;await loadCreditHistory_(true);}}
 }
 
+var RESIDENT_ENTRY={busy:false,sequence:0};
+function residentEmail_(email){return String(email||'').replace(/[\u200B-\u200D\uFEFF]/g,'').trim().toLowerCase();}
+function resetResidentEntry_(){RESIDENT_ENTRY.sequence++;RESIDENT_ENTRY.busy=false;var button=ui_('r-continue');if(button){button.disabled=false;button.textContent='Continue';}ui_('r-session-status').textContent='';}
+function residentReplyValid_(hit){return hit&&typeof hit==='object'&&typeof hit.found==='boolean';}
+function residentScheduleValid_(data){return data&&Array.isArray(data.todayConfs)&&data.scheduleAvailable!==false;}
+
+async function residentLookup(force){
+  if(RESIDENT_ENTRY.busy)return;
+  var email=residentEmail_(ui_('r-email').value),err=ui_('r-email-err'),button=ui_('r-continue');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Enter your full program email, such as you@arizona.edu.';err.style.display='block';return;}
+  var sequence=++RESIDENT_ENTRY.sequence,hit=cachedResidentProfile_(email),scheduleMessage='';
+  RESIDENT_ENTRY.busy=true;button.disabled=true;button.textContent='Checking…';err.style.display='none';
+  try{
+    var qrMissing=PENDING_CONF&&!(BOOT&&BOOT.todayConfs||[]).some(function(c){return c.id===PENDING_CONF;});
+    if(force===true||!hit||PUBLIC_BOOT_STALE||Date.now()-PUBLIC_BOOT_AT>60000||qrMissing){
+      try{
+        var entry=await fetchResidentEntry_(email,force===true);
+        if(sequence!==RESIDENT_ENTRY.sequence||email!==residentEmail_(ui_('r-email').value))return;
+        hit=entry.hit;
+        if(residentScheduleValid_(entry.data)){BOOT=entry.data;storePublicBoot_(BOOT);}
+        else{PUBLIC_BOOT_STALE=true;scheduleMessage='Your email was checked, but the schedule could not refresh. Select Refresh sessions to retry.';renderConnection_();}
+        if(hit.found)saveResidentProfile_(email,hit);
+      }catch(error){
+        if(!error.transient)throw error;
+        hit=hit||{found:true,first:email.split('@')[0],last:'',pgy:'—',unverified:true};
+        PUBLIC_BOOT_STALE=true;scheduleMessage='Connection unavailable. Saved sessions are shown; delayed check-ins need chief review.';renderConnection_();
+      }
+    }
+    if(sequence!==RESIDENT_ENTRY.sequence||email!==residentEmail_(ui_('r-email').value))return;
+    if(!residentReplyValid_(hit))throw new Error('The roster response was incomplete. Please try again.');
+    if(!hit.found){err.textContent='No active roster match for '+email+'. Check the full program email or contact a chief.';err.style.display='block';return;}
+    var canonical=residentEmail_(hit.email||email),first=String(hit.first||''),last=String(hit.last||'');
+    rememberEmail(canonical);currentResident={first:first,last:last,pgy:String(hit.pgy||''),email:canonical};
+    ui_('r-avatar').textContent=(first[0]||'?')+(last[0]||'');ui_('r-name').textContent=(first+' '+last).trim()||canonical;
+    ui_('r-class').textContent=hit.unverified?'ROSTER WILL BE VERIFIED WHEN CONNECTED':'PGY-'+String(hit.pgy||'')+' · ROSTER MATCH';
+    var sel=ui_('r-conf-select'),prior=sel.value,conferences=todaysCheckable();sel.innerHTML='';
+    conferences.forEach(function(c){var option=document.createElement('option');option.value=c.id;option.textContent=confLabel(c.type,c.title)+(siteTag(c.site)?' · '+siteTag(c.site):'')+(c.live?' · IN SESSION':'');sel.appendChild(option);});
+    var missingQR=PENDING_CONF&&!conferences.some(function(c){return c.id===PENDING_CONF;});
+    sel.classList.toggle('hide',conferences.length<2&&!missingQR);
+    if(PENDING_CONF&&!missingQR)sel.value=PENDING_CONF;
+    else if(prior&&conferences.some(function(c){return c.id===prior;}))sel.value=prior;
+    if(missingQR){var placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='QR session unavailable · refresh or choose a session';sel.insertBefore(placeholder,sel.firstChild);sel.value='';scheduleMessage='The QR conference is not in today’s available sessions. Refresh sessions or ask the presenter to reopen it.';}
+    ui_('r-session-status').textContent=scheduleMessage;renderLiveConf();ui_('r-step1').classList.add('hide');ui_('r-step2').classList.remove('hide');
+    var box=document.querySelector('.code-box');if(box)box.focus();
+  }catch(error){if(sequence===RESIDENT_ENTRY.sequence){err.textContent=error.message||'The server could not complete the lookup. Please retry.';err.style.display='block';}}
+  finally{if(sequence===RESIDENT_ENTRY.sequence){RESIDENT_ENTRY.busy=false;button.disabled=false;button.textContent='Continue';}}
+}
+function chosenLiveConf(){
+  var list=todaysCheckable(),selected=ui_('r-conf-select').value;
+  if(PENDING_CONF&&!selected&&!list.some(function(c){return c.id===PENDING_CONF;}))return null;
+  return list.filter(function(c){return c.id===selected;})[0]||list[0]||null;
+}
+async function refreshResidentSessions_(){
+  var button=ui_('r-refresh-sessions');if(RESIDENT_ENTRY.busy)return;button.disabled=true;button.textContent='Refreshing…';
+  try{await residentLookup(true);if(ui_('r-email-err').style.display==='block')ui_('r-session-status').textContent=ui_('r-email-err').textContent;}
+  finally{button.disabled=false;button.textContent='Refresh sessions';}
+}
+
+var CHECKIN_URL='https://uaimconferencetracker.vercel.app/';
+function residentCheckinUrl_(confId){
+  var url=new URL(CHECKIN_URL);if(confId)url.searchParams.set('conf',String(confId));return url.href;
+}
+function nativeTracker_(){return typeof google!=='undefined'&&google.script&&google.script.run;}
+function renderDeploymentNotice_(){
+  var legacy=ui_('canonical-entry'),link=ui_('canonical-entry-link'),notice=ui_('deployment-notice');
+  if(legacy){legacy.hidden=!nativeTracker_();link.setAttribute('href',residentCheckinUrl_(PENDING_CONF));}
+  if(notice){var backend=BOOT&&BOOT.backendVersion;notice.hidden=!ADMIN||!backend||backend===APP_VERSION;
+    notice.textContent=backend?'Update needed: page '+APP_VERSION+' · backend '+backend+'. Deploy the matching Code.gs and Index.html in Apps Script. Use Conference codes on the Vercel page for the current QR link.':'';}
+}
+function paintPresenterQr_(){
+  if(!presenterConf)return;
+  var url=residentCheckinUrl_(presenterConf),link=ui_('presenter-checkin-link'),help=ui_('qr-help');
+  link.setAttribute('href',url);link.textContent='Open check-in link';link.hidden=false;
+  if(LAST_QR_CONF===url)return;
+  if(!window.QRCode){help.textContent='QR library unavailable. Use or copy the check-in link.';return;}
+  try{var box=ui_('qrbox');box.innerHTML='';new QRCode(box,{text:url,width:145,height:145,colorDark:'#203F37',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});LAST_QR_CONF=url;help.textContent='Scan to open check-in · uaimconferencetracker.vercel.app';}
+  catch(error){help.textContent='QR could not load. Use or copy the check-in link.';}
+}
+function parseTrackerReply_(raw){
+  var env;
+  try{env=typeof raw==='string'?JSON.parse(raw):raw;}catch(ignore){throw new Error('The tracker returned an unreadable response. Reload and try again.');}
+  if(!env||typeof env!=='object'||typeof env.apiOk!=='boolean')throw new Error('The tracker returned an empty response. Reload and try again; your email has not been rejected.');
+  if(!env.apiOk)throw new Error(env.error||'The server could not complete this request.');
+  if(env.data==null)throw new Error('The tracker returned an empty response. Reload and try again; your email has not been rejected.');
+  return env.data;
+}
+function rpcAttempt_(fn,args,timeout){
+  return new Promise(function(resolve,reject){
+    var settled=false,controller=typeof AbortController!=='undefined'?new AbortController():null;
+    var timer=setTimeout(function(){if(controller)controller.abort();bad(connectionError_('The server is taking too long to respond.'));},timeout);
+    function ok(raw){if(settled)return;try{var data=parseTrackerReply_(raw);settled=true;clearTimeout(timer);resolve(data);}catch(error){bad(error);}}
+    function bad(error){if(settled)return;settled=true;clearTimeout(timer);reject(error);}
+    if(nativeTracker_()){
+      google.script.run.withSuccessHandler(ok).withFailureHandler(function(error){
+        var message=error&&error.message||'The tracker could not complete this request.';
+        if(/(?:not found|not a function).*trackerRpcJson|trackerRpcJson.*(?:not found|not a function)/i.test(message))message='This Apps Script deployment needs the current Code.gs. Open the current tracker using the link above.';
+        bad(new Error(message));
+      }).trackerRpcJson(fn,args);return;
+    }
+    fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},cache:'no-store',signal:controller?controller.signal:undefined,body:JSON.stringify({action:fn,args:args})})
+      .then(function(response){if(!response.ok)throw connectionError_('Server unavailable (HTTP '+response.status+').');return response.text();})
+      .then(ok,function(error){bad(error.name==='AbortError'||error instanceof TypeError?connectionError_():error);});
+  });
+}
+async function fetchResidentEntry_(email,force){
+  // Identity never depends on serializing or loading the conference schedule.
+  var hit=await call('lookupResident',email);
+  if(!residentReplyValid_(hit))throw new Error('The server did not confirm the roster lookup. Please retry; your email has not been rejected.');
+  var data=BOOT,missing=PENDING_CONF&&!(BOOT&&BOOT.todayConfs||[]).some(function(c){return c.id===PENDING_CONF;});
+  if(hit.found&&(force||PUBLIC_BOOT_STALE||Date.now()-PUBLIC_BOOT_AT>60000||missing)){
+    try{data=await refreshPublicBoot_(true,TOKEN||null);}catch(ignore){data=null;}
+  }
+  return {hit:hit,data:data};
+}
+
+var REVIEW_BATCH={busy:false,group:'',items:[],checks:[],token:null,sequence:0};
+var REVIEW_GROUPS={qcredit:'Q-credit submissions',offline:'Offline check-ins',conference:'Flagged conference entries',peac:'PEAC completion proof',photo:'Photo-proof submissions',ahd:'Partial AHD attendance',mapping:'Missing NI identifiers',ni:'NI transfer follow-up',job:'Scheduled job follow-up'};
+function resetReviewBatch_(){var wasBusy=REVIEW_BATCH.busy;REVIEW_BATCH.sequence++;REVIEW_BATCH.busy=false;if(wasBusy)reviewBusy_(false);REVIEW_BATCH.items=[];REVIEW_BATCH.checks=[];REVIEW_BATCH.token=null;var panel=ui_('work-batch-review');if(panel){panel.hidden=true;panel.innerHTML='';}}
+function reviewGroupFor_(item){return item.type==='conference'&&/Q-credit/i.test(item.detail||'')?'qcredit':item.type;}
+function filteredReviewItems_(){var data=OPS.sections.review&&OPS.sections.review.data,type=ui_('work-type').value,q=ui_('work-search').value.trim().toLowerCase();return data?data.items.filter(function(x){return (!type||reviewGroupFor_(x)===type)&&(!q||[x.name,x.email,x.date,x.detail].join(' ').toLowerCase().includes(q));}):[];}
+function reviewBusy_(busy){REVIEW_BATCH.busy=busy;Array.from(ui_('sec-review').querySelectorAll('button,input,select')).forEach(function(el){el.disabled=busy||el.dataset.reviewDisabled==='true';});if(!busy)updateReviewBatchButton_();}
+function reviewProofGallery_(item){
+  var gallery=document.createElement('div');gallery.className='review-shots';
+  (item.photos||[]).forEach(function(url,i){var link=document.createElement('a');link.setAttribute('href',url);link.target='_blank';link.rel='noopener';link.className='shot-link';
+    var img=document.createElement('img');img.className='review-shot';img.alt=item.name+' · screenshot '+(i+1);img.loading='lazy';link.appendChild(img);
+    link.onclick=function(event){if(img.dataset.loaded==='true'){event.preventDefault();openReviewProof_(img.src,img.alt);}};gallery.appendChild(link);lazyReviewImage_(img,link,url);
+  });return gallery;
+}
+function lazyReviewImage_(img,cell,url){
+  var token=TOKEN;img.style.opacity='.55';img._reviewLoad=function(){return call('qPhoto',token,url).then(function(r){
+    if(!img.isConnected||token!==TOKEN||!ADMIN)return;
+    if(r&&r.ok&&r.b64&&r.mediaType){img.src='data:'+r.mediaType+';base64,'+r.b64;img.dataset.loaded='true';img.style.opacity='1';cell.title='Click to enlarge screenshot';}
+    else{cell.textContent='Screenshot unavailable · open uploaded file ↗';cell.classList.add('shot-fallback');}
+  }).catch(function(){if(img.isConnected&&token===TOKEN){cell.textContent='Could not load screenshot · open uploaded file ↗';cell.classList.add('shot-fallback');}});};
+  if(!('IntersectionObserver' in window)){Promise.resolve().then(function(){if(img.isConnected){REVIEW_LOADS.push(img);drainReviewImages_();}});return;}
+  if(!REVIEW_OBSERVER)REVIEW_OBSERVER=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){REVIEW_OBSERVER.unobserve(e.target);REVIEW_LOADS.push(e.target);drainReviewImages_();}});},{rootMargin:'120px'});REVIEW_OBSERVER.observe(img);
+}
+function openReviewProof_(src,label){var viewer=ui_('review-proof-viewer');viewer._priorFocus=document.activeElement;ui_('review-proof-image').src=src;ui_('review-proof-image').alt=label;ui_('review-proof-caption').textContent=label;viewer.hidden=false;ui_('review-proof-close').focus();}
+function closeReviewProof_(){var viewer=ui_('review-proof-viewer');viewer.hidden=true;ui_('review-proof-image').removeAttribute('src');if(viewer._priorFocus&&viewer._priorFocus.isConnected)viewer._priorFocus.focus();}
+document.addEventListener('keydown',function(event){if(event.key==='Escape'&&!ui_('review-proof-viewer').hidden)closeReviewProof_();});
+function renderWorkQueue_(){
+  var data=OPS.sections.review&&OPS.sections.review.data;if(!data)return;var items=filteredReviewItems_(),out=ui_('work-items');out.innerHTML='';
+  ui_('work-summary').textContent=items.length+' matching items · '+data.items.length+' total. Bulk approval includes all matching entries in its group, including entries beyond Show more.';
+  ui_('work-more').hidden=items.length<=OPS.workLimit;var visible=items.slice(0,OPS.workLimit);
+  Object.keys(REVIEW_GROUPS).forEach(function(group){var all=items.filter(function(x){return reviewGroupFor_(x)===group;}),shown=visible.filter(function(x){return reviewGroupFor_(x)===group;});if(!all.length)return;
+    var section=document.createElement('section');section.className='review-group';section.dataset.group=group;var header=document.createElement('div');header.className='panel-title';var title=document.createElement('h4');title.textContent=REVIEW_GROUPS[group]+' · '+all.length;header.appendChild(title);
+    if(['qcredit','offline','conference','peac','photo','ahd'].indexOf(group)>=0){var eligible=all.filter(function(x){return data.reviewBatchVersion===1&&x.bulkEligible!==false&&x.selectionKey;}),button=workButton_('Review & approve all '+eligible.length,function(){beginReviewBatch_(group);});button.dataset.bulkGroup=group;button.disabled=!eligible.length;button.dataset.reviewDisabled=eligible.length?'false':'true';header.appendChild(button);}
+    section.appendChild(header);var held=all.filter(function(x){return x.bulkEligible===false;}).length;
+    if(held){var note=document.createElement('p');note.className='context-note';note.textContent=held+' warning(s) require individual review and are excluded from bulk approval.';section.appendChild(note);}
+    if(!data.reviewBatchVersion&&['qcredit','offline','conference','peac','photo','ahd'].indexOf(group)>=0){var note=document.createElement('p');note.className='context-note';note.textContent='Deploy the matching Code.gs to enable bulk approval for this group.';section.appendChild(note);}
+    shown.forEach(function(item){var card=document.createElement('div');card.className='flag-item';card.dataset.reviewId=item.id;var head=document.createElement('strong');head.textContent=item.name;card.appendChild(head);var detail=document.createElement('p');detail.className='sub';detail.textContent=(item.date?item.date+' · ':'')+item.detail;card.appendChild(detail);
+      if(item.photos&&item.photos.length){card.appendChild(reviewProofGallery_(item));var hint=document.createElement('p');hint.className='context-note';hint.textContent='Click a screenshot to enlarge it.';card.appendChild(hint);}
+      else if(group==='qcredit'){var missing=document.createElement('p');missing.className='context-note';missing.textContent='No screenshot attached to this submission.';card.appendChild(missing);}
+      if(item.holdReason){var warning=document.createElement('p');warning.className='review-warning';warning.textContent=item.holdReason;card.appendChild(warning);}
+      if(item.action==='flag'||item.action==='peac'||item.action==='photo'){card.appendChild(workButton_('Approve',function(){resolveWorkItem_(item,true,card);}));card.appendChild(workButton_('Deny credit',function(){if(confirm('Deny this credit for '+item.name+'?'))resolveWorkItem_(item,false,card);}));}
+      else if(item.action==='ahd')card.appendChild(workButton_('Review missing hours',function(){loadAhdCheck();ui_('sec-ahd').scrollIntoView({behavior:'smooth'});}));
+      else if(item.action==='mapping'){var input=document.createElement('input');input.placeholder='Confirmed NI identifier';input.setAttribute('aria-label','NI identifier for '+item.name);card.appendChild(input);card.appendChild(workButton_('Save identifier',async function(){this.disabled=true;try{await call('saveNIMapping',TOKEN,item.mapping.type,item.mapping.key,input.value);await ensureOpsSection_('review',true);}catch(e){toast(e.message);this.disabled=false;}}));}
+      else card.appendChild(workButton_('Open '+(item.action==='ni'?'NI exports':'system health'),function(){selectAdminPane_('settings');}));section.appendChild(card);
+    });if(!shown.length){var more=document.createElement('p');more.className='sub';more.textContent='Use Show 50 more to display these entries, or review the group’s full approval list above.';section.appendChild(more);}out.appendChild(section);
+  });if(!items.length)out.textContent='No matching items need attention.';if(REVIEW_BATCH.busy)reviewBusy_(true);
+}
+function beginReviewBatch_(group){
+  if(REVIEW_BATCH.busy)return;var data=OPS.sections.review&&OPS.sections.review.data;if(!data||data.reviewBatchVersion!==1){toast('Deploy the matching Code.gs to enable bulk approval.');return;}var items=filteredReviewItems_().filter(function(x){return reviewGroupFor_(x)===group&&x.bulkEligible!==false&&x.selectionKey;});if(!items.length){toast('No eligible entries match this group.');return;}
+  resetReviewBatch_();REVIEW_BATCH.group=group;REVIEW_BATCH.items=items;REVIEW_BATCH.token=TOKEN;
+  var panel=ui_('work-batch-review');panel.hidden=false;var title=document.createElement('h4');title.textContent='Approve '+items.length+' '+REVIEW_GROUPS[group].toLowerCase()+'?';panel.appendChild(title);
+  var note=document.createElement('p');note.textContent='Only the entries listed below will be approved. Uncheck anyone you have not verified. '+(group==='ahd'?'Each entry lists the missing hours that will receive credit. Use Review missing hours to select individual hours.':'');panel.appendChild(note);
+  var list=document.createElement('div');list.className='review-batch-list';items.forEach(function(item){var label=document.createElement('label');label.className='check-line';var input=document.createElement('input');input.type='checkbox';input.checked=true;input.onchange=updateReviewBatchButton_;label.appendChild(input);label.appendChild(document.createTextNode(item.name+' · '+item.date+' · '+item.detail));list.appendChild(label);REVIEW_BATCH.checks.push(input);});panel.appendChild(list);
+  var label=document.createElement('label');label.className='check-line';var attest=document.createElement('input');attest.type='checkbox';attest.id='work-batch-attest';attest.onchange=updateReviewBatchButton_;label.appendChild(attest);label.appendChild(document.createTextNode(group==='ahd'||group==='offline'||group==='conference'?'I verified attendance for the selected entries.':'I reviewed the submitted proof for the selected entries.'));panel.appendChild(label);
+  var actions=document.createElement('div');actions.className='review-actions';var save=workButton_('Confirm & approve',saveReviewBatch_);save.id='work-batch-save';save.classList.add('btn','btn-primary');save.disabled=true;actions.appendChild(save);actions.appendChild(workButton_('Keep reviewing',function(){resetReviewBatch_();}));panel.appendChild(actions);var status=document.createElement('p');status.id='work-batch-status';status.setAttribute('role','status');panel.appendChild(status);panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function updateReviewBatchButton_(){var button=ui_('work-batch-save'),attest=ui_('work-batch-attest');if(!button)return;var n=REVIEW_BATCH.checks.filter(function(x){return x.checked;}).length;button.textContent='Confirm & approve '+n;button.disabled=REVIEW_BATCH.busy||!attest||!attest.checked||!n;}
+async function saveReviewBatch_(){
+  if(REVIEW_BATCH.busy||REVIEW_BATCH.token!==TOKEN||!ui_('work-batch-attest')||!ui_('work-batch-attest').checked)return;
+  var selected=REVIEW_BATCH.items.filter(function(x,i){return REVIEW_BATCH.checks[i].checked;}),token=TOKEN,sequence=REVIEW_BATCH.sequence,group=REVIEW_BATCH.group;if(!selected.length)return;
+  reviewBusy_(true);var approved=0,skipped=0,credited=0;
+  try{for(var offset=0;offset<selected.length;offset+=200){
+    if(token!==TOKEN||sequence!==REVIEW_BATCH.sequence||!ADMIN)return;ui_('work-batch-status').textContent='Saving '+Math.min(offset+200,selected.length)+' of '+selected.length+' entries…';
+    var result=await call('approveReviewBatch',token,{group:group,items:selected.slice(offset,offset+200).map(function(x){return {id:String(x.id),selectionKey:x.selectionKey};})});
+    if(!result||!result.ok)throw new Error('The server did not confirm this approval.');approved+=Number(result.approved)||0;skipped+=Number(result.skipped)||0;credited+=Number(result.credited)||0;
+  }
+    if(token!==TOKEN||sequence!==REVIEW_BATCH.sequence||!ADMIN)return;reviewBusy_(false);resetReviewBatch_();PEAC_UI.at=0;ADMIN_CACHE_AT=0;ui_('work-batch-result').textContent='Approved '+approved+' entry/entries'+(group==='ahd'?' · '+credited+' missing hour(s) credited':'')+(skipped?' · '+skipped+' already resolved or recorded entries skipped':'')+'.';await ensureOpsSection_('review',true);
+  }catch(error){if(token===TOKEN&&sequence===REVIEW_BATCH.sequence){ui_('work-batch-status').textContent=(error.message||'Save failed')+' Your selections are retained. Retry safely; completed entries will be skipped.';}}
+  finally{if(token===TOKEN&&sequence===REVIEW_BATCH.sequence)reviewBusy_(false);}
+}
+async function resolveWorkItem_(item,approve,card){
+  if(REVIEW_BATCH.busy)return;var token=TOKEN;Array.from(card.querySelectorAll('button')).forEach(function(b){b.disabled=true;});
+  try{var action=item.action==='peac'?'peacResolve':item.action==='photo'?'photoProofResolve':'resolveFlag';await call(action,token,item.action==='photo'?Number(item.row||item.id):item.id,approve,item.selectionKey||null);if(token!==TOKEN)return;resetReviewBatch_();PEAC_UI.at=0;await ensureOpsSection_('review',true);}
+  catch(error){if(token===TOKEN){toast(error.message);Array.from(card.querySelectorAll('button')).forEach(function(b){b.disabled=false;});}}
+}
+
 // Navigation must not depend on an optional layout enhancement.
 renderTabs('resident');
 try{polishAdminLayout_();}catch(e){console.warn('Admin layout could not be enhanced.',e);}
 boot();
 
 </script>
-</body>
+<div id="review-proof-viewer" class="proof-viewer" hidden role="dialog" aria-modal="true" aria-labelledby="review-proof-caption"><button id="review-proof-close" class="btn btn-ghost" onclick="closeReviewProof_()">Close screenshot</button><p id="review-proof-caption"></p><img id="review-proof-image" alt="Submitted proof"></div></body>
 </html>
