@@ -2,7 +2,7 @@
  * API POSTs, credentials, credits and admin responses never enter this cache.
  * Increment VERSION whenever the frontend changes. */
 'use strict';
-const VERSION='OCT9-LIVE';
+const VERSION='OCT14-REVIEW';
 const SHELL='uaim-tracker-shell-'+VERSION;
 const ASSETS='uaim-tracker-assets-v1';
 const QR='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
