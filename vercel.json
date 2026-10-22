@@ -4,8 +4,47 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "headers": [
-    {"source": "/sw.js", "headers": [{"key": "Cache-Control", "value": "no-cache, no-store, must-revalidate"}, {"key": "Content-Type", "value": "application/javascript; charset=utf-8"}, {"key": "Service-Worker-Allowed", "value": "/"}]},
-    {"source": "/", "headers": [{"key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate"}]},
-    {"source": "/index.html", "headers": [{"key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate"}]}
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/chief-chats",
+      "destination": "https://uaz-tucson-chief-chats-2026.lunar-vole-7634.chatgpt.site",
+      "permanent": false
+    }
   ]
 }
